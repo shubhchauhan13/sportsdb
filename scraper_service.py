@@ -201,9 +201,13 @@ def transform_match_data(match_id, raw):
     team_b_name = TEAM_CACHE.get(team_b_id, f"Team {team_b_id}")
     
     # Enrich Batting Team (New Logic)
-    # d=1 -> Team A (Home) is batting
-    # d=2 -> Team B (Away) is batting
+    # Enrich Batting Team
     batting_indicator = raw.get("d", 0)
+    try:
+        batting_indicator = int(batting_indicator)
+    except:
+        batting_indicator = 0
+
     batting_team_id = None
     batting_team_name = None
     
@@ -215,12 +219,6 @@ def transform_match_data(match_id, raw):
         batting_team_name = team_b_name
         
     # Enrich Status
-    # ^1=Upcoming, ^2=Live, ^3=Completed/In-Play (Context dependent)
-    # Start with explicit match_status from 'res' if matches specific keywords
-
-    # ^1, &1, ^0... usually mean upcoming or pre-match
-    # ^2 = Live
-    # ^3 = Completed
     status_code = raw.get("a", "")
     match_status = "Unknown"
     
@@ -232,10 +230,9 @@ def transform_match_data(match_id, raw):
         match_status = "Completed"
         
     # League/Series Name
-    league_name = LEAGUE_CACHE.get(match_id, raw.get("fo", "Unknown League")) # Fallback to format if league not found
+    league_name = LEAGUE_CACHE.get(match_id, raw.get("fo", "Unknown League")) 
 
     # Innings
-    # Debug Findings: i=0 -> 1st Innings, i=1 -> 2nd Innings
     innings_code = raw.get("i", "0")
     try:
         innings_int = int(innings_code)
@@ -247,28 +244,40 @@ def transform_match_data(match_id, raw):
     except:
         current_innings = "1st Innings"
 
-    # Score Parsing (Smart Logic: j=Team A, k=Team B)
-    # Based on debug: 
-    # YAT (A vs B): j=240 (A), k=150 (B). d=2 (B Batting).
-    # TOG (A vs B): j=209 (A), k=211 (B). d=2 (B Batting).
-    
     raw_score_a = raw.get("j", "")
     raw_score_b = raw.get("k", "")
     
-    score = raw_score_a # Default
+    # Clean scores (remove brackets if needed, but usually we want specific formats)
+    # Keeping raw strings for now
+    
+    score = raw_score_a # Default fallback
     
     if batting_indicator == 2:
-        score = raw_score_b if raw_score_b else raw_score_a
+        # Team B is batting
+        if raw_score_b:
+            score = raw_score_b
+        elif raw_score_a:
+            score = raw_score_a # Fallback to A if B missing
     elif batting_indicator == 1:
-        score = raw_score_a
+        # Team A is batting
+        if raw_score_a:
+            score = raw_score_a
+        elif raw_score_b:
+            score = raw_score_b # Fallback
     else:
-        # If finished or unknown, try to combine or show winner?
-        # Let's show "ScoreA vs ScoreB" to be comprehensive if both exist
+        # Unknown batting team
         if raw_score_a and raw_score_b:
              score = f"{raw_score_a} vs {raw_score_b}"
         else:
              score = raw_score_a or raw_score_b
-             
+
+    # Add Target Logic (If 2nd Innings)
+    target = ""
+    if current_innings == "2nd Innings":
+         # If B is batting, target is A's score
+         if batting_indicator == 2: target = raw_score_a
+         elif batting_indicator == 1: target = raw_score_b
+
     # Handle & splits if they still happen in individual fields
     if score and "&" in score:
          score = score.split('&')[-1].strip()
@@ -409,7 +418,10 @@ def transform_match_data(match_id, raw):
         "match_status": match_status, 
         "event_state": event_state,           # [NEW] "Live", "Break", "Finished"
         "status_text": status_text,   
-        "score": raw.get("j"),
+        "score": score,
+        "team_a_score": raw_score_a,          # [NEW]
+        "team_b_score": raw_score_b,          # [NEW]
+        "target": target,                     # [NEW]
         "team_a": team_a_id,
         "team_b": team_b_id,
         "team_a_name": team_a_name,

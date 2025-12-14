@@ -45,7 +45,12 @@ Each row returns a JSON object. Use these fields for your UI:
       "crr": 7.1,
       "projected_score": 142
   },
-  "start_time_iso": "2025-12-14 16:30"  // Start Time
+  "start_time_iso": "2025-12-14 16:30", // Start Time
+  
+  // [NEW] Detailed Scores & Target
+  "team_a_score": "132/6 (20.0)",       // Score of Team A
+  "team_b_score": "50/1 (4.2)",         // Score of Team B
+  "target": "134"                       // Target score (if 2nd Innings)
 }
 
 ```
