@@ -30,8 +30,10 @@ DB_CONNECTION_STRING = os.getenv(
 )
 TARGET_API_URL = "https://api-v1.com/w/liveMatches2.php"
 
-# Team Mapping Cache (In-Memory)
-TEAM_CACHE = {}
+# Metadata Cache (Team Names, League Names)
+TEAM_CACHE = {}     # ID -> Name
+LEAGUE_CACHE = {}   # Match ID -> League Name
+
 
 # --- Helper: Fetch Team Mappings ---
 def fetch_team_mappings(page):
@@ -59,31 +61,35 @@ def fetch_team_mappings(page):
             # Example: /scoreboard/YCY/246/3rd-Place-Playoff/1DY/1DZ/sil-vs-zam-...
             parts = href.split('/')
             if len(parts) >= 7:
-                id_a = parts[5] # 1DY
                 id_b = parts[6] # 1DZ
+                match_id = parts[4] if len(parts) > 4 else None # Extract Match ID from URL if possible?
+                # Actually, URL is /scoreboard/MATCH_ID/SERIES_ID/...
+                # Example: /scoreboard/YCY/246/...
+                potential_match_id = parts[2]
                 
-                # Get text content of the card to find names
-                text = link.inner_text()
-                # Split by newline or common separators
-                # The names typically appear distinctly. 
-                # e.g. "Sierra Leone\n132/6\nvs\nZambia..."
-                # We can just store the IDs for now if text parsing is hard, 
-                # but let's try to grab specific elements if angular allows.
+                # Get text content
+                # Try to get League Name (Card usually has a header or label)
+                # But on match-list, headers are separate.
+                # Heuristic: We can't easily get the header for each item without complex traversal.
+                # However, usually the card itself has text like "T20I . 3rd Place Playoff"
+                # Let's try to grab the card text and assume the first line is Series/League info if needed.
                 
-                # Simple fallback: ID -> ID (Better than nothing)
-                # But we want names.
-                # Let's trust that the user might have a static list or we assume the first two distinct capitalized words are names?
-                # Too risky.
-                
-                # For this specific task, let's look for .team-name class inside the link?
+                # For now, let's focus on names as before.
                 try:
-                    names = link.locator(".team-name, .t-name").all_inner_texts()
-                    if len(names) >= 2:
-                        TEAM_CACHE[id_a] = names[0]
-                        TEAM_CACHE[id_b] = names[1]
-                        count += 1
+                     names = link.locator(".team-name, .t-name").all_inner_texts()
+                     if len(names) >= 2:
+                         TEAM_CACHE[id_a] = names[0]
+                         TEAM_CACHE[id_b] = names[1]
+                         
+                     # Try to find League/Series info in the card
+                     # Often in a .series-name or .match-info div
+                     series_info = link.locator(".series-name, .match-info, .card-header").first.inner_text()
+                     if series_info and potential_match_id:
+                         LEAGUE_CACHE[potential_match_id] = series_info
+                         
+                     count += 1
                 except:
-                    pass
+                     pass
 
         print(f"[INIT] Cached {len(TEAM_CACHE)} team names.")
         
@@ -136,15 +142,68 @@ def transform_match_data(match_id, raw):
     team_a_id = raw.get("b")
     team_b_id = raw.get("c")
     team_a_name = TEAM_CACHE.get(team_a_id, f"Team {team_a_id}")
+    team_a_name = TEAM_CACHE.get(team_a_id, f"Team {team_a_id}")
     team_b_name = TEAM_CACHE.get(team_b_id, f"Team {team_b_id}")
     
+    # Enrich Batting Team (New Logic)
+    # d=1 -> Team A (Home) is batting
+    # d=2 -> Team B (Away) is batting
+    batting_indicator = raw.get("d", 0)
+    batting_team_id = None
+    batting_team_name = None
+    
+    if batting_indicator == 1:
+        batting_team_id = team_a_id
+        batting_team_name = team_a_name
+    elif batting_indicator == 2:
+        batting_team_id = team_b_id
+        batting_team_name = team_b_name
+        
     # Enrich Status
-    # ^1=Upcoming, ^2=Live, ^3=Completed (User provided)
+    # ^1=Upcoming, ^2=Live, ^3=Completed/In-Play (Context dependent)
+    # Start with explicit match_status from 'res' if matches specific keywords
+
+    # ^1, &1, ^0... usually mean upcoming or pre-match
+    # ^2 = Live
+    # ^3 = Completed
     status_code = raw.get("a", "")
     match_status = "Unknown"
-    if "^1" in status_code: match_status = "Upcoming"
-    elif "^2" in status_code: match_status = "Live"
-    elif "^3" in status_code: match_status = "Completed"
+    
+    if "^1" in status_code or "&1" in status_code or "^0" in status_code: 
+        match_status = "Upcoming"
+    elif "^2" in status_code: 
+        match_status = "Live"
+    elif "^3" in status_code: 
+        match_status = "Completed"
+        
+    # League/Series Name
+    league_name = LEAGUE_CACHE.get(match_id, raw.get("fo", "Unknown League")) # Fallback to format if league not found
+
+    # Innings
+    # i=1 -> 1st Innings, i=2 -> 2nd Innings, i=3 -> 3rd Innings (Test), etc.
+    innings = raw.get("i", 0)
+    current_innings = f"{innings}th Innings" if innings else "Not Started"
+    if innings == 1: current_innings = "1st Innings"
+    elif innings == 2: current_innings = "2nd Innings"
+
+    
+    # Granular Event State
+    event_state = "Live"
+    lower_res = status_text.lower()
+    
+    if "won by" in lower_res or "tied" in lower_res or "no result" in lower_res or match_status == "Completed":
+        event_state = "Finished"
+    elif "break" in lower_res or "delay" in lower_res or "stumps" in lower_res:
+         event_state = "Break"
+    elif match_status == "Upcoming":
+         event_state = "Scheduled"
+         
+    # Fallback: If status is unknown but we know it's finished, set status to Completed
+    if match_status == "Unknown" and event_state == "Finished":
+        match_status = "Completed"
+         
+    # Fix is_live based on event_state
+    is_live = (event_state == "Live" or event_state == "Break") and event_state != "Finished"
     
     # Enrich Timestamp
     start_timestamp = raw.get("ti", 0)
@@ -159,13 +218,18 @@ def transform_match_data(match_id, raw):
     return {
         "match_id": match_id,
         "is_live": is_live,
-        "match_status": match_status, # Parsed from 'a'
-        "status_text": status_text,   # Parsed from 'res'
+        "match_status": match_status, 
+        "event_state": event_state,           # [NEW] "Live", "Break", "Finished"
+        "status_text": status_text,   
         "score": raw.get("j"),
         "team_a": team_a_id,
         "team_b": team_b_id,
         "team_a_name": team_a_name,
         "team_b_name": team_b_name,
+        "batting_team": batting_team_id,      
+        "batting_team_name": batting_team_name, 
+        "current_innings": current_innings,   # [NEW]
+        "league_name": league_name,           # [NEW]
         "format": raw.get("fo"),
         "start_time": start_timestamp,
         "start_time_iso": start_time_iso,
