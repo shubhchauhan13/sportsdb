@@ -45,53 +45,92 @@ def fetch_team_mappings(page):
         page.goto("https://crex.com/fixtures/match-list", timeout=30000)
         time.sleep(3)
         
-        # Select all match card links
-        # URL pattern: /scoreboard/MATCH_ID/SERIES_ID/STAGE/TEAM_A_ID/TEAM_B_ID/SLUG
-        # We need to extract TEAM_A_ID and TEAM_B_ID and correlate with visible text
+        # Scroll down to load all matches
+        for _ in range(5):
+             page.mouse.wheel(0, 3000)
+             time.sleep(1)
         
-        # This is a bit "fuzzy" because text order vs url ID order usually matches (Home vs Away)
-        # We'll use a safer heuristic if possible, but for now assuming strict order.
+        # Scroll down to load all matches
+        for _ in range(5):
+             page.mouse.wheel(0, 3000)
+             time.sleep(1)
         
-        # Let's grab all links with 'scoreboard'
-        links = page.locator("a[href*='/scoreboard/']").all()
+        # Strategy 2: Bulk Extraction (More Robust than element handles)
+        # Extract all Scoreboard URLs
+        hrefs = page.evaluate("""() => {
+            return Array.from(document.querySelectorAll("a[href*='/scoreboard/']")).map(a => a.href);
+        }""")
+        
+        # Extract all Team Names (Assuming order matches card order)
+        # Note: Some cards might have different structures ("Youth ODI"), 
+        # but usually .team-name or .t-name covers 90%
+        # We also look for specific card text to map League Name
+        
+        # Let's iterate the hrefs and try to find the names from the specific card *element* in JS 
+        # to avoid detachment issues.
+        
+        matches_data = page.evaluate("""() => {
+            const cards = Array.from(document.querySelectorAll("a[href*='/scoreboard/']"));
+            return cards.map(card => {
+                const names = Array.from(card.querySelectorAll(".team-name, .t-name, .name")).map(e => e.innerText);
+                // Try to find specific series/league element
+                const seriesEl = card.querySelector(".series-name, .seriesName, .league-name, .match-info");
+                const seriesText = seriesEl ? seriesEl.innerText : "";
+                
+                const info = card.innerText; 
+                return { href: card.href, names: names, text: info, series: seriesText };
+            });
+        }""")
         
         count = 0
-        for link in links:
-            href = link.get_attribute("href")
-            # Example: /scoreboard/YCY/246/3rd-Place-Playoff/1DY/1DZ/sil-vs-zam-...
+        for m in matches_data:
+            href = m['href']
+            names = m['names']
+            card_text = m['text']
+            series_text = m['series']
+            
+            # Parse URL: /scoreboard/MATCH_ID/SERIES_ID/STAGE/TEAM_A_ID/TEAM_B_ID/...
             parts = href.split('/')
             if len(parts) >= 7:
-                id_b = parts[6] # 1DZ
-                match_id = parts[4] if len(parts) > 4 else None # Extract Match ID from URL if possible?
-                # Actually, URL is /scoreboard/MATCH_ID/SERIES_ID/...
-                # Example: /scoreboard/YCY/246/...
-                potential_match_id = parts[2]
-                
-                # Get text content
-                # Try to get League Name (Card usually has a header or label)
-                # But on match-list, headers are separate.
-                # Heuristic: We can't easily get the header for each item without complex traversal.
-                # However, usually the card itself has text like "T20I . 3rd Place Playoff"
-                # Let's try to grab the card text and assume the first line is Series/League info if needed.
-                
-                # For now, let's focus on names as before.
-                try:
-                     names = link.locator(".team-name, .t-name").all_inner_texts()
+                 # Check if we can find IDs (usually index 6 and 7 in full URL splitting)
+                 # url: https://crex.com/scoreboard/MATCH/SERIES/STAGE/A/B/...
+                 # parts: [https:, , crex.com, scoreboard, MATCH, SERIES, STAGE, A, B, ...] 
+                 # Wait, python split by '/' on full url:
+                 # 0: https:, 1: , 2: crex.com, 3: scoreboard, 4: MATCH, 5: SERIES, 6: STAGE, 7: A, 8: B
+                 # Let's be careful. The previous code used relative path splitting logic.
+                 # Let's find 'scoreboard' index
+                 try:
+                     sb_index = parts.index('scoreboard')
+                     # URL structure: /scoreboard/match_id/series_id/match_type/team_a_id/team_b_id/slug
+                     # index + 1 = match_id
+                     # index + 4 = team_a_id
+                     # index + 5 = team_b_id
+                     
+                     id_a = parts[sb_index + 4]
+                     id_b = parts[sb_index + 5]
+                     match_id = parts[sb_index + 1]
+                     
                      if len(names) >= 2:
                          TEAM_CACHE[id_a] = names[0]
                          TEAM_CACHE[id_b] = names[1]
+                         count += 1
+                     
+                     # Extract League Name
+                     # Priority: Specific Element -> First Line of Text -> "Unknown"
+                     if series_text:
+                         LEAGUE_CACHE[match_id] = series_text
+                     else:
+                         lines = card_text.split('\n')
+                         if lines and len(lines) > 0 and len(lines[0]) < 50: 
+                             # Heuristic: If first line is short, might be league. If it matches team name, ignore.
+                             if lines[0] not in names:
+                                LEAGUE_CACHE[match_id] = lines[0]
                          
-                     # Try to find League/Series info in the card
-                     # Often in a .series-name or .match-info div
-                     series_info = link.locator(".series-name, .match-info, .card-header").first.inner_text()
-                     if series_info and potential_match_id:
-                         LEAGUE_CACHE[potential_match_id] = series_info
-                         
-                     count += 1
-                except:
+                 except Exception as e:
                      pass
 
-        print(f"[INIT] Cached {len(TEAM_CACHE)} team names.")
+        print(f"[INIT] Cached {len(TEAM_CACHE)} team names from {len(matches_data)} cards.")
+
         
     except Exception as e:
         print(f"[WARN] Failed to fetch mappings: {e}")
@@ -110,7 +149,23 @@ def initialize_db():
                 match_data JSONB,
                 last_updated TIMESTAMP DEFAULT NOW()
             );
+
+            CREATE TABLE IF NOT EXISTS cleanstate (
+                match_id TEXT PRIMARY KEY,
+                title TEXT,
+                league TEXT,
+                team_a TEXT,
+                team_b TEXT,
+                batting_team TEXT,
+                score TEXT,
+                status TEXT, -- Live/Break/Finished
+                innings TEXT,
+                odds JSONB,
+                session JSONB,
+                updated_at TIMESTAMP DEFAULT NOW()
+            );
         """)
+
         conn.commit()
         print("[SUCCESS] Connected to NeonDB and verified schema.")
         return conn
@@ -210,12 +265,111 @@ def transform_match_data(match_id, raw):
     start_time_iso = ""
     try:
         if start_timestamp:
-             # ti is usually ms
-             start_time_iso = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(start_timestamp)/1000))
+             # ti is ms. Convert to UTC ISO explicitly
+             start_time_iso = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(int(start_timestamp)/1000))
     except:
         pass
+        
+    # --- ODDS GENERATION ---
+    mm_odds = {}
+    wp_str = raw.get("wp") # e.g. "M2,9085,19261,0" or "O,339401,143702,0"
+    
+    if wp_str and isinstance(wp_str, str):
+        try:
+            parts = wp_str.split(',')
+            if len(parts) >= 3:
+                fav_id = parts[0]
+                val1 = int(parts[1])
+                val2 = int(parts[2])
+                total = val1 + val2
+                
+                if total > 0:
+                    prob_fav = val1 / total
+                    prob_under = val2 / total
+                    
+                    # Decimal Odds = 1 / Probability
+                    # Add a 5% margin? No, keep raw fair odds for now.
+                    odds_fav = round(1 / prob_fav, 2)
+                    odds_under = round(1 / prob_under, 2)
+                    
+                    # Map to Team A / Team B
+                    if team_a_id == fav_id:
+                        mm_odds = {
+                            "team_a_win_prob": round(prob_fav * 100, 1),
+                            "team_b_win_prob": round(prob_under * 100, 1),
+                            "team_a_odds": odds_fav,
+                            "team_b_odds": odds_under
+                        }
+                    else:
+                        mm_odds = {
+                            "team_a_win_prob": round(prob_under * 100, 1),
+                            "team_b_win_prob": round(prob_fav * 100, 1),
+                            "team_a_odds": odds_under,
+                            "team_b_odds": odds_fav
+                        }
+        except Exception as e:
+            # print(f"Odds Error: {e}")
+            pass
+
+    # --- SESSION / PROJECTION ---
+    session_data = {}
+    score_str = raw.get("j") # "19/3(5.2)"
+    if score_str and "(" in score_str and is_live:
+        try:
+            # Basic CRR Scraper
+            # Format: Runs/Wickets (Overs) or Runs-Wickets (Overs)
+            main_part, over_part = score_str.split('(')
+            runs = 0
+            wickets = 0
+            
+            if "/" in main_part:
+                r, w = main_part.split('/')
+                runs = int(r)
+                wickets = int(w)
+            elif "-" in main_part:
+                r, w = main_part.split('-')
+                runs = int(r)
+                wickets = int(w)
+            else:
+                runs = int(main_part)
+            
+            overs_float = float(over_part.replace(')', ''))
+            
+            # Helper to convert 5.2 to 5.333
+            ov_int = int(overs_float)
+            balls = int(round((overs_float - ov_int) * 10))
+            real_overs = ov_int + (balls / 6.0)
+            
+            if real_overs > 0:
+                crr = runs / real_overs
+                
+                # Determine Format (T20 vs ODI)
+                total_overs = 20
+                if "ODI" in raw.get("fo", ""): total_overs = 50
+                if "Test" in raw.get("fo", ""): total_overs = 90 # Per day approx
+                
+                # Basic Projection: Current Rate * Total Overs
+                proj_score_crr = int(crr * total_overs)
+                
+                # Smart Projection (Wicket Adjusted)
+                # If wickets high, reduce rate
+                # Simplistic model: CRR * (1 - (wickets/15)) -> Decay factor
+                
+                session_data = {
+                    "runs": runs,
+                    "wickets": wickets,
+                    "overs": real_overs,
+                    "crr": round(crr, 2),
+                    "projected_score": proj_score_crr,
+                    "session_6_over_guess": int(runs + (crr * (6 - real_overs))) if real_overs < 6 else None
+                }
+        except:
+            pass
 
     return {
+        "match_id": match_id,
+        "is_live": is_live,
+
         "match_id": match_id,
         "is_live": is_live,
         "match_status": match_status, 
@@ -230,6 +384,8 @@ def transform_match_data(match_id, raw):
         "batting_team_name": batting_team_name, 
         "current_innings": current_innings,   # [NEW]
         "league_name": league_name,           # [NEW]
+        "match_odds": mm_odds,                # [NEW]
+        "session": session_data,              # [NEW]
         "format": raw.get("fo"),
         "start_time": start_timestamp,
         "start_time_iso": start_time_iso,
@@ -265,6 +421,41 @@ def process_and_upload(conn, data):
                     ON CONFLICT (match_id) 
                     DO UPDATE SET match_data = EXCLUDED.match_data, last_updated = NOW();
                 """, (match_id, Json(clean_data)))
+                
+                # UPSERT into cleanstate
+                cur.execute("""
+                    INSERT INTO cleanstate (
+                        match_id, title, league, team_a, team_b, batting_team, 
+                        score, status, innings, odds, session, updated_at
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                    ON CONFLICT (match_id)
+                    DO UPDATE SET 
+                        title = EXCLUDED.title,
+                        league = EXCLUDED.league,
+                        team_a = EXCLUDED.team_a,
+                        team_b = EXCLUDED.team_b,
+                        batting_team = EXCLUDED.batting_team,
+                        score = EXCLUDED.score,
+                        status = EXCLUDED.status,
+                        innings = EXCLUDED.innings,
+                        odds = EXCLUDED.odds,
+                        session = EXCLUDED.session,
+                        updated_at = NOW();
+                """, (
+                    match_id, 
+                    clean_data.get("title"),
+                    clean_data.get("league_name"),
+                    clean_data.get("team_a_name"),
+                    clean_data.get("team_b_name"),
+                    clean_data.get("batting_team_name"),
+                    clean_data.get("score"),
+                    clean_data.get("event_state"),
+                    clean_data.get("current_innings"),
+                    Json(clean_data.get("match_odds")),
+                    Json(clean_data.get("session"))
+                ))
+
                 
                 match_count += 1
         

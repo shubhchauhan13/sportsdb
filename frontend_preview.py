@@ -1,0 +1,91 @@
+import os
+import psycopg2
+from flask import Flask, render_template_string
+
+# DB Connection
+DB_CONNECTION_STRING = "postgresql://neondb_owner:npg_UoHEdMg7eAl5@ep-crimson-snow-a13t7sij-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+
+app = Flask(__name__)
+
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SportsDB Preview</title>
+    <meta http-equiv="refresh" content="5"> <!-- Auto refresh every 5s -->
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f0f2f5; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .league { font-size: 0.8rem; color: #666; font-weight: 600; text-transform: uppercase; }
+        .status { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .status.Live { background: #ffe4e6; color: #e11d48; }
+        .status.Upcoming { background: #dbeafe; color: #2563eb; }
+        .status.Finished { background: #e5e7eb; color: #374151; }
+        .status.Break { background: #fef3c7; color: #d97706; }
+        
+        .teams { margin-bottom: 15px; }
+        .team { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 1.1rem; }
+        .team.batting { font-weight: 700; }
+        .team.batting::after { content: " 🏏"; }
+        
+        .score { font-size: 1.5rem; font-weight: 800; color: #1f2937; margin-bottom: 5px; }
+        .subtext { font-size: 0.9rem; color: #6b7280; }
+        .meta { margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; font-size: 0.85rem; color: #888; display: flex; justify-content: space-between;}
+    </style>
+</head>
+<body>
+    <h1>Live Matches Database Preview</h1>
+    <div class="grid">
+        {% for match in matches %}
+        <div class="card">
+            <div class="header">
+                <span class="league">{{ match.league_name or match.format or 'Unknown League' }}</span>
+                <span class="status {{ match.event_state }}">{{ match.event_state }}</span>
+            </div>
+            
+            <div class="teams">
+                <div class="team {% if match.batting_team == match.team_a %}batting{% endif %}">
+                    {{ match.team_a_name }}
+                </div>
+                <div class="team {% if match.batting_team == match.team_b %}batting{% endif %}">
+                    {{ match.team_b_name }}
+                </div>
+            </div>
+            
+            <div class="score">{{ match.score or '--/--' }}</div>
+            <div class="subtext">{{ match.status_text }}</div>
+            
+            <div class="meta">
+                <span>{{ match.current_innings }}</span>
+                <span>{{ match.start_time_iso }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+"""
+
+def get_matches():
+    try:
+        conn = psycopg2.connect(DB_CONNECTION_STRING)
+        cur = conn.cursor()
+        # Fetch directly from JSONB
+        cur.execute("SELECT match_data FROM live_matches ORDER BY (match_data->>'is_live')::boolean DESC, last_updated DESC;")
+        rows = cur.fetchall()
+        conn.close()
+        return [r[0] for r in rows]
+    except Exception as e:
+        print(f"Error: {e}")
+        return []
+
+@app.route('/')
+def index():
+    matches = get_matches()
+    return render_template_string(HTML_TEMPLATE, matches=matches)
+
+if __name__ == "__main__":
+    print("Starting Preview Server on http://localhost:5000")
+    app.run(port=5000)

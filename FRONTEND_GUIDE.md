@@ -33,8 +33,21 @@ Each row returns a JSON object. Use these fields for your UI:
   "batting_team_name": "India",         // [NEW] Name of batting team
   "current_innings": "1st Innings",     // [NEW] e.g. "2nd Innings"
   "league_name": "T20I",                // [NEW] Format or League Name
+  "match_odds": {                       // [NEW]
+      "team_a_odds": 1.5,
+      "team_b_odds": 2.5,
+      "team_a_win_prob": 66.6,
+      "team_b_win_prob": 33.3
+  },
+  "session": {                          // [NEW] Only present if Live
+      "runs": 132,
+      "wickets": 6,
+      "crr": 7.1,
+      "projected_score": 142
+  },
   "start_time_iso": "2025-12-14 16:30"  // Start Time
 }
+
 ```
 
 ## 4. UI Logic Checklist
@@ -44,3 +57,29 @@ Each row returns a JSON object. Use these fields for your UI:
 - [ ] **Score:** If `score` is null or empty, display "Match Starting Soon".
 
 - [ ] **Refresh:** Re-run the SQL query every 1-2 seconds (or use a WebSocket if your backend supports it, but polling DB is fine for now).
+
+## 5. UI Component Mapping (Example)
+If you are building a card component, map the data like this:
+
+| UI Element | JSON Field | Logic |
+| :--- | :--- | :--- |
+| **Card Header** | `league_name` | Fallback to `format` if empty. |
+| **Badge** | `event_state` | Red for "Live", Orange for "Break", Grey for "Finished". |
+| **Team 1** | `team_a_name` | Bold if `batting_team_name` matches. |
+| **Team 2** | `team_b_name` | Bold if `batting_team_name` matches. |
+| **Big Score** | `score` | Show `--/--` if empty. |
+| **Status Text** | `status_text` | e.g. "Need 15 runs to win". |
+| **Footer** | `current_innings` | e.g. "1st Innings". |
+
+## 6. Betting Odds (New)
+If `match_odds` is not null:
+- **Odds A:** `match_odds.team_a_odds` (e.g. 1.50)
+- **Odds B:** `match_odds.team_b_odds` (e.g. 2.50)
+- **Win Prob:** Show a progress bar using `match_odds.team_a_win_prob` %.
+
+## 7. Session/Fancy (New)
+If `session` is not null (Live matches only):
+- **CRR:** `session.crr` (Current Run Rate)
+- **Projected Score:** `session.projected_score` (Estimated final score)
+
+

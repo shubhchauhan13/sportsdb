@@ -1,95 +1,51 @@
-# Crex.com WebSocket/API Interceptor
+# Cricket Scraper - Deployment Guide
 
-## Overview
-We successfully reverse-engineered the data flow of **Crex.com**. Contrary to the initial assumption of WebSockets, the site relies heavily on **XHR polling** to `api-v1.com` for its live match data (specifically the `liveMatches2.php` endpoint) or uses a mechanism that is best intercepted via HTTP response monitoring.
+## 1. Overview
+A high-performance Python scraper that fetches live cricket scores from Crex.com and syncs them to a NeonDB (PostgreSQL) database in real-time (~1s latency).
 
-We have delivered a robust **Python Relay Script** that uses a Headless Browser to stealthily load the site, intercept these background data packets, and forward them to your local API.
+## 2. Features
+- **Real-Time Polling:** Updates every ~1 second.
+- **Data Enrichment:** Decodes `^1`/`^2` status codes, maps Team IDs to Names, and calculates match states.
+- **Robust Persistence:** Uses `UPSERT` to store only unique match data in JSONB format.
+- **Dockerized:** Ready for deployment on Railway, Render, or DigitalOcean.
 
-## Deliverables
+## 3. Database Schema (Schema V2)
+**Table:** `live_matches`
+- `match_id` (TEXT PK): Unique Match ID (e.g. `XY1`)
+- `match_data` (JSONB): Full match payload.
+- `last_updated` (TIMESTAMP): Last sync time.
 
-### 1. Relay Script (`relay_server.py`)
-This is the core "Listener" service.
-
-**Features:**
-*   **Headless Browser:** Uses Playwright (Chromium) to match a real user environment.
-*   **Stealth Headers:** Automatically injects `Origin` and `Referer` to ensure upstream APIs respond correctly.
-*   **Auto-Interception:** Listens for *any* background response from `api-v1.com` containing live match data.
-*   **Resilience:** Auto-reloads the page every 10 minutes to refresh tokens and session headers.
-*   **Forwarding:** POSTs the intercepted JSON payload to `http://localhost:8000/ingest` (configurable).
-
-**Usage:**
-```bash
-pip install playwright requests
-playwright install
-python3 relay_server.py
-```
-
-### 2. Sample Data (`sample_data.json`)
-A real captured payload from the `liveMatches` endpoint.
-
-**Structure Highlight:**
-*   The root object contains keys like `WQF`, `X0T` (Match IDs).
-*   Inside each match:
-    *   `j`: Score string (e.g., `"137/5(20.0)"`).
-    *   `mm`: Commentary/Status (e.g., `"Hobart Hurricanes Women won by..."`).
-    *   `ti`: Timestamp.
-
-## Next Steps
-1.  **Deploy:** Run `relay_server.py` on your server.
-2.  **Ingest:** Ensure your API at `localhost:8000/ingest` processes the JSON schema shown in `sample_data.json`.
-3.  **Scale:** If needed, run multiple instances for different target pages, though the Home Page ticker usually captures all active matches.
-
-## Deployment Guide (Easiest Method: Railway)
-
-We recommend **Railway.app** because it automatically detects the `Dockerfile` and requires zero configuration.
-
-1.  **Push to GitHub:** Upload your code (including `Dockerfile` and `requirements.txt`) to a GitHub repository.
-2.  **Railway:**
-    *   Go to [railway.app](https://railway.app/) -> "New Project" -> "Deploy from GitHub repo".
-    *   Select your repository.
-    *   It will start building automatically.
-3.  **Variables:**
-    *   Go to the "Variables" tab in Railway.
-    *   Add `DB_CONNECTION_STRING` = `postgresql://neondb_owner:npg_UoHEdMg7eAl5@ep-crimson-snow-a13t7sij-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
-4.  **Done:** Your scraper is now live 24/7.
-
-
-### Setup Instructions
-1.  Go to the [Firebase Console](https://console.firebase.google.com/).
-2.  Create a project -> **Build** -> **Realtime Database** -> **Create Database** (Start in Test Mode).
-3.  Go to **Project Settings** -> **Service Accounts** -> **Generate New Private Key**.
-4.  Save the file as `serviceAccountKey.json` in this directory.
-5.  Open `scraper_service.py` and update the `FIREBASE_DB_URL` at the top with your database URL (e.g., `https://your-project.firebaseio.com/`).
-### Database Schema (NeonDB)
-
-The `live_matches` table stores the cleaned data:
-
-```sql
-match_id (TEXT PRIMARY KEY)
-match_data (JSONB)
-last_updated (TIMESTAMP)
-```
-
-**JSON Structure (`match_data`):**
+### JSON Structure (`match_data`)
 ```json
 {
   "match_id": "XY1",
   "title": "India vs Australia",
-  "is_live": true,
-  "match_status": "Live",   // Decoded from '^2'
-  "status_text": "In Progress",
-  "score": "132/6(19.0)",
-  "team_a": "1DY",
-  "team_b": "1DZ",
-  "team_a_name": "India",   // Enriched from Lookup
+  "score": "132/6 (19.0)",
+  "team_a_name": "India",
   "team_b_name": "Australia",
-  "start_time_iso": "2025-12-14 16:30:00",
-  "raw": { ... }
+  "batting_team_name": "India",       // [NEW]
+  "current_innings": "1st Innings",   // [NEW]
+  "event_state": "Live",              // [NEW] "Live", "Break", "Finished"
+  "league_name": "T20I",              // [NEW]
+  "match_status": "Live",
+  "is_live": true,
+  "start_time_iso": "2025-12-14 16:30:00"
 }
 ```
 
-To see only live matches:
+## 4. Frontend Developer Guide
+
+### SQL Query
 ```sql
-SELECT * FROM live_matches WHERE match_data->>'is_live' = 'true';
+SELECT match_data 
+FROM live_matches 
+ORDER BY (match_data->>'is_live')::boolean DESC, last_updated DESC;
 ```
 
+## 5. Deployment
+### Render.com (Free Tier)
+1. Push this repo to GitHub.
+2. Create **Web Service** on Render.
+3. Connect Repo.
+4. Set Environment Variable: `DB_CONNECTION_STRING`.
+5. **Important:** Setup UptimeRobot to ping the provided URL every 5 mins.
