@@ -235,11 +235,27 @@ def transform_match_data(match_id, raw):
     league_name = LEAGUE_CACHE.get(match_id, raw.get("fo", "Unknown League")) # Fallback to format if league not found
 
     # Innings
-    # i=1 -> 1st Innings, i=2 -> 2nd Innings, i=3 -> 3rd Innings (Test), etc.
-    innings = raw.get("i", 0)
-    current_innings = f"{innings}th Innings" if innings else "Not Started"
-    if innings == 1: current_innings = "1st Innings"
-    elif innings == 2: current_innings = "2nd Innings"
+    # Debug Findings: i=0 -> 1st Innings, i=1 -> 2nd Innings
+    innings_code = raw.get("i", "0")
+    try:
+        innings_int = int(innings_code)
+        if innings_int == 0: current_innings = "1st Innings"
+        elif innings_int == 1: current_innings = "2nd Innings"
+        elif innings_int == 2: current_innings = "3rd Innings"
+        elif innings_int == 3: current_innings = "4th Innings"
+        else: current_innings = f"{innings_int + 1}th Innings"
+    except:
+        current_innings = "1st Innings"
+
+    # Score Parsing (Handle "Score1 & Score2" if it ever appears)
+    score_raw = raw.get("j", "")
+    score = score_raw
+    
+    # If multiple scores are present (Test logic or unexpected format), take the last one (current)
+    if "&" in score_raw:
+        parts = score_raw.split('&')
+        score = parts[-1].strip()
+
 
     
     # Granular Event State
