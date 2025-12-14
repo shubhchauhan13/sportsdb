@@ -247,14 +247,32 @@ def transform_match_data(match_id, raw):
     except:
         current_innings = "1st Innings"
 
-    # Score Parsing (Handle "Score1 & Score2" if it ever appears)
-    score_raw = raw.get("j", "")
-    score = score_raw
+    # Score Parsing (Smart Logic: j=Team A, k=Team B)
+    # Based on debug: 
+    # YAT (A vs B): j=240 (A), k=150 (B). d=2 (B Batting).
+    # TOG (A vs B): j=209 (A), k=211 (B). d=2 (B Batting).
     
-    # If multiple scores are present (Test logic or unexpected format), take the last one (current)
-    if "&" in score_raw:
-        parts = score_raw.split('&')
-        score = parts[-1].strip()
+    raw_score_a = raw.get("j", "")
+    raw_score_b = raw.get("k", "")
+    
+    score = raw_score_a # Default
+    
+    if batting_indicator == 2:
+        score = raw_score_b if raw_score_b else raw_score_a
+    elif batting_indicator == 1:
+        score = raw_score_a
+    else:
+        # If finished or unknown, try to combine or show winner?
+        # Let's show "ScoreA vs ScoreB" to be comprehensive if both exist
+        if raw_score_a and raw_score_b:
+             score = f"{raw_score_a} vs {raw_score_b}"
+        else:
+             score = raw_score_a or raw_score_b
+             
+    # Handle & splits if they still happen in individual fields
+    if score and "&" in score:
+         score = score.split('&')[-1].strip()
+
 
 
     
