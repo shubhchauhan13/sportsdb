@@ -5,11 +5,29 @@ import sys
 import os
 import psycopg2
 from psycopg2.extras import Json
+import os
+import threading
+from flask import Flask
 from playwright.sync_api import sync_playwright
 
+# --- Fake Web Server for Render Free Tier ---
+app = Flask(__name__)
+
+@app.route('/')
+def health_check():
+    return "Scraper is Running!", 200
+
+def start_web_server():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
 # --- Configuration ---
-# User provided connection string
-DB_CONNECTION_STRING = "postgresql://neondb_owner:npg_UoHEdMg7eAl5@ep-crimson-snow-a13t7sij-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+# Read from Environment Variable (Best for Replit/Production)
+# Fallback to hardcoded string if env var not set
+DB_CONNECTION_STRING = os.getenv(
+    "DB_CONNECTION_STRING", 
+    "postgresql://neondb_owner:npg_UoHEdMg7eAl5@ep-crimson-snow-a13t7sij-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+)
 TARGET_API_URL = "https://api-v1.com/w/liveMatches2.php"
 
 # Team Mapping Cache (In-Memory)
@@ -260,4 +278,10 @@ def run_scraper():
             browser.close()
 
 if __name__ == "__main__":
+    # Start Web Server in Background Thread
+    server_thread = threading.Thread(target=start_web_server, daemon=True)
+    server_thread.start()
+    print("background web server started")
+    
+    # Run Main Scraper Loop
     run_scraper()
