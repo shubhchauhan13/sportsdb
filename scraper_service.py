@@ -33,107 +33,133 @@ TARGET_API_URL = "https://api-v1.com/w/liveMatches2.php"
 # Metadata Cache (Team Names, League Names)
 TEAM_CACHE = {}     # ID -> Name
 LEAGUE_CACHE = {}   # Match ID -> League Name
+TIME_CACHE = {}     # Match ID -> Start Time (ms)
 
 
 # --- Helper: Fetch Team Mappings ---
-def fetch_team_mappings(page):
+def scrape_mappings_from_url(page, url):
     """
-    Scrapes the fixtures page to build a ID -> Name mapping.
+    Scrapes a specific Crex URL to build ID -> Name mappings.
     """
-    print("[INIT] Fetching team mappings from Fixtures page...")
+    print(f"[CACHE] Scraping {url}...")
     try:
-        page.goto("https://crex.com/fixtures/match-list", timeout=30000)
-        time.sleep(3)
+        page.goto(url, timeout=60000)
+        time.sleep(5) # Wait for hydration
         
-        # Scroll down to load all matches
-        for _ in range(5):
+        # Scroll to load more
+        for _ in range(3):
              page.mouse.wheel(0, 3000)
              time.sleep(1)
+             
+        # Extract Data via JSON in script tag (Robust Method)
+        # The page contains a script tag with id="app-root-state" which has the full state
         
-        # Scroll down to load all matches
-        for _ in range(5):
-             page.mouse.wheel(0, 3000)
-             time.sleep(1)
-        
-        # Strategy 2: Bulk Extraction (More Robust than element handles)
-        # Extract all Scoreboard URLs
-        hrefs = page.evaluate("""() => {
-            return Array.from(document.querySelectorAll("a[href*='/scoreboard/']")).map(a => a.href);
-        }""")
-        
-        # Extract all Team Names (Assuming order matches card order)
-        # Note: Some cards might have different structures ("Youth ODI"), 
-        # but usually .team-name or .t-name covers 90%
-        # We also look for specific card text to map League Name
-        
-        # Let's iterate the hrefs and try to find the names from the specific card *element* in JS 
-        # to avoid detachment issues.
-        
-        matches_data = page.evaluate("""() => {
-            const cards = Array.from(document.querySelectorAll("a[href*='/scoreboard/']"));
-            return cards.map(card => {
-                const names = Array.from(card.querySelectorAll(".team-name, .t-name, .name")).map(e => e.innerText);
-                // Try to find specific series/league element
-                const seriesEl = card.querySelector(".series-name, .seriesName, .league-name, .match-info");
-                const seriesText = seriesEl ? seriesEl.innerText : "";
-                
-                const info = card.innerText; 
-                return { href: card.href, names: names, text: info, series: seriesText };
-            });
-        }""")
-        
-        count = 0
-        for m in matches_data:
-            href = m['href']
-            names = m['names']
-            card_text = m['text']
-            series_text = m['series']
+        matches_data = []
+        try:
+            # Get the script content
+            script_content = page.locator("script#app-root-state").text_content(timeout=5000)
             
-            # Parse URL: /scoreboard/MATCH_ID/SERIES_ID/STAGE/TEAM_A_ID/TEAM_B_ID/...
-            parts = href.split('/')
-            if len(parts) >= 7:
-                 # Check if we can find IDs (usually index 6 and 7 in full URL splitting)
-                 # url: https://crex.com/scoreboard/MATCH/SERIES/STAGE/A/B/...
-                 # parts: [https:, , crex.com, scoreboard, MATCH, SERIES, STAGE, A, B, ...] 
-                 # Wait, python split by '/' on full url:
-                 # 0: https:, 1: , 2: crex.com, 3: scoreboard, 4: MATCH, 5: SERIES, 6: STAGE, 7: A, 8: B
-                 # Let's be careful. The previous code used relative path splitting logic.
-                 # Let's find 'scoreboard' index
-                 try:
-                     sb_index = parts.index('scoreboard')
-                     # URL structure: /scoreboard/match_id/series_id/match_type/team_a_id/team_b_id/slug
-                     # index + 1 = match_id
-                     # index + 4 = team_a_id
-                     # index + 5 = team_b_id
-                     
-                     id_a = parts[sb_index + 4]
-                     id_b = parts[sb_index + 5]
-                     match_id = parts[sb_index + 1]
-                     
-                     if len(names) >= 2:
-                         TEAM_CACHE[id_a] = names[0]
-                         TEAM_CACHE[id_b] = names[1]
-                         count += 1
-                     
-                     # Extract League Name
-                     # Priority: Specific Element -> First Line of Text -> "Unknown"
-                     if series_text:
-                         LEAGUE_CACHE[match_id] = series_text
-                     else:
-                         lines = card_text.split('\n')
-                         if lines and len(lines) > 0 and len(lines[0]) < 50: 
-                             # Heuristic: If first line is short, might be league. If it matches team name, ignore.
-                             if lines[0] not in names:
-                                LEAGUE_CACHE[match_id] = lines[0]
-                         
-                 except Exception as e:
-                     pass
+            if script_content:
+                # Decode entities: &q; -> ", &s; -> ', &a; -> &
+                clean_json = script_content.replace("&q;", '"').replace("&s;", "'").replace("&a;", "&")
+                
+                import json
+                state_data = json.loads(clean_json)
+                
+                # The data structure usually has keys like "https://crickapi.com/fixture/getFixture"
+                # We look for any list value that contains objects with 'matchFkey' or 'team1'
+                
+                for key, val in state_data.items():
+                    if isinstance(val, list):
+                        # check first item
+                        if len(val) > 0 and isinstance(val[0], dict):
+                            if "matchFkey" in val[0] or "mf" in val[0]:
+                                matches_data.extend(val)
+        except Exception as e:
+            print(f"[WARN] Failed to extract JSON state: {e}")
+            # Fallback to empty list or DOM scraping if needed, but this source is primary
+            pass
 
-        print(f"[INIT] Cached {len(TEAM_CACHE)} team names from {len(matches_data)} cards.")
-
+        count = 0
+        for item in matches_data:
+            # Map fields
+            # match_id -> mf (or matchFkey)
+            # team_a_id -> t1f (or team1fkey)
+            # team_b_id -> t2f (or team2fkey)
+            # team_a_name -> team1
+            # team_b_name -> team2
+            # league -> seriesShortName or n
+            # time -> t (timestamp)
+            
+            match_id = item.get("mf") or item.get("matchFkey")
+            if not match_id:
+                continue
+                
+            team_a_id = item.get("t1f") or item.get("team1fkey")
+            team_b_id = item.get("t2f") or item.get("team2fkey")
+            
+            team_a_name = item.get("team1")
+            team_b_name = item.get("team2")
+            
+            # Short names if needed
+            # team_a_short = item.get("t1SName")
+            
+            # Update TEAM_CACHE
+            if team_a_id and team_a_name and "Team " not in team_a_name:
+                TEAM_CACHE[team_a_id] = team_a_name.strip()
+            if team_b_id and team_b_name and "Team " not in team_b_name:
+                TEAM_CACHE[team_b_id] = team_b_name.strip()
+                
+            # League Name
+            league_name = item.get("seriesShortName") or item.get("n") or "Unknown League"
+            if league_name:
+                LEAGUE_CACHE[match_id] = league_name.strip()
+                
+            # Time
+            timestamp = item.get("t")
+            if timestamp:
+                TIME_CACHE[match_id] = int(timestamp)
+                
+            count += 1
+                    
+        print(f"[CACHE] Extracted {count} matches from {url}")
         
     except Exception as e:
-        print(f"[WARN] Failed to fetch mappings: {e}")
+        print(f"[WARN] Failed to scrape {url}: {e}")
+
+def run_periodic_cache_refresh():
+    """
+    Runs in a background thread to refresh mappings every 10 minutes.
+    """
+    print("[CACHE] Starting Background Cache Refresher...")
+    
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(
+             user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+             viewport={"width": 1280, "height": 720}
+        )
+        
+        while True:
+            try:
+                page = context.new_page()
+                
+                # 1. Scrape Live Scores (Critical for current matches)
+                scrape_mappings_from_url(page, "https://crex.com/live-cricket-scores")
+                
+                # 2. Scrape Fixtures (For upcoming)
+                scrape_mappings_from_url(page, "https://crex.com/fixtures/match-list")
+                
+                page.close()
+                print(f"[CACHE] Update Complete. Teams: {len(TEAM_CACHE)}, Leagues: {len(LEAGUE_CACHE)}")
+                
+            except Exception as e:
+                print(f"[CACHE] Refresh failed: {e}")
+                
+            # Sleep for 10 minutes
+            time.sleep(600)
+        
+        browser.close()
 
 # --- Database Setup ---
 def initialize_db():
@@ -196,7 +222,6 @@ def transform_match_data(match_id, raw):
     # Enrich Team Names
     team_a_id = raw.get("b")
     team_b_id = raw.get("c")
-    team_a_name = TEAM_CACHE.get(team_a_id, f"Team {team_a_id}")
     team_a_name = TEAM_CACHE.get(team_a_id, f"Team {team_a_id}")
     team_b_name = TEAM_CACHE.get(team_b_id, f"Team {team_b_id}")
     
@@ -305,6 +330,11 @@ def transform_match_data(match_id, raw):
     
     # Enrich Timestamp
     start_timestamp = raw.get("ti", 0)
+    
+    # Fix: Use Time Cache if available and timestamp is 0 or invalid
+    if (not start_timestamp or start_timestamp == 0) and match_id in TIME_CACHE:
+        start_timestamp = TIME_CACHE[match_id]
+        
     start_time_iso = ""
     try:
         if start_timestamp:
@@ -535,13 +565,12 @@ def run_scraper():
             }
         )
         
-        # Initial scraping of team names
-        try:
-             page_map = context.new_page()
-             fetch_team_mappings(page_map)
-             page_map.close()
-        except Exception as e:
-             print(f"Skipping map fetch: {e}")
+        
+        # Initial scraping is now handled by the background thread.
+        # Check if we need to wait a bit for the first cache population?
+        print("Waiting for initial cache population...")
+        time.sleep(10) 
+        
         
         try:
             while True:
@@ -585,4 +614,9 @@ if __name__ == "__main__":
     print("background web server started")
     
     # Run Main Scraper Loop
+    
+    # Start Cache Thread
+    cache_thread = threading.Thread(target=run_periodic_cache_refresh, daemon=True)
+    cache_thread.start()
+    
     run_scraper()
