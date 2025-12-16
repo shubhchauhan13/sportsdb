@@ -502,9 +502,9 @@ def process_and_upload(conn, data):
                 cur.execute("""
                     INSERT INTO cleanstate (
                         match_id, title, league, team_a, team_b, batting_team, 
-                        score, status, innings, odds, session, updated_at
+                        score, status, innings, odds, session, match_status, updated_at
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
                     ON CONFLICT (match_id)
                     DO UPDATE SET 
                         title = EXCLUDED.title,
@@ -517,6 +517,7 @@ def process_and_upload(conn, data):
                         innings = EXCLUDED.innings,
                         odds = EXCLUDED.odds,
                         session = EXCLUDED.session,
+                        match_status = EXCLUDED.match_status,
                         updated_at = NOW();
                 """, (
                     match_id, 
@@ -529,7 +530,8 @@ def process_and_upload(conn, data):
                     clean_data.get("event_state"),
                     clean_data.get("current_innings"),
                     Json(clean_data.get("match_odds")),
-                    Json(clean_data.get("session"))
+                    Json(clean_data.get("session")),
+                    clean_data.get("match_status")
                 ))
 
                 

@@ -15,6 +15,10 @@ HTML_TEMPLATE = """
     <meta http-equiv="refresh" content="5"> <!-- Auto refresh every 5s -->
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f0f2f5; padding: 20px; }
+        .nav { margin-bottom: 20px; display: flex; gap: 10px; }
+        .nav a { text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; background: white; color: #333; }
+        .nav a.active { background: #2563eb; color: white; }
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -33,37 +37,83 @@ HTML_TEMPLATE = """
         .score { font-size: 1.5rem; font-weight: 800; color: #1f2937; margin-bottom: 5px; }
         .subtext { font-size: 0.9rem; color: #6b7280; }
         .meta { margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; font-size: 0.85rem; color: #888; display: flex; justify-content: space-between;}
+        
+        /* Table Styles */
+        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8fafc; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #64748b; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #f8fafc; }
     </style>
 </head>
 <body>
-    <h1>Live Matches Database Preview</h1>
-    <div class="grid">
-        {% for match in matches %}
-        <div class="card">
-            <div class="header">
-                <span class="league">{{ match.league_name or match.format or 'Unknown League' }}</span>
-                <span class="status {{ match.event_state }}">{{ match.event_state }}</span>
-            </div>
-            
-            <div class="teams">
-                <div class="team {% if match.batting_team == match.team_a %}batting{% endif %}">
-                    {{ match.team_a_name }}
-                </div>
-                <div class="team {% if match.batting_team == match.team_b %}batting{% endif %}">
-                    {{ match.team_b_name }}
-                </div>
-            </div>
-            
-            <div class="score">{{ match.score or '--/--' }}</div>
-            <div class="subtext">{{ match.status_text }}</div>
-            
-            <div class="meta">
-                <span>{{ match.current_innings }}</span>
-                <span>{{ match.start_time_iso }}</span>
-            </div>
-        </div>
-        {% endfor %}
+    <div class="nav">
+        <a href="/" class="{{ 'active' if page == 'live' else '' }}">Live JSON View</a>
+        <a href="/clean" class="{{ 'active' if page == 'clean' else '' }}">Clean Data Table</a>
     </div>
+
+    {% if page == 'live' %}
+        <h1>Live Matches (JSON Blob)</h1>
+        <div class="grid">
+            {% for match in matches %}
+            <div class="card">
+                <div class="header">
+                    <span class="league">{{ match.league_name or match.format or 'Unknown League' }}</span>
+                    <span class="status {{ match.event_state }}">{{ match.event_state }}</span>
+                </div>
+                
+                <div class="teams">
+                    <div class="team {% if match.batting_team == match.team_a %}batting{% endif %}">
+                        {{ match.team_a_name }}
+                    </div>
+                    <div class="team {% if match.batting_team == match.team_b %}batting{% endif %}">
+                        {{ match.team_b_name }}
+                    </div>
+                </div>
+                
+                <div class="score">{{ match.score or '--/--' }}</div>
+                <div class="subtext">{{ match.status_text }}</div>
+                
+                <div class="meta">
+                    <span>{{ match.current_innings }}</span>
+                    <span>{{ match.start_time_iso }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h1>Clean State Table</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Match ID</th>
+                    <th>Status</th>
+                    <th>Match Status</th>
+                    <th>League</th>
+                    <th>Home Team</th>
+                    <th>Away Team</th>
+                    <th>Score</th>
+                    <th>Innings</th>
+                    <th>Updated At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for match in matches %}
+                <tr>
+                    <td>{{ match.match_id }}</td>
+                    <td><span class="status {{ match.status }}">{{ match.status }}</span></td>
+                    <td>{{ match.match_status or '-' }}</td>
+                    <td>{{ match.league }}</td>
+                    <td>{{ match.team_a }}</td>
+                    <td>{{ match.team_b }}</td>
+                    <td>{{ match.score }}</td>
+                    <td>{{ match.innings }}</td>
+                    <td>{{ match.updated_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 </body>
 </html>
 """
@@ -77,14 +127,40 @@ def get_matches():
         rows = cur.fetchall()
         conn.close()
         return [r[0] for r in rows]
+        return [r[0] for r in rows]
     except Exception as e:
         print(f"Error: {e}")
+        return []
+
+def get_clean_matches():
+    try:
+        conn = psycopg2.connect(DB_CONNECTION_STRING)
+        cur = conn.cursor()
+        # Fetch directly from cleanstate table
+        cur.execute("SELECT * FROM cleanstate ORDER BY updated_at DESC;")
+        # Need to know column names to map to dict
+        columns = [desc[0] for desc in cur.description]
+        rows = cur.fetchall()
+        
+        results = []
+        for row in rows:
+            results.append(dict(zip(columns, row)))
+            
+        conn.close()
+        return results
+    except Exception as e:
+        print(f"Error fetching cleanstate: {e}")
         return []
 
 @app.route('/')
 def index():
     matches = get_matches()
-    return render_template_string(HTML_TEMPLATE, matches=matches)
+    return render_template_string(HTML_TEMPLATE, matches=matches, page="live")
+
+@app.route('/clean')
+def clean():
+    matches = get_clean_matches()
+    return render_template_string(HTML_TEMPLATE, matches=matches, page="clean")
 
 if __name__ == "__main__":
     print("Starting Preview Server on http://localhost:5000")
