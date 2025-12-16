@@ -7,3 +7,131 @@
  * Running on http://127.0.0.1:8080
  * Running on http://192.168.68.108:8080
 [33mPress CTRL+C to quit[0m
+[SUCCESS] Connected to NeonDB and verified schemas.
+[SUPERVISOR] Scraper Running...
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[CLEANUP] Found 3 finished matches in live_football. Finalizing...
+[FINALIZED] Match 15147554: Ended
+[FINALIZED] Match 14495144: Ended
+[FINALIZED] Match 15229385: Ended
+[SYNC] Upserted 10 matches to live_tennis.
+[CLEANUP] Found 2 finished matches in live_tennis. Finalizing...
+[FINALIZED] Match 15222931: Interrupted
+[FINALIZED] Match 15225711: Ended
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895303675: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895304685: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895305690: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895308699: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895309702: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895310708: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895313715: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895314722: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895315728: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895318737: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895319739: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895320745: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895323756: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895324764: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895325768: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895328778: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895329785: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895330794: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895333805: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895334810: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895335819: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895338829: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895339834: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895340839: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895343846: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895344852: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895345860: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895348875: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895349881: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895350890: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895353896: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895354905: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895355910: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895358922: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895359938: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895360939: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895363952: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895364959: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895365966: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895368977: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895369981: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895370986: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895373996: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895375001: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895376008: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895379014: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895380023: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895381028: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895384034: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895385039: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895386046: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895389050: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895390058: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895391064: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895394080: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895395086: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895396090: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895399098: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895400106: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895401111: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895404123: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895405135: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895406140: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895409146: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895410158: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895411169: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895414186: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895415210: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895416214: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895419232: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895420243: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895421251: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895424262: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895425271: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895426279: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895429290: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895430296: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895431302: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895434322: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895435329: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895436342: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895439365: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895440390: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895441400: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895444407: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895445412: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895446418: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895449427: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895450435: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895451443: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895454447: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895455453: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895456461: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895459471: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895460479: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895461487: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895464504: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895465512: Page.goto: Target page, context or browser has been closed
