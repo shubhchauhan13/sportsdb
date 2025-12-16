@@ -86,8 +86,8 @@ def fetch_sofascore_live(page, sport_slug="cricket"):
     Fetches live events for a specific sport from SofaScore API via direct navigation.
     We iterate through a few known API endpoints to ensure coverage.
     """
-    # Cache-busting: Add timestamp to force fresh data
-    ts = int(time.time())
+    # Cache-busting: Add timestamp (ms) to force fresh data
+    ts = int(time.time() * 1000)
     
     # Try the clean API first which lists all live events for the sport
     urls = [
@@ -172,18 +172,123 @@ def format_tennis_score(score_data, periods=None):
     # So we'll handle detailed string construction in the caller.
     return sets
 
+
+def fetch_event_details(page, event_id):
+    """
+    Fetches detailed event data for finalization.
+    """
+    url = f"https://www.sofascore.com/api/v1/event/{event_id}"
+    try:
+        response = page.goto(url, timeout=15000)
+        if response.status == 200:
+            text = page.inner_text("body")
+            data = json.loads(text)
+            return data.get('event', {})
+    except Exception as e:
+        print(f"[WARN] Failed to fetch details for {event_id}: {e}")
+    return None
+
+def finalize_missing_matches(conn, page, table_name, active_ids):
+    """
+    Detects matches that are 'is_live=TRUE' in DB but missing from active_ids.
+    Fetches their final status and updates DB.
+    """
+    try:
+        cur = conn.cursor()
+        cur.execute(f"SELECT match_id FROM {table_name} WHERE is_live = TRUE")
+        db_live_ids = {row[0] for row in cur.fetchall()}
+        
+        missing = db_live_ids - set(active_ids)
+        
+        if not missing:
+            return
+
+        print(f"[CLEANUP] Found {len(missing)} finished matches in {table_name}. Finalizing...")
+        
+        sport = table_name.replace('live_', '')
+        
+        for m_id in missing:
+            event = fetch_event_details(page, m_id)
+            if not event:
+                continue
+                
+            # Process Final Data
+            status_desc = event.get('status', {}).get('description', 'Ended')
+            status_type = event.get('status', {}).get('type', 'finished')
+            note = event.get('note') # "Winner won by X"
+            
+            # Use Note as Status if available for finished games
+            final_status = status_desc
+            if status_type == 'finished' and note:
+                final_status = note
+            
+            # Formatted Score
+            h_fmt = "0"
+            a_fmt = "0"
+            
+            if sport == 'cricket':
+                h_fmt = format_cricket_score(event.get('homeScore', {}))
+                a_fmt = format_cricket_score(event.get('awayScore', {}))
+            elif sport == 'football':
+                h_fmt = format_football_score(event.get('homeScore', {}))
+                a_fmt = format_football_score(event.get('awayScore', {}))
+            elif sport == 'tennis':
+                h_sets = event.get('homeScore', {}).get('display', 0)
+                a_sets = event.get('awayScore', {}).get('display', 0)
+                h_fmt = str(h_sets)
+                a_fmt = str(a_sets)
+
+            # Score String
+            if h_fmt == "0" and a_fmt == "0":
+                score_str = "vs" 
+            elif h_fmt and a_fmt:
+                score_str = f"{h_fmt} - {a_fmt}"
+                if sport == 'cricket':
+                    score_str = f"{h_fmt} vs {a_fmt}"
+            else:
+                score_str = f"{h_fmt} {a_fmt}".strip()
+
+            # Final Upsert (Mark is_live=FALSE)
+            # Batting team is None for finished games
+            cur.execute(f"""
+                UPDATE {table_name} SET
+                    match_data = %s,
+                    status = %s,
+                    score = %s,
+                    home_score = %s,
+                    away_score = %s,
+                    is_live = FALSE,
+                    batting_team = NULL,
+                    last_updated = NOW()
+                WHERE match_id = %s;
+            """, (Json(event), final_status, score_str, h_fmt, a_fmt, m_id))
+            
+            print(f"[FINALIZED] Match {m_id}: {final_status}")
+            
+        conn.commit()
+    except Exception as e:
+        print(f"[ERROR] Finalizing matches: {e}")
+        conn.rollback()
+
 def upsert_matches(conn, table_name, matches):
+    ids = []
     if not matches:
-        return
+        return ids
         
     try:
         cur = conn.cursor()
         count = 0
-        ids = []
         
         sport = table_name.replace('live_', '')
         
         for m in matches:
+            match_id = str(m.get('id'))
+            ids.append(match_id)
+            
+            home_team = m.get('homeTeam', {}).get('name', 'Unknown')
+            # ... (Rest of logic is same, just indented. I will paste truncated version and trust context)
+            # Actually I need to be careful with replace_file_content limit. 
+            # I will just replace the beginning and return statements.
             match_id = str(m.get('id'))
             ids.append(match_id)
             
@@ -287,13 +392,15 @@ def upsert_matches(conn, table_name, matches):
             count += 1
 
             
+
         conn.commit()
         if count > 0:
             print(f"[SYNC] Upserted {count} matches to {table_name}.")
     except Exception as e:
         print(f"[DB ERROR] {e}")
         conn.rollback()
-
+    
+    return ids
 
 def run_scraper():
     conn = initialize_db()
@@ -328,10 +435,16 @@ def run_scraper():
                                 continue
                         
                         matches = fetch_sofascore_live(page, sport_slug)
+                        active_ids = []
                         if conn:
-                            upsert_matches(conn, table_name, matches)
+                            active_ids = upsert_matches(conn, table_name, matches)
                         else:
                             print(f"[{sport_slug}] DB connection not available. Skipping upsert for {sport_slug}.")
+                        
+                        # Cleanup / Finalize Finished Matches
+                        if conn and active_ids is not None:
+                            finalize_missing_matches(conn, page, table_name, active_ids)
+                            
                         time.sleep(2) # Short pause between sports
                     except Exception as e:
                         print(f"[{sport_slug}] Error: {e}")
