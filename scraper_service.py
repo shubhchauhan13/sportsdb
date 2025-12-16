@@ -27,7 +27,7 @@ DB_CONNECTION_STRING = os.environ.get(
 # --- Database Setup ---
 def initialize_db():
     try:
-        conn = psycopg2.connect(DB_CONNECTION_STRING)
+        conn = psycopg2.connect(DB_CONNECTION_STRING, connect_timeout=10)
         cur = conn.cursor()
         
         # Create Tables for Each Sport
