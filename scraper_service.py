@@ -402,63 +402,81 @@ def upsert_matches(conn, table_name, matches):
     
     return ids
 
+
 def run_scraper():
-    conn = initialize_db()
-    
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context(
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        )
-        page = context.new_page()
-        
-        print("Starting SofaScore Polling for Cricket, Football, Tennis...")
+    """
+    Supervisor Loop: Restarts the scraper if it crashes.
+    """
+    while True:
+        print("\n[SUPERVISOR] Starting Scraper Instance...")
+        conn = None
+        browser = None
         
         try:
-            while True:
-                start_time = time.time()
+            conn = initialize_db()
+            if not conn:
+                print("[SUPERVISOR] DB Init Failed. Retrying in 10s...")
+                time.sleep(10)
+                continue
+
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                context = browser.new_context(
+                    user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                )
+                page = context.new_page()
                 
-                # Cycle through sports
-                sports_config = [
-                    ('cricket', 'live_cricket'),
-                    ('football', 'live_football'),
-                    ('tennis', 'live_tennis')
-                ]
+                print("[SUPERVISOR] Scraper Running...")
                 
-                for sport_slug, table_name in sports_config:
-                    try:
-                        if conn and conn.closed:
-                            print(f"[{sport_slug}] Reconnecting to DB...")
-                            conn = initialize_db()
-                            if not conn:
-                                print(f"[{sport_slug}] Failed to reconnect to DB. Skipping {sport_slug}.")
-                                continue
-                        
-                        matches = fetch_sofascore_live(page, sport_slug)
-                        active_ids = []
-                        if conn:
-                            active_ids = upsert_matches(conn, table_name, matches)
-                        else:
-                            print(f"[{sport_slug}] DB connection not available. Skipping upsert for {sport_slug}.")
-                        
-                        # Cleanup / Finalize Finished Matches
-                        if conn and active_ids is not None:
-                            finalize_missing_matches(conn, page, table_name, active_ids)
+                while True:
+                    start_time = time.time()
+                    
+                    # Cycle through sports
+                    sports_config = [
+                        ('cricket', 'live_cricket'),
+                        ('football', 'live_football'),
+                        ('tennis', 'live_tennis')
+                    ]
+                    
+                    for sport_slug, table_name in sports_config:
+                        try:
+                            # DB Health Check
+                            if conn.closed:
+                                print(f"[{sport_slug}] DB Closed. Casting Error to restart supervisor.")
+                                raise Exception("DB Connection Closed")
                             
-                        time.sleep(2) # Short pause between sports
-                    except Exception as e:
-                        print(f"[{sport_slug}] Error: {e}")
-                
-                elapsed = time.time() - start_time
-                sleep_time = max(2.0, 5.0 - elapsed)
-                time.sleep(sleep_time) # Wait before next cycle, ensuring at least 5s total per cycle
-                
-        except KeyboardInterrupt:
-            print("Stopping Scraper...")
+                            matches = fetch_sofascore_live(page, sport_slug)
+                            active_ids = []
+                            if matches:
+                                active_ids = upsert_matches(conn, table_name, matches)
+                            
+                            # Cleanup / Finalize Finished Matches
+                            if active_ids:
+                                finalize_missing_matches(conn, page, table_name, active_ids)
+                                
+                            time.sleep(1) # Short pause between sports
+                        except Exception as e:
+                            print(f"[{sport_slug}] Partial Error: {e}")
+                            # If critical DB error, re-raise to supervisor
+                            if "closed" in str(e).lower() or "connection" in str(e).lower():
+                                raise e
+                    
+                    elapsed = time.time() - start_time
+                    sleep_time = max(2.0, 5.0 - elapsed)
+                    time.sleep(sleep_time)
+
+        except Exception as e:
+            print(f"[SUPERVISOR] CRASH DETECTED: {e}")
+            print("[SUPERVISOR] Restarting in 10 seconds...")
+            time.sleep(10)
         finally:
-            browser.close()
-            if conn:
-                conn.close()
+            print("[SUPERVISOR] Cleaning up resources...")
+            try:
+                if browser: browser.close()
+            except: pass
+            try:
+                if conn: conn.close()
+            except: pass
 
 if __name__ == "__main__":
     # Start Web Server in Background Thread
