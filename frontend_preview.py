@@ -1,6 +1,7 @@
+
 import os
 import psycopg2
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, redirect, url_for
 
 # DB Connection
 DB_CONNECTION_STRING = "postgresql://neondb_owner:npg_UoHEdMg7eAl5@ep-crimson-snow-a13t7sij-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
@@ -11,175 +12,150 @@ HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SportsDB Preview</title>
+    <title>SportsDB Live Preview</title>
     <meta http-equiv="refresh" content="5"> <!-- Auto refresh every 5s -->
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f0f2f5; padding: 20px; }
-        .nav { margin-bottom: 20px; display: flex; gap: 10px; }
-        .nav a { text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; background: white; color: #333; }
-        .nav a.active { background: #2563eb; color: white; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f0f2f5; padding: 20px; color: #1e293b; }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .league { font-size: 0.8rem; color: #666; font-weight: 600; text-transform: uppercase; }
-        .status { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
-        .status.Live { background: #ffe4e6; color: #e11d48; }
-        .status.Upcoming { background: #dbeafe; color: #2563eb; }
-        .status.Finished { background: #e5e7eb; color: #374151; }
-        .status.Break { background: #fef3c7; color: #d97706; }
+        .nav { margin-bottom: 25px; display: flex; gap: 15px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .nav a { text-decoration: none; padding: 10px 25px; border-radius: 8px; font-weight: 600; color: #64748b; transition: all 0.2s; }
+        .nav a:hover { background: #f1f5f9; color: #334155; }
+        .nav a.active { background: #2563eb; color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
         
-        .teams { margin-bottom: 15px; }
-        .team { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 1.1rem; }
-        .team.batting { font-weight: 700; }
-        .team.batting::after { content: " 🏏"; }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; color: #0f172a; display: flex; align-items: center; gap: 10px; }
+        .badge { font-size: 0.75rem; background: #e2e8f0; color: #475569; padding: 4px 8px; border-radius: 99px; }
         
-        .score { font-size: 1.5rem; font-weight: 800; color: #1f2937; margin-bottom: 5px; }
-        .subtext { font-size: 0.9rem; color: #6b7280; }
-        .meta { margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; font-size: 0.85rem; color: #888; display: flex; justify-content: space-between;}
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
         
-        /* Table Styles */
-        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8fafc; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #64748b; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover { background: #f8fafc; }
+        .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        
+        .header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
+        .status { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status.live { background: #ffe4e6; color: #e11d48; } /* Red */
+        .status.finished { background: #f1f5f9; color: #64748b; } /* Gray */
+        .status.upcoming { background: #eff6ff; color: #2563eb; } /* Blue */
+        
+        .match-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .team-name { font-weight: 600; font-size: 1.1rem; color: #0f172a; }
+        .team-score { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.25rem; color: #0f172a; }
+        
+        .batting-team { color: #2563eb; } /* Highlight batting team name */
+        
+        .footer { margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f5f9; font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between; }
+        
+        .empty { grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b; background: white; border-radius: 12px; }
     </style>
 </head>
 <body>
     <div class="nav">
-        <a href="/" class="{{ 'active' if page == 'live' else '' }}">Live JSON View</a>
-        <a href="/clean" class="{{ 'active' if page == 'clean' else '' }}">Clean Data Table</a>
+        <a href="/cricket" class="{{ 'active' if sport == 'cricket' else '' }}">🏏 Cricket</a>
+        <a href="/football" class="{{ 'active' if sport == 'football' else '' }}">⚽ Football</a>
+        <a href="/tennis" class="{{ 'active' if sport == 'tennis' else '' }}">🎾 Tennis</a>
     </div>
 
-    {% if page == 'live' %}
-        <h1>Live Matches (JSON Blob)</h1>
-        <div class="grid">
-            {% for match in matches %}
-            <div class="card">
-                <div class="header">
-                    <span class="league">{{ match.league_name or match.format or 'Unknown League' }}</span>
-                    <span class="status {{ match.event_state }}">{{ match.event_state }}</span>
-                </div>
-                
-                <div class="teams">
-                    <div class="team {% if match.batting_team == match.team_a %}batting{% endif %}">
-                        {{ match.team_a_name }}
-                    </div>
-                    <div class="team {% if match.batting_team == match.team_b %}batting{% endif %}">
-                        {{ match.team_b_name }}
-                    </div>
-                </div>
-                
-                <div class="score">{{ match.score or '--/--' }}</div>
-                <div class="subtext">{{ match.status_text }}</div>
-                
-                <div class="meta">
-                    <span>{{ match.current_innings }}</span>
-                    <span>{{ match.start_time_iso }}</span>
-                </div>
+    <h1>
+        {{ sport.capitalize() }} Live Feed 
+        <span class="badge">{{ matches|length }} Matches</span>
+    </h1>
+
+    <div class="grid">
+        {% for m in matches %}
+        <div class="card">
+            <div class="header">
+                <span class="id">#{{ m.match_id }}</span>
+                {% if m.is_live %}
+                    <span class="status live">● LIVE</span>
+                {% elif 'ended' in m.status|lower or 'finished' in m.status|lower %}
+                    <span class="status finished">Finished</span>
+                {% else %}
+                    <span class="status upcoming">{{ m.status }}</span>
+                {% endif %}
             </div>
-            {% endfor %}
+            
+            <!-- Home Team -->
+            <div class="match-row">
+                <span class="team-name {% if m.batting_team == m.home_team %}batting-team{% endif %}">
+                    {{ m.home_team }}
+                </span>
+                <span class="team-score">{{ m.home_score if m.home_score != '0' else '-' }}</span>
+            </div>
+            
+            <!-- Away Team -->
+            <div class="match-row">
+                <span class="team-name {% if m.batting_team == m.away_team %}batting-team{% endif %}">
+                    {{ m.away_team }}
+                </span>
+                <span class="team-score">{{ m.away_score if m.away_score != '0' else '-' }}</span>
+            </div>
+            
+            <div class="footer">
+                <span>{{ m.status }}</span> <!-- Description like "2nd Innings" or "Won by X" -->
+                <span>Updated: {{ m.last_updated.strftime('%H:%M:%S') }} UTC</span>
+            </div>
         </div>
-    {% else %}
-        <h1>Clean State Table</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Match ID</th>
-                    <th>Status</th>
-                    <th>Match Status</th>
-                    <th>League</th>
-                    <th>Home Team</th>
-                    <th>Away Team</th>
-                    <th>Score</th>
-                    <th>Innings</th>
-                    <th>Updated At</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for match in matches %}
-                <tr>
-                    <td>{{ match.match_id }}</td>
-                    <td><span class="status {{ match.status }}">{{ match.status }}</span></td>
-                    <td>{{ match.match_status or '-' }}</td>
-                    <td>{{ match.league }}</td>
-                    <td>{{ match.team_a }}</td>
-                    <td>{{ match.team_b }}</td>
-                    <td>{{ match.score }}</td>
-                    <td>{{ match.innings }}</td>
-                    <td>{{ match.updated_at }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+        {% else %}
+        <div class="empty">No matches found for {{ sport }}. Scraper might be paused or no live games.</div>
+        {% endfor %}
+    </div>
 </body>
 </html>
 """
 
-def get_matches():
-    try:
-
-        conn = psycopg2.connect(DB_CONNECTION_STRING)
-        cur = conn.cursor()
-        
-        # Fetch from new live_cricket table
-        cur.execute("SELECT match_id, score, status, home_team, away_team, last_updated FROM live_cricket ORDER BY last_updated DESC")
-        matches = cur.fetchall()
-        conn.close()
-
-        
-        # Convert to list of dicts
-        matches_list = []
-        for m in matches:
-            matches_list.append({
-                "match_id": m[0],
-                "score": m[1],
-                "status": m[2],
-                "team_a": m[3],
-                "team_b": m[4],
-                "updated_at": m[5]
-            })
-        return matches_list
-    except Exception as e:
-        print(f"Error fetching matches: {e}")
-        return []
-
-def get_clean_matches():
+def get_matches(sport):
+    table_map = {
+        'cricket': 'live_cricket',
+        'football': 'live_football',
+        'tennis': 'live_tennis'
+    }
+    table = table_map.get(sport, 'live_cricket')
+    
     try:
         conn = psycopg2.connect(DB_CONNECTION_STRING)
         cur = conn.cursor()
-        # Fetch directly from cleanstate table
-        cur.execute("SELECT * FROM cleanstate ORDER BY updated_at DESC;")
-        # Need to know column names to map to dict
-        columns = [desc[0] for desc in cur.description]
+        
+        # Select key columns
+        # Note: 'batting_team' is Cricket only, but exists as NULL in others.
+        query = f"""
+            SELECT match_id, home_team, away_team, home_score, away_score, 
+                   status, is_live, batting_team, last_updated 
+            FROM {table} 
+            ORDER BY is_live DESC, last_updated DESC
+        """
+        cur.execute(query)
         rows = cur.fetchall()
         
         results = []
-        for row in rows:
-            results.append(dict(zip(columns, row)))
+        for r in rows:
+            results.append({
+                'match_id': r[0],
+                'home_team': r[1],
+                'away_team': r[2],
+                'home_score': r[3],
+                'away_score': r[4],
+                'status': r[5],
+                'is_live': r[6],
+                'batting_team': r[7],
+                'last_updated': r[8]
+            })
             
         conn.close()
         return results
     except Exception as e:
-        print(f"Error fetching cleanstate: {e}")
+        print(f"Error: {e}")
         return []
 
 @app.route('/')
 def index():
-    matches = get_matches()
-    return render_template_string(HTML_TEMPLATE, matches=matches, page='live')
+    return redirect(url_for('show_sport', sport='cricket'))
 
-@app.route('/clean')
-def clean():
-    matches = get_clean_matches()
-    return render_template_string(HTML_TEMPLATE, matches=matches, page="clean")
-
-@app.route('/health')
-def health():
-    return "OK", 200
+@app.route('/<sport>')
+def show_sport(sport):
+    if sport not in ['cricket', 'football', 'tennis']:
+        return redirect(url_for('index'))
+    
+    matches = get_matches(sport)
+    return render_template_string(HTML_TEMPLATE, sport=sport, matches=matches)
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5001)) # Use 5001 to avoid conflict with scraper
     app.run(host='0.0.0.0', port=port, debug=True)

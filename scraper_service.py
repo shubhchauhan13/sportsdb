@@ -403,6 +403,9 @@ def upsert_matches(conn, table_name, matches):
     return ids
 
 
+
+import traceback
+
 def run_scraper():
     """
     Supervisor Loop: Restarts the scraper if it crashes.
@@ -428,6 +431,8 @@ def run_scraper():
                 
                 print("[SUPERVISOR] Scraper Running...")
                 
+                cycle_count = 0
+                
                 while True:
                     start_time = time.time()
                     
@@ -442,7 +447,6 @@ def run_scraper():
                         try:
                             # DB Health Check
                             if conn.closed:
-                                print(f"[{sport_slug}] DB Closed. Casting Error to restart supervisor.")
                                 raise Exception("DB Connection Closed")
                             
                             matches = fetch_sofascore_live(page, sport_slug)
@@ -454,19 +458,32 @@ def run_scraper():
                             if active_ids:
                                 finalize_missing_matches(conn, page, table_name, active_ids)
                                 
-                            time.sleep(1) # Short pause between sports
+                            time.sleep(1) 
                         except Exception as e:
                             print(f"[{sport_slug}] Partial Error: {e}")
-                            # If critical DB error, re-raise to supervisor
                             if "closed" in str(e).lower() or "connection" in str(e).lower():
                                 raise e
                     
                     elapsed = time.time() - start_time
                     sleep_time = max(2.0, 5.0 - elapsed)
                     time.sleep(sleep_time)
+                    
+                    # Memory Leak Protection: Restart every 50 cycles (~5-8 mins)
+                    cycle_count += 1
+                    if cycle_count >= 50:
+                        print("[SUPERVISOR] Scheduled Restart for Memory Cleanup...")
+                        break # Breaks inner loop -> context closes -> supervisor restarts
 
         except Exception as e:
+            err_msg = f"{str(e)}\n{traceback.format_exc()}"
             print(f"[SUPERVISOR] CRASH DETECTED: {e}")
+            
+            # Log to file
+            try:
+                with open("scraper_crash.log", "a") as f:
+                    f.write(f"\n[{time.ctime()}] CRASH: {err_msg}\n")
+            except: pass
+            
             print("[SUPERVISOR] Restarting in 10 seconds...")
             time.sleep(10)
         finally:
