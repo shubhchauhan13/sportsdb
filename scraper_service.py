@@ -259,6 +259,7 @@ def upsert_matches(conn, table_name, matches):
             if status_type == 'finished' or 'ended' in status.lower():
                 is_live = False
             
+
             # 1. Upsert to Sport Specific Table
             cur.execute(f"""
                     INSERT INTO {table_name} (
@@ -279,30 +280,8 @@ def upsert_matches(conn, table_name, matches):
                         last_updated = NOW();
                 """, (match_id, Json(m), home_team, away_team, status, score_str, batting_team, is_live, h_fmt, a_fmt))
                 
-            # 2. Sync to live_matches (ONLY CRICKET for Backward Compat)
-            if sport == 'cricket':
-                cur.execute("""
-                    INSERT INTO live_matches (
-                        match_id, match_data, team_a, team_b, score, status, 
-                        match_status, batting_team, is_live, team_a_score, team_b_score, last_updated, updated_at
-                    )
-                    VALUES (%s, %s, %s, %s, %s, %s, 'Live', %s, %s, %s, %s, NOW(), NOW())
-                    ON CONFLICT (match_id) DO UPDATE SET
-                        match_data = EXCLUDED.match_data,
-                        team_a = EXCLUDED.team_a,
-                        team_b = EXCLUDED.team_b,
-                        score = EXCLUDED.score,
-                        status = EXCLUDED.status,
-                        match_status = 'Live',
-                        batting_team = EXCLUDED.batting_team,
-                        is_live = EXCLUDED.is_live,
-                        team_a_score = EXCLUDED.team_a_score,
-                        team_b_score = EXCLUDED.team_b_score,
-                        last_updated = NOW(),
-                        updated_at = NOW();
-                """, (match_id, Json(m), home_team, away_team, score_str, status, batting_team, is_live, h_fmt, a_fmt))
-
             count += 1
+
             
         conn.commit()
         if count > 0:

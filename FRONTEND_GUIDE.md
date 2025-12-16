@@ -28,9 +28,6 @@ We use **separate tables** for each sport to ensure performance and scalability.
 | ⚽ **Football** | `live_football` | **Active** |
 | 🎾 **Tennis** | `live_tennis` | **Active** |
 
-### Legacy Support
-*   `live_matches`: Still populated for Cricket ONLY to support older app versions. New implementations should use the sport-specific tables above.
-
 ---
 
 ## 3. Table Schema
