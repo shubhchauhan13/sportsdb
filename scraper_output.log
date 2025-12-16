@@ -135,3 +135,111 @@
 [ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895461487: Page.goto: Target page, context or browser has been closed
 [ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895464504: Page.goto: Target page, context or browser has been closed
 [ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895465512: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895466518: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895469533: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895470540: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895471545: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895474555: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895475561: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895476568: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895479576: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895480585: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895481592: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895484605: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895485608: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895486615: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895489623: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895490633: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895491661: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895494672: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895495679: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895496685: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895499698: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895500717: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895501721: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895504734: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895505748: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895506753: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895509763: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895510774: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895511781: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/cricket/events/live?_=1765895514792: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/football/events/live?_=1765895515811: Page.goto: Target page, context or browser has been closed
+[ERROR] Fetching https://www.sofascore.com/api/v1/sport/tennis/events/live?_=1765895516821: Page.goto: Target page, context or browser has been closed
+[SUPERVISOR] Scheduled Restart for Memory Cleanup...
+[SUPERVISOR] Cleaning up resources...
+
+[SUPERVISOR] Starting Scraper Instance...
+[SUCCESS] Connected to NeonDB and verified schemas.
+[SUPERVISOR] Scraper Running...
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[CLEANUP] Found 2 finished matches in live_football. Finalizing...
+[FINALIZED] Match 15227062: Ended
+[FINALIZED] Match 14495148: Ended
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 42 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 41 matches to live_football.
+[CLEANUP] Found 1 finished matches in live_football. Finalizing...
+[FINALIZED] Match 14495150: Ended
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 41 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 41 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 41 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 41 matches to live_football.
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 40 matches to live_football.
+[CLEANUP] Found 1 finished matches in live_football. Finalizing...
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 40 matches to live_football.
+[CLEANUP] Found 1 finished matches in live_football. Finalizing...
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 40 matches to live_football.
+[CLEANUP] Found 1 finished matches in live_football. Finalizing...
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 40 matches to live_football.
+[CLEANUP] Found 1 finished matches in live_football. Finalizing...
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
+[SYNC] Upserted 40 matches to live_football.
+[CLEANUP] Found 1 finished matches in live_football. Finalizing...
+[SYNC] Upserted 10 matches to live_tennis.
+[SYNC] Upserted 1 matches to live_cricket.
