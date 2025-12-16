@@ -13,11 +13,12 @@ def check():
         
 
 
-        print("\n[INFO] Live Tennis Sample (Verification):")
-        cur.execute("SELECT match_id, status, score, home_team, away_team FROM live_tennis LIMIT 5;")
+
+        print("\n[INFO] Live Cricket Sample (Data Freshness):")
+        cur.execute("SELECT match_id, score, last_updated AT TIME ZONE 'UTC' FROM live_cricket LIMIT 5;")
         rows = cur.fetchall()
         for row in rows:
-            print(f"ID: {row[0]} | Status: {row[1]} | Score: {row[2]} | {row[3]} vs {row[4]}")
+            print(f"ID: {row[0]} | Score: {row[1]} | Updated: {row[2]}")
         
         conn.close()
 

@@ -80,14 +80,18 @@ def initialize_db():
         return None
 
 # --- SofaScore Scraper ---
+
 def fetch_sofascore_live(page, sport_slug="cricket"):
     """
     Fetches live events for a specific sport from SofaScore API via direct navigation.
     We iterate through a few known API endpoints to ensure coverage.
     """
+    # Cache-busting: Add timestamp to force fresh data
+    ts = int(time.time())
+    
     # Try the clean API first which lists all live events for the sport
     urls = [
-        f"https://www.sofascore.com/api/v1/sport/{sport_slug}/events/live",
+        f"https://www.sofascore.com/api/v1/sport/{sport_slug}/events/live?_={ts}",
     ]
     
     events = []
@@ -305,6 +309,8 @@ def run_scraper():
         
         try:
             while True:
+                start_time = time.time()
+                
                 # Cycle through sports
                 sports_config = [
                     ('cricket', 'live_cricket'),
