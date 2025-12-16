@@ -7,30 +7,20 @@ DB_CONNECTION_STRING = "postgresql://neondb_owner:npg_UoHEdMg7eAl5@ep-crimson-sn
 def check():
     try:
         print("Connecting to NeonDB...")
+
         conn = psycopg2.connect(DB_CONNECTION_STRING)
         cur = conn.cursor()
         
-        # Check Table Exists
-        cur.execute("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'live_matches');")
-        exists = cur.fetchone()[0]
-        if not exists:
-            print("[ERROR] Table 'live_matches' does not exist!")
-            return
 
-        # Check Row Count
-        cur.execute("SELECT count(*) FROM live_matches;")
-        count = cur.fetchone()[0]
-        print(f"[INFO] Total Rows in 'live_matches': {count}")
-        
-        if count > 0:
-            # Show a sample
-            cur.execute("SELECT match_id, last_updated, match_data->>'title' FROM live_matches LIMIT 5;")
-            rows = cur.fetchall()
-            print("\nSample Data:")
-            for r in rows:
-                print(f"- {r[0]} | {r[1]} | {r[2]}")
+
+        print("\n[INFO] Live Tennis Sample (Verification):")
+        cur.execute("SELECT match_id, status, score, home_team, away_team FROM live_tennis LIMIT 5;")
+        rows = cur.fetchall()
+        for row in rows:
+            print(f"ID: {row[0]} | Status: {row[1]} | Score: {row[2]} | {row[3]} vs {row[4]}")
         
         conn.close()
+
     except Exception as e:
         print(f"[ERROR] Verification failed: {e}")
 

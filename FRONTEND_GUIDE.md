@@ -1,51 +1,119 @@
-# Frontend Developer Guide
 
-This guide explains how to display the live cricket data from your NeonDB database.
+# 📚 Sports Data Frontend Guide
 
-## 1. Database Connection
-You need to query the **PostgreSQL** database (NeonDB).
-*   **Table Name:** `live_matches`
-*   **Column:** `match_data` (Type: JSONB)
 
-## 2. SQL Query
-To get all matches, sorted by "Live" status first:
+# 📚 Sports Data Frontend Guide
+
+**Version**: 2.1
+**Last Updated**: Dec 16, 2025
+
+This guide details how to consume live sports data directly from the **PostgreSQL Database**.
+
+---
+
+## 1. System Overview
+
+*   **Source**: Internal Database (Live Sync)
+*   **Update Frequency**: Real-time (~5s latency).
+*   **Data Flow**:
+    `Real-time Engine` -> `PostgreSQL (NeonDB)` -> `Frontend`
+
+## 2. Database Tables
+
+We use **separate tables** for each sport to ensure performance and scalability.
+
+| Sport | Table Name | Status |
+| :--- | :--- | :--- |
+| 🏏 **Cricket** | `live_cricket` | **Active** |
+| ⚽ **Football** | `live_football` | **Active** |
+| 🎾 **Tennis** | `live_tennis` | **Active** |
+
+### Legacy Support
+*   `live_matches`: Still populated for Cricket ONLY to support older app versions. New implementations should use the sport-specific tables above.
+
+---
+
+## 3. Table Schema
+
+All three tables (`live_cricket`, `live_football`, `live_tennis`) share this standard schema:
+
+| Column | Type | Description | Frontend Usage |
+| :--- | :--- | :--- | :--- |
+| `match_id` | `TEXT` | Unique Match ID. | Primary Key for routing/details. |
+| `home_team` | `TEXT` | Name of Team A. | Display Name. |
+| `away_team` | `TEXT` | Name of Team B. | Display Name. |
+| `home_score` | `TEXT` | Score of Team A. | **Primary Score Display**. (Runs/Goals/Sets) |
+| `away_score` | `TEXT` | Score of Team B. | **Primary Score Display**. |
+| `score` | `TEXT` | Formatted Score String. | Quick display (e.g. "2 - 1" or "150/3 vs ...") |
+| `status` | `TEXT` | Match Status. | **Critical**. Shows "Live", "2nd Inning", "Halftime", etc. |
+| `is_live` | `BOOL` | Is match active? | Use for specific "LIVE" badges/filtering. |
+| `batting_team`| `TEXT` | Name of Batting Team. | **Cricket Only**. Highlight this team. |
+| `match_data` | `JSONB`| Full Raw Event Data. | Use for deep details (odds, players, events). |
+| `last_updated`| `TIMESTAMP` | Sync Time. | Show "Last updated: X sec ago". |
+
+---
+
+## 4. Integration Logic
+
+### A. Fetching Live Matches
+To get the live leaderboard for a specific sport:
 
 ```sql
-SELECT match_data 
-FROM live_matches 
-ORDER BY (match_data->>'is_live')::boolean DESC, last_updated DESC;
+SELECT match_id, home_team, away_team, home_score, away_score, status, is_live
+FROM live_cricket  -- Change table name based on sport
+ORDER BY is_live DESC, last_updated DESC;
 ```
 
-## 3. Data Structure (JSON)
-Each row returns a JSON object. Use these fields for your UI:
+### B. Sport-Specific Notes
 
+#### 🏏 Cricket
+*   **Score Format**: `home_score` might be "150/3 (15.2)".
+*   **Status**: We use smart logic to detect "2nd Inning" even if the API lags. Trust the `status` column.
+*   **Batting Team**: Use `batting_team` column to show a "Batting" icon next to the active team.
+
+#### ⚽ Football
+*   **Score**: Simple numbers (e.g. `2`, `1`).
+*   **Status**: typical values: `1st half`, `Halftime`, `2nd half`, `Ended`.
+
+#### 🎾 Tennis
+*   **Score**: Represents **Sets Won** (e.g. `1`, `0`).
+*   **Deep Scores**: Parse `match_data` for game-level scores if needed (e.g. "6-4, 2-3").
+
+---
+
+## 5. JSON `match_data` Reference
+
+If you need more details than the columns provide, query `match_data`.
+
+**Key Usage Examples:**
+
+*   **Tournament Name**: `match_data->'tournament'->>'name'`
+*   **Round Info**: `match_data->'roundInfo'->>'round'`
+*   **Venue**: `match_data->'venue'->>'city'`
+*   **Current Period**: `match_data->'lastPeriod'` (e.g. "inning1", "period2")
+
+### Example JSON Snippet
 ```json
 {
-  "match_id": "XY1",
-  "title": "India vs Australia",        // 1. Matches the "Title"
-  "score": "132/6 (19.0)",              // 2. Main Score Display
-  "status_text": "India need 20 runs",  // 3. Status/Commentary
-  "is_live": true,                      // 4. If true -> Show RED "LIVE" Dot
-  "match_status": "Live",               // "Live" | "Upcoming" | "Completed"
-  "event_state": "Live",                // [NEW] "Live" | "Break" | "Finished" | "Scheduled"
-  "team_a_name": "India",               // Home Team
-  "team_b_name": "Australia",           // Away Team
-  "batting_team_name": "India",         // [NEW] Name of batting team
-  "current_innings": "1st Innings",     // [NEW] e.g. "2nd Innings"
-  "league_name": "T20I",                // [NEW] Format or League Name
-  "match_odds": {                       // [NEW]
-      "team_a_odds": 1.5,
-      "team_b_odds": 2.5,
-      "team_a_win_prob": 66.6,
-      "team_b_win_prob": 33.3
-  },
-  "session": {                          // [NEW] Only present if Live
+  "tournament": { "name": "Big Bash League" },
+  "homeTeam": { "name": "Sydney Thunder" },
+  "awayTeam": { "name": "Hobart Hurricanes" },
+  "homeScore": { "display": 150, "innings": {...} },
+  "status": { "description": "2nd Inning", "type": "inprogress" }
+}
+```
+
+---
+
+## 6. Access & connection
+
+*   **Database**: NeonDB
+*   **Connection String**: (Refer to Env Variables)
       "runs": 132,
       "wickets": 6,
       "crr": 7.1,
       "projected_score": 142
   },
-  "start_time_iso": "2025-12-14 16:30", // Start Time
   
   // [NEW] Detailed Scores & Target
   "team_a_score": "132/6 (20.0)",       // Score of Team A

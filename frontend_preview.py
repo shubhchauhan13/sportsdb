@@ -120,16 +120,30 @@ HTML_TEMPLATE = """
 
 def get_matches():
     try:
+
         conn = psycopg2.connect(DB_CONNECTION_STRING)
         cur = conn.cursor()
-        # Fetch directly from JSONB
-        cur.execute("SELECT match_data FROM live_matches ORDER BY (match_data->>'is_live')::boolean DESC, last_updated DESC;")
-        rows = cur.fetchall()
+        
+        # Fetch from new live_cricket table
+        cur.execute("SELECT match_id, score, status, home_team, away_team, last_updated FROM live_cricket ORDER BY last_updated DESC")
+        matches = cur.fetchall()
         conn.close()
-        return [r[0] for r in rows]
-        return [r[0] for r in rows]
+
+        
+        # Convert to list of dicts
+        matches_list = []
+        for m in matches:
+            matches_list.append({
+                "match_id": m[0],
+                "score": m[1],
+                "status": m[2],
+                "team_a": m[3],
+                "team_b": m[4],
+                "updated_at": m[5]
+            })
+        return matches_list
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error fetching matches: {e}")
         return []
 
 def get_clean_matches():
@@ -155,13 +169,17 @@ def get_clean_matches():
 @app.route('/')
 def index():
     matches = get_matches()
-    return render_template_string(HTML_TEMPLATE, matches=matches, page="live")
+    return render_template_string(HTML_TEMPLATE, matches=matches, page='live')
 
 @app.route('/clean')
 def clean():
     matches = get_clean_matches()
     return render_template_string(HTML_TEMPLATE, matches=matches, page="clean")
 
-if __name__ == "__main__":
-    print("Starting Preview Server on http://localhost:5000")
-    app.run(port=5000)
+@app.route('/health')
+def health():
+    return "OK", 200
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
