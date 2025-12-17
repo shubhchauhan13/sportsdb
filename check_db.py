@@ -14,11 +14,17 @@ def check():
 
 
 
-        print("\n[INFO] Live Cricket Sample (Data Freshness):")
-        cur.execute("SELECT match_id, score, last_updated AT TIME ZONE 'UTC' FROM live_cricket LIMIT 5;")
+        print("\n[INFO] Live Cricket Sample (Detailed):")
+        cur.execute("SELECT match_id, home_team, away_team, score, status, match_data FROM live_cricket ORDER BY last_updated DESC LIMIT 5;")
         rows = cur.fetchall()
         for row in rows:
-            print(f"ID: {row[0]} | Score: {row[1]} | Updated: {row[2]}")
+            print(f"ID: {row[0]}")
+            print(f"  Teams: {row[1]} vs {row[2]}")
+            print(f"  Score: {row[3]}")
+            print(f"  Status: {row[4]}")
+            # match_data is a dictionary (JSONB)
+            # print(f"  Raw Data Sample: {str(row[5])[:100]}...")
+
         
         conn.close()
 

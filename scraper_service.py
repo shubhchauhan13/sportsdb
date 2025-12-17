@@ -29,7 +29,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return f"SofaScore Scraper Running... Last Error: {SCRAPER_STATS.get('last_error')}"
+    return f"AiScore Scraper Running... Last Error: {SCRAPER_STATS.get('last_error')}"
 
 @app.route('/health')
 def health():
@@ -54,200 +54,214 @@ DB_CONNECTION_STRING = os.environ.get(
 ).strip("'").strip('"')
 
 # Sport Configuration
+# Slug maps to AiScore URL path segments or state keys
 SPORTS_CONFIG = {
-    'cricket':       {'slug': 'cricket',       'table': 'live_cricket',      'has_draw': True},
-    'football':      {'slug': 'football',      'table': 'live_football',     'has_draw': True},
-    'tennis':        {'slug': 'tennis',        'table': 'live_tennis',       'has_draw': False},
-    'basketball':    {'slug': 'basketball',    'table': 'live_basketball',   'has_draw': False}, # OT usually included
-    'table-tennis':  {'slug': 'table-tennis',  'table': 'live_table_tennis', 'has_draw': False},
-    'ice-hockey':    {'slug': 'ice-hockey',    'table': 'live_ice_hockey',   'has_draw': True}, # 3-way markets exist
-    'esports':       {'slug': 'esports',       'table': 'live_esports',      'has_draw': False},
-    'motorsport':    {'slug': 'motorsport',    'table': 'live_motorsport',   'has_draw': False} 
+    'cricket':       {'slug': 'cricket',       'table': 'live_cricket',       'state_key': 'cricket'},
+    'football':      {'slug': 'football',      'table': 'live_football',      'state_key': 'football'},
+    'tennis':        {'slug': 'tennis',        'table': 'live_tennis',        'state_key': 'tennis'},
+    'basketball':    {'slug': 'basketball',    'table': 'live_basketball',    'state_key': 'basketball'}, 
+    'table-tennis':  {'slug': 'table-tennis',  'table': 'live_table_tennis',  'state_key': 'tabletennis'},
+    'ice-hockey':    {'slug': 'ice-hockey',    'table': 'live_ice_hockey',    'state_key': 'icehockey'},
+    'esports':       {'slug': 'esports',       'table': 'live_esports',       'state_key': 'esports'},
 }
+
 
 # --- Database Setup ---
 def initialize_db():
     try:
         conn = psycopg2.connect(DB_CONNECTION_STRING, connect_timeout=10)
-        cur = conn.cursor()
-        
-        for sport, config in SPORTS_CONFIG.items():
-            table = config['table']
-            cur.execute(f"""
-                CREATE TABLE IF NOT EXISTS {table} (
-                    match_id TEXT PRIMARY KEY,
-                    match_data JSONB,
-                    home_team TEXT,
-                    away_team TEXT,
-                    status TEXT,
-                    score TEXT,
-                    batting_team TEXT,
-                    is_live BOOLEAN DEFAULT FALSE,
-                    home_score TEXT,
-                    away_score TEXT,
-                    home_odds TEXT,
-                    away_odds TEXT,
-                    draw_odds TEXT,
-                    last_updated TIMESTAMP DEFAULT NOW()
-                );
-            """)
-            
-            # Auto-Migration for new columns using separate transactions to avoid blocks
-            columns = [
-                ('batting_team', 'TEXT'),
-                ('is_live', 'BOOLEAN DEFAULT FALSE'),
-                ('home_score', 'TEXT'),
-                ('away_score', 'TEXT'),
-                ('home_odds', 'TEXT'),
-                ('away_odds', 'TEXT'),
-                ('draw_odds', 'TEXT')
-            ]
-            for col_name, col_type in columns:
-                try:
-                    cur.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_type};")
-                    conn.commit()
-                except Exception: 
-                    conn.rollback()
-            
-        conn.commit()
-        log_msg("[SUCCESS] Connected to NeonDB and verified schemas.")
+        # Schema already exists from previous runs/setup
+        log_msg("[SUCCESS] Connected to NeonDB.")
         return conn
     except Exception as e:
         log_msg(f"[ERROR] Database initialization failed: {e}")
         SCRAPER_STATS['last_error'] = str(e)
         return None
 
-# --- Formatting Helpers ---
+# --- AiScore Formatting Helpers ---
 
-def format_score(sport, score_obj):
+def format_score_aiscore(sport, match):
     """
-    Generic score formatter based on sport.
+    Parses score from AiScore match object for different sports.
     """
-    if not score_obj: return "0"
-    
-    display = str(score_obj.get('display', 0))
-    
-    if sport == 'cricket':
-        # "250/3 (45.2)"
-        innings = score_obj.get('innings', {})
+    try:
+        if sport == 'cricket':
+             scores = match.get('ckScores', {})
+             innings = scores.get('innings', [])
+             
+             h_score = "0"
+             a_score = "0"
+             
+             # Map innings to home(1) and away(2)
+             for inn in innings:
+                 runs = inn.get('runs', 0)
+                 wickets = inn.get('wickets', 0)
+                 overs = round(inn.get('overs', 0), 1)
+                 belong = inn.get('belong', 0)
+                 
+                 fmt = f"{runs}/{wickets} ({overs})"
+                 
+                 if belong == 1: h_score = fmt
+                 elif belong == 2: a_score = fmt
+                 
+             if not innings:
+                 # Fallback to ft
+                 ft = scores.get('ft', [])
+                 if ft and len(ft) >= 2:
+                     h_score = str(ft[0])
+                     a_score = str(ft[1])
+                     
+             return f"{h_score} vs {a_score}"
+        
+        # Tennis, Table Tennis, Ice Hockey, Basketball, Esports, Football
+        # These use 'score' field or 'homeScore'/'awayScore'
+        home_score = match.get('homeScore', match.get('home_score', ''))
+        away_score = match.get('awayScore', match.get('away_score', ''))
+        
+        # Sometimes score is in a nested 'score' object
+        if not home_score and not away_score:
+            score_obj = match.get('score', {})
+            if isinstance(score_obj, dict):
+                home_score = score_obj.get('home', score_obj.get('h', ''))
+                away_score = score_obj.get('away', score_obj.get('a', ''))
+        
+        # Fallback to 'scores' array [home, away]
+        if not home_score and not away_score:
+            scores = match.get('scores', [])
+            if isinstance(scores, list) and len(scores) >= 2:
+                home_score = str(scores[0])
+                away_score = str(scores[1])
+                
+        # Fallback to 'ft' (final/total)
+        if not home_score and not away_score:
+            ft = match.get('ft', [])
+            if isinstance(ft, list) and len(ft) >= 2:
+                home_score = str(ft[0])
+                away_score = str(ft[1])
+        
+        if home_score or away_score:
+            return f"{home_score} - {away_score}"
+        
+        return "0 - 0"
+        
+    except Exception as e:
+        return "?"
+
+def get_batting_team(match, home_team, away_team):
+    """
+    Determines current batting team for cricket matches.
+    """
+    try:
+        scores = match.get('ckScores', {})
+        innings = scores.get('innings', [])
+        
         if innings:
-            runs = display
-            wickets = 0
-            overs = 0.0
-            # Sum up/Latest logic (simplified)
-            for _, val in innings.items():
-                if 'score' in val: runs = val.get('score', runs)
-                wickets = val.get('wickets', 0)
-                overs = val.get('overs', 0.0)
-            return f"{runs}/{wickets} ({overs})"
-        return display
+            # Last innings is current
+            last_inn = innings[-1]
+            belong = last_inn.get('belong', 0)
+            
+            if belong == 1: return home_team
+            elif belong == 2: return away_team
+    except:
+        pass
+    return None
 
-    elif sport == 'tennis':
-        return display # Sets
-        
-    elif sport == 'basketball':
-        return display # Points
-        
-    elif sport == 'table-tennis':
-        return display # Sets
-        
-    elif sport == 'ice-hockey':
-        return display # Goals
-        
-    elif sport == 'esports':
-        return display # Maps/Rounds
+def get_team_name(match, side='home', team_map=None):
 
-    return display
-
-
-def construct_score_string(sport, h_fmt, a_fmt):
-    if h_fmt == "0" and a_fmt == "0":
-        return "vs"
-        
-    if sport == 'cricket':
-        return f"{h_fmt} vs {a_fmt}"
-    elif sport == 'tennis' or sport == 'table-tennis':
-        return f"{h_fmt} - {a_fmt} (Sets)"
-    elif sport == 'esports':
-        return f"{h_fmt} - {a_fmt} (Maps)"
+    team_obj = match.get(f"{side}Team", {})
+    if 'name' in team_obj: return team_obj['name']
     
-    return f"{h_fmt} - {a_fmt}"
+    tid = team_obj.get('id')
+    if team_map and tid in team_map:
+        return team_map[tid]
+        
+    return "Unknown"
 
-# --- Odds Fetching ---
-
-def fetch_odds(page, event_id):
+def get_odds(match):
     """
-    Fetches real odds for a match from SofaScore.
-    Returns: { 'home': '1.5', 'away': '2.5', 'draw': '3.4' }
+    Extracts odds from AiScore match object.
+    Returns dict with home_odds, away_odds, draw_odds
     """
-    url = f"https://www.sofascore.com/api/v1/event/{event_id}/odds/1/all"
-    odds_data = {'home': None, 'away': None, 'draw': None}
+    odds = {'home': None, 'away': None, 'draw': None}
     
     try:
-        # Check if page is closed
-        if page.is_closed(): return odds_data
+        ext = match.get('ext', {})
+        odds_data = ext.get('odds', {})
+        odd_items = odds_data.get('oddItems', [])
         
-        # Navigation with short timeout
-        response = page.goto(url, timeout=5000) # Increased timeout slightly
-        if not response or response.status != 200:
-            return odds_data
-            
-        text = page.inner_text("body")
-        data = json.loads(text)
-        
-        # Look for "Full time" market (marketId 1)
-        markets = data.get('markets', [])
-        full_time = next((m for m in markets if m.get('marketId') == 1), None)
-        
-        if full_time:
-            choices = full_time.get('choices', [])
-            for c in choices:
-                name = c.get('name')
-                fractional = c.get('fractionalValue')
-                
-                # Simple decimal conversion if possible, else keep fractional
-                val = fractional
-                try:
-                    if '/' in fractional:
-                        num, den = map(int, fractional.split('/'))
-                        dec = 1 + (num / den)
-                        val = f"{dec:.2f}"
-                except: pass
-                
-                if name == '1': odds_data['home'] = val
-                elif name == '2': odds_data['away'] = val
-                elif name == 'X': odds_data['draw'] = val
-                
-    except Exception:
+        # oddItems[1] typically contains the main odds
+        # odd array: [home_odds, draw_odds(?), away_odds, ?]
+        if len(odd_items) > 1 and odd_items[1]:
+            odd_arr = odd_items[1].get('odd', [])
+            if len(odd_arr) >= 3:
+                odds['home'] = odd_arr[0] if odd_arr[0] and odd_arr[0] != '0' else None
+                odds['away'] = odd_arr[2] if odd_arr[2] and odd_arr[2] != '0' else None
+                # Draw odds might be at index 1 for football
+                if len(odd_arr) > 1 and odd_arr[1] and odd_arr[1] != '0':
+                    odds['draw'] = odd_arr[1]
+    except:
         pass
         
-    return odds_data
+    return odds
 
 # --- Main Scraper Logic ---
 
-def fetch_sofascore_live(page, sport_slug):
-    ts = int(time.time() * 1000)
-    url = f"https://www.sofascore.com/api/v1/sport/{sport_slug}/events/live?_={ts}"
-    events = []
+def fetch_aiscore_live(page, sport_slug, state_key):
+    url = f"https://www.aiscore.com/{sport_slug}" 
+    matches = []
+    
     try:
         if page.is_closed(): return []
-        response = page.goto(url, timeout=20000) # Increased timeout
-        if response and response.status == 200:
-            text = page.inner_text("body")
-            data = json.loads(text)
-            events = data.get('events', [])
+        
+        response = page.goto(url, timeout=30000, wait_until='domcontentloaded')
+        
+        # Extract __NUXT__
+        data = page.evaluate("""() => {
+            if (window.__NUXT__) return window.__NUXT__;
+            return null;
+        }""")
+        
+        if data:
+            state = data.get('state', {})
+            sport_state = state.get(state_key, {})
+            
+            # 1. Build Team Map
+            team_map = {}
+            # Try matchesFuture
+            if 'MatchesFuture' in state:
+                for t in state['MatchesFuture'].get('teams', []):
+                    team_map[t['id']] = t['name']
+            
+            # Try matchesData_teams (Live)
+            if 'matchesData_teams' in sport_state:
+                for t in sport_state['matchesData_teams']:
+                    team_map[t['id']] = t['name']
+            
+            # 2. Find Matches
+            found_matches = []
+            if 'matchesData_matches' in sport_state:
+                found_matches = sport_state['matchesData_matches']
+                
+            for m in found_matches:
+                m['home_name_resolved'] = get_team_name(m, 'home', team_map)
+                m['away_name_resolved'] = get_team_name(m, 'away', team_map)
+                matches.append(m)
+                
+        else:
+            log_msg(f"[WARN] __NUXT__ not found for {sport_slug}")
+            
     except Exception as e:
         log_msg(f"[WARN] Fetch {sport_slug} failed: {e}")
         SCRAPER_STATS['last_error'] = f"Fetch {sport_slug}: {str(e)}"
-    return events
+        
+    return matches
 
-def upsert_matches(conn, sport_key, matches, page):
+def upsert_matches(conn, sport_key, matches):
     if not matches: return []
     
     ids = []
     config = SPORTS_CONFIG[sport_key]
     table_name = config['table']
-    has_draw = config['has_draw']
     
     try:
         cur = conn.cursor()
@@ -258,37 +272,48 @@ def upsert_matches(conn, sport_key, matches, page):
             ids.append(match_id)
             
             # Basic Info
-            home_team = m.get('homeTeam', {}).get('name', 'Unknown')
-            away_team = m.get('awayTeam', {}).get('name', 'Unknown')
-            status = m.get('status', {}).get('description', 'Unknown')
+            home_team = m.get('home_name_resolved', 'Unknown')
+            away_team = m.get('away_name_resolved', 'Unknown')
             
-            # Formatted Scores
-            h_fmt = format_score(sport_key, m.get('homeScore', {}))
-            a_fmt = format_score(sport_key, m.get('awayScore', {}))
-            score_str = construct_score_string(sport_key, h_fmt, a_fmt)
+            # Status
+            status_code = m.get('matchStatus', 0)
+            status = "Upcoming"
+            if status_code == 2: status = "Live"
+            elif status_code == 3: status = "Finished"
+            elif status_code == 4: status = "Postponed" # Guess
             
-            # Batting Team (Cricket)
+            is_live = (status == "Live")
+            
+            # Formatted Score
+            score_str = format_score_aiscore(sport_key, m)
+            
+            # Extract basic scores for columns if possible (fallback to split)
+            h_score = "?"
+            a_score = "?"
+            # Try to parse from string if it follows "A vs B" or "A - B" format
+            if " vs " in score_str:
+                parts = score_str.split(" vs ")
+                if len(parts) == 2:
+                    h_score, a_score = parts
+            elif " - " in score_str:
+                parts = score_str.split(" - ")
+                if len(parts) == 2:
+                    h_score, a_score = parts
+            
+            # Batting Team (Cricket only)
             batting_team = None
-            if sport_key == 'cricket' and m.get('currentBattingTeamId'):
-                bid = m.get('currentBattingTeamId')
-                if bid == m.get('homeTeam', {}).get('id'): batting_team = home_team
-                elif bid == m.get('awayTeam', {}).get('id'): batting_team = away_team
+            if sport_key == 'cricket':
+                batting_team = get_batting_team(m, home_team, away_team)
             
-            # Fetch Real Odds with slight delay to avoid blocks
-            odds = fetch_odds(page, match_id)
-            time.sleep(0.1) 
+            # Extract Odds
+            odds = get_odds(m)
+
             
-            # Fallback Simulation (If no odds found)
-            if not odds['home'] and not odds['away']:
-                # Placeholders
-                odds['home'] = "1.90"
-                odds['away'] = "1.90"
-                if has_draw: odds['draw'] = "3.50"
-            
+            # Upsert
             cur.execute(f"""
                 INSERT INTO {table_name} (
                     match_id, match_data, home_team, away_team, status, score, 
-                    batting_team, is_live, home_score, away_score, 
+                    batting_team, is_live, home_score, away_score,
                     home_odds, away_odds, draw_odds, last_updated
                 )
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
@@ -308,9 +333,11 @@ def upsert_matches(conn, sport_key, matches, page):
                     last_updated = NOW();
             """, (
                 match_id, Json(m), home_team, away_team, status, score_str, 
-                batting_team, True, h_fmt, a_fmt, 
-                odds['home'], odds['away'], odds.get('draw')
+                batting_team, is_live, h_score, a_score,
+                odds['home'], odds['away'], odds['draw']
             ))
+
+
             
             count += 1
             
@@ -334,11 +361,10 @@ def upsert_matches(conn, sport_key, matches, page):
 
 def run_scraper():
     while True:
-        log_msg("[SUPERVISOR] Starting Scraper Loop...")
+        log_msg("[SUPERVISOR] Starting AiScore Scraper Loop...")
         conn = None
         browser = None
         
-
         try:
             conn = initialize_db()
             if not conn:
@@ -347,40 +373,33 @@ def run_scraper():
 
             log_msg("[DEBUG] Launching Playwright...")
             with sync_playwright() as p:
-                log_msg("[DEBUG] Launching Chromium...")
-                try:
-                    browser = p.chromium.launch(
-                        headless=True,
-                        args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-                    )
-                    log_msg("[DEBUG] Browser Launched.")
-                except Exception as be:
-                    log_msg(f"[ERROR] Browser Launch Failed: {be}")
-                    raise be
-
-                context = browser.new_context(
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                browser = p.chromium.launch(
+                    headless=True,
+                    args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
                 )
+                
+                # Mobile Context to save bandwidth
+                iphone = p.devices['iPhone 12']
+                context = browser.new_context(**iphone)
                 page = context.new_page()
+                
                 log_msg("[DEBUG] Page created. Entering main loop.")
                 
                 cycle_count = 0
-                max_cycles = 50 # Restart browser periodically to free memory
+                max_cycles = 50 
                 
                 while True:
                     start_time = time.time()
                     
                     for sport, config in SPORTS_CONFIG.items():
                         try:
-                            # DB Check
                             if conn.closed: raise Exception("DB Conn Closed")
 
-                            # log_msg(f"[DEBUG] Fetching {sport}...") 
-                            matches = fetch_sofascore_live(page, config['slug'])
+                            matches = fetch_aiscore_live(page, config['slug'], config['state_key'])
                             if matches:
-                                upsert_matches(conn, sport, matches, page)
+                                upsert_matches(conn, sport, matches)
                             else:
-                                pass # log_msg(f"[DEBUG] No matches for {sport}")
+                                pass # No matches found/fetched
                             
                         except Exception as e:
                             log_msg(f"[ERROR] {sport}: {e}")
@@ -389,21 +408,19 @@ def run_scraper():
                                 raise e
                     
                     elapsed = time.time() - start_time
-                    # 15s to 30s cycle to be polite with odds fetching
                     sleep_time = max(10.0, 30.0 - elapsed)
-                    # log_msg(f"[DEBUG] Sleeping {sleep_time:.2f}s...")
                     time.sleep(sleep_time) 
                     
                     cycle_count += 1
                     if cycle_count >= max_cycles: 
-                        log_msg(f"[SUPERVISOR] Scheduled Restart after {max_cycles} cycles...")
+                        log_msg(f"[SUPERVISOR] Scheduled Restart...")
                         break
 
         except Exception as e:
-            log_msg(f"[CRASH] Supervisor caught exception: {e}")
+            log_msg(f"[CRASH] Supervisor exception: {e}")
             log_msg(traceback.format_exc())
             SCRAPER_STATS['last_error'] = str(e)
-            time.sleep(10) # Cool off before restart
+            time.sleep(10)
         finally:
             try: 
                 if browser: browser.close()

@@ -1,0 +1,4484 @@
+{
+  "layout": "default",
+  "data": [
+    {
+      "empty": false,
+      "empty2": true
+    }
+  ],
+  "fetch": {
+    "data-v-741393e1:0": {
+      "activeNames": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    }
+  },
+  "error": null,
+  "state": {
+    "serverTime": 0.3640000820159912,
+    "lang": 2,
+    "locale": "en",
+    "locales": [
+      "en",
+      "aze",
+      "id",
+      "bs",
+      "cs",
+      "sr",
+      "da",
+      "de",
+      "et",
+      "es",
+      "fr",
+      "hr",
+      "it",
+      "lv",
+      "lt",
+      "hu",
+      "nl",
+      "nn",
+      "pl",
+      "pt",
+      "br",
+      "ro",
+      "sqi",
+      "sk",
+      "sl",
+      "fi",
+      "sv",
+      "vi",
+      "tr",
+      "el",
+      "bg",
+      "mk",
+      "ru",
+      "ukr",
+      "ka",
+      "aa",
+      "th",
+      "mm",
+      "km",
+      "ja",
+      "zht",
+      "ko"
+    ],
+    "ODDS_TYPE": "De",
+    "sortBy": "1",
+    "activeTab": "All",
+    "RoofMatchIds": {},
+    "currentDate": 0,
+    "timezone": "05:30",
+    "mobileInfo": {},
+    "onlineStatus": "online",
+    "proModule": "cricket",
+    "isRefreshDis": false,
+    "appStoreUrl": {
+      "android": "https://play.google.com/store/apps/details?id=com.onesports.score&referrer=utm_source%3Dsite_m%26utm_medium%3Dsite_m%26anid%3Dadmob",
+      "ios": "https://apps.apple.com/app/apple-store/id1477171291?pt=120348384&ct=site_m&mt=8"
+    },
+    "matchCountMap": {
+      "1": {
+        "liveCount": 30,
+        "todayCount": 269,
+        "sportId": 1
+      },
+      "2": {
+        "liveCount": 10,
+        "todayCount": 255,
+        "sportId": 2
+      },
+      "3": {
+        "liveCount": 1,
+        "todayCount": 78,
+        "sportId": 3
+      },
+      "5": {
+        "liveCount": 3,
+        "todayCount": 9,
+        "sportId": 5
+      },
+      "6": {
+        "liveCount": 0,
+        "todayCount": 19,
+        "sportId": 6
+      },
+      "7": {
+        "liveCount": 2,
+        "todayCount": 71,
+        "sportId": 7
+      },
+      "8": {
+        "liveCount": 4,
+        "todayCount": 133,
+        "sportId": 8
+      },
+      "10": {
+        "liveCount": 4,
+        "todayCount": 90,
+        "sportId": 10
+      },
+      "11": {
+        "liveCount": 12,
+        "todayCount": 620,
+        "sportId": 11
+      },
+      "17": {
+        "liveCount": 0,
+        "todayCount": 1,
+        "sportId": 17
+      },
+      "19": {
+        "liveCount": 2,
+        "todayCount": 16,
+        "sportId": 19
+      },
+      "22": {
+        "liveCount": 0,
+        "todayCount": 1,
+        "sportId": 22
+      },
+      "24": {
+        "liveCount": 2,
+        "todayCount": 20,
+        "sportId": 24
+      },
+      "100": {
+        "liveCount": 5,
+        "todayCount": 35,
+        "sportId": 100
+      }
+    },
+    "matchLiveStatus": false,
+    "footState": true,
+    "offsetTop": 45.629999999999995,
+    "fs": "39",
+    "willload": false,
+    "isquickApp": false,
+    "clientWidth": 390,
+    "orientationValue": 0,
+    "cid": 88,
+    "messageList": [],
+    "app_scrollTop": 0,
+    "chat_scrollTop": 0,
+    "MatchesFuture": {
+      "matches": [
+        {
+          "id": "ndkz1hdzdg4fx73",
+          "homeTeam": {
+            "id": "ezk99h15vmiwkn5"
+          },
+          "awayTeam": {
+            "id": "xvkj6h9xx63ix79"
+          }
+        },
+        {
+          "id": "oj7x1hmjdnms4kg",
+          "homeTeam": {
+            "id": "oj7x1hvnvesrkg3"
+          },
+          "awayTeam": {
+            "id": "o17p2hj2jyb2kjw"
+          }
+        },
+        {
+          "id": "xvkj6h2znldc879",
+          "homeTeam": {
+            "id": "n527r2hzlzu8qev"
+          },
+          "awayTeam": {
+            "id": "59gklehdrwi17xd"
+          }
+        },
+        {
+          "id": "ezk99hwnwe6t1kn",
+          "homeTeam": {
+            "id": "8lk22hl5mmb3k36"
+          },
+          "awayTeam": {
+            "id": "69758h4532an723"
+          }
+        },
+        {
+          "id": "9gklehj0yzotm7x",
+          "homeTeam": {
+            "id": "w69758h4dvfn723"
+          },
+          "awayTeam": {
+            "id": "g63kv6hlw8up7ez"
+          }
+        },
+        {
+          "id": "wv788h14dprso7r",
+          "homeTeam": {
+            "id": "j374nhxg44brko6"
+          },
+          "awayTeam": {
+            "id": "l6ke6hd2rnsgq5d"
+          }
+        },
+        {
+          "id": "xvkj6h191gzc879",
+          "homeTeam": {
+            "id": "g6769h8w10ip7ry"
+          },
+          "awayTeam": {
+            "id": "34kg6h6p2ra87o9"
+          }
+        },
+        {
+          "id": "527r2h3wljrc4qe",
+          "homeTeam": {
+            "id": "2jr7o2h41oh3q0e"
+          },
+          "awayTeam": {
+            "id": "5wv788hrm9sn7rj"
+          }
+        },
+        {
+          "id": "63kv6h61zw9fx7e",
+          "homeTeam": {
+            "id": "zjek3nhwm6ad7o2"
+          },
+          "awayTeam": {
+            "id": "1edq02hzlrh4kxg"
+          }
+        },
+        {
+          "id": "34kg6hgmryeie7o",
+          "homeTeam": {
+            "id": "9oj7x1hl0nsrkg3"
+          },
+          "awayTeam": {
+            "id": "xo17p2hdy4h2kjw"
+          }
+        },
+        {
+          "id": "ezk99hj2ddoc1kn",
+          "homeTeam": {
+            "id": "ezk99h92jzhwkn5"
+          },
+          "awayTeam": {
+            "id": "ndqmdh6e9wsgqve"
+          }
+        },
+        {
+          "id": "oj7x1hvr2myi4kg",
+          "homeTeam": {
+            "id": "ezk99hj5w4cwkn5"
+          },
+          "awayTeam": {
+            "id": "j374nh4e6jfrko6"
+          }
+        },
+        {
+          "id": "o17p2hl084vfykj",
+          "homeTeam": {
+            "id": "g6769hpw91ap7ry"
+          },
+          "awayTeam": {
+            "id": "ndqmdh9oyeigqve"
+          }
+        },
+        {
+          "id": "zrkn2h15eo0awkl",
+          "homeTeam": {
+            "id": "w34kg6h6ejh87o9"
+          },
+          "awayTeam": {
+            "id": "1edq02hzorh4kxg"
+          }
+        },
+        {
+          "id": "l6ke6hr2xxyivq5",
+          "homeTeam": {
+            "id": "j374nhxg44brko6"
+          },
+          "awayTeam": {
+            "id": "g6769hjzp9tp7ry"
+          }
+        },
+        {
+          "id": "xvkj6h2wmm5h879",
+          "homeTeam": {
+            "id": "xvkj6hjw2pux793"
+          },
+          "awayTeam": {
+            "id": "ezk99h92jzhwkn5"
+          }
+        },
+        {
+          "id": "m2q13h8rw5maek6",
+          "homeTeam": {
+            "id": "0ndkz1h0jyhe73z"
+          },
+          "awayTeam": {
+            "id": "59gklehdrwi17xd"
+          }
+        },
+        {
+          "id": "34kg6hgly2lue7o",
+          "homeTeam": {
+            "id": "l6ke6hd2rnsgq5d"
+          },
+          "awayTeam": {
+            "id": "ndqmdh6e9wsgqve"
+          }
+        },
+        {
+          "id": "ndqmdhyx4wvtrqv",
+          "homeTeam": {
+            "id": "5wv788hrv9fn7rj"
+          },
+          "awayTeam": {
+            "id": "w34kg6h6gyt87o9"
+          }
+        },
+        {
+          "id": "m2q13h8yee4cek6",
+          "homeTeam": {
+            "id": "xvkj6hjw2pux793"
+          },
+          "awayTeam": {
+            "id": "g6769hjzp9tp7ry"
+          }
+        }
+      ],
+      "teams": [
+        {
+          "id": "9oj7x1hl0nsrkg3",
+          "name": "India",
+          "slug": "india"
+        },
+        {
+          "id": "xo17p2hd94b2kjw",
+          "name": "Adelaide Strikers",
+          "slug": "adelaide-strikers"
+        },
+        {
+          "id": "2jr7o2h41oh3q0e",
+          "name": "Brisbane Heat",
+          "slug": "brisbane-heat"
+        },
+        {
+          "id": "59gklehdrwi17xd",
+          "name": "Hobart Hurricanes",
+          "slug": "hobart-hurricanes"
+        },
+        {
+          "id": "0ndkz1h0jyhe73z",
+          "name": "Melbourne Renegades",
+          "slug": "melbourne-renegades"
+        },
+        {
+          "id": "n527r2hzlzu8qev",
+          "name": "Melbourne Stars",
+          "slug": "melbourne-stars"
+        },
+        {
+          "id": "5wv788hrm9sn7rj",
+          "name": "Perth Scorchers",
+          "slug": "perth-scorchers"
+        },
+        {
+          "id": "1edq02hzorh4kxg",
+          "name": "Sydney Sixers",
+          "slug": "sydney-sixers"
+        },
+        {
+          "id": "w34kg6h6ejh87o9",
+          "name": "Sydney Thunder",
+          "slug": "sydney-thunder"
+        },
+        {
+          "id": "xo17p2hdy4h2kjw",
+          "name": "South Africa",
+          "slug": "south-africa"
+        },
+        {
+          "id": "5wv788hrv9fn7rj",
+          "name": "India Women",
+          "slug": "india-women"
+        },
+        {
+          "id": "1edq02hzlrh4kxg",
+          "name": "Ireland Women",
+          "slug": "ireland-women"
+        },
+        {
+          "id": "zjek3nhwm6ad7o2",
+          "name": "South Africa Women",
+          "slug": "south-africa-women"
+        },
+        {
+          "id": "w34kg6h6gyt87o9",
+          "name": "Sri Lanka Women",
+          "slug": "sri-lanka-women"
+        },
+        {
+          "id": "eg6769h89lhp7ry",
+          "name": "Tamil Nadu",
+          "slug": "tamil-nadu"
+        },
+        {
+          "id": "yzrkn2hwp8inkle",
+          "name": "Karnataka",
+          "slug": "karnataka"
+        },
+        {
+          "id": "2jr7o2h4ogc3q0e",
+          "name": "Hyderabad",
+          "slug": "hyderabad"
+        },
+        {
+          "id": "59gklehdj8a17xd",
+          "name": "Uttar Pradesh",
+          "slug": "uttar-pradesh"
+        },
+        {
+          "id": "0ndkz1h0deie73z",
+          "name": "Assam",
+          "slug": "assam"
+        },
+        {
+          "id": "w34kg6h65ys87o9",
+          "name": "Jammu And Kashmir",
+          "slug": "jammu-and-kashmir"
+        },
+        {
+          "id": "w69758h4dvfn723",
+          "name": "Jharkhand",
+          "slug": "jharkhand"
+        },
+        {
+          "id": "g63kv6hlw8up7ez",
+          "name": "Haryana",
+          "slug": "haryana"
+        },
+        {
+          "id": "4ndqmdhvmgcgqve",
+          "name": "Baroda",
+          "slug": "baroda"
+        },
+        {
+          "id": "9oj7x1hl2jcrkg3",
+          "name": "Vidarbha",
+          "slug": "vidarbha"
+        },
+        {
+          "id": "2ezk99h1rxswkn5",
+          "name": "Bengal",
+          "slug": "bengal"
+        },
+        {
+          "id": "59gklehde8i17xd",
+          "name": "Pondicherry",
+          "slug": "pondicherry"
+        },
+        {
+          "id": "r8lk22hlmyc3k36",
+          "name": "Chandigarh",
+          "slug": "chandigarh"
+        },
+        {
+          "id": "o17p2hj2jyb2kjw",
+          "name": "Border",
+          "slug": "border"
+        },
+        {
+          "id": "ndqmdh9oyeigqve",
+          "name": "Mid West Rhinos",
+          "slug": "mid-west-rhinos"
+        },
+        {
+          "id": "j374nh4e6jfrko6",
+          "name": "Mashonaland Eagles",
+          "slug": "mashonaland-eagles"
+        },
+        {
+          "id": "g6769hpw91ap7ry",
+          "name": "Mountaineers",
+          "slug": "mountaineers"
+        },
+        {
+          "id": "ezk99hj5w4cwkn5",
+          "name": "Southern Rocks",
+          "slug": "southern-rocks"
+        },
+        {
+          "id": "oj7x1hvnvesrkg3",
+          "name": "South Western Districts",
+          "slug": "south-western-districts"
+        },
+        {
+          "id": "8lk22hl5mmb3k36",
+          "name": "United Arab Emirates Women",
+          "slug": "united-arab-emirates-women"
+        },
+        {
+          "id": "g6769h8w10ip7ry",
+          "name": "Qatar Women",
+          "slug": "qatar-women"
+        },
+        {
+          "id": "ezk99h15vmiwkn5",
+          "name": "Kuwait Women",
+          "slug": "kuwait-women"
+        },
+        {
+          "id": "34kg6h6p2ra87o9",
+          "name": "Oman Women",
+          "slug": "oman-women"
+        },
+        {
+          "id": "69758h4532an723",
+          "name": "Bahrain Women",
+          "slug": "bahrain-women"
+        },
+        {
+          "id": "ndqmdhvg03igqve",
+          "name": "Bhutan",
+          "slug": "bhutan"
+        },
+        {
+          "id": "ndqmdh6e9wsgqve",
+          "name": "Dubai Capitals",
+          "slug": "dubai-capitals"
+        },
+        {
+          "id": "j374nhxg44brko6",
+          "name": "Abu Dhabi Knight Riders",
+          "slug": "abu-dhabi-knight-riders"
+        },
+        {
+          "id": "g6769hjzp9tp7ry",
+          "name": "Mi Emirates",
+          "slug": "mi-emirates"
+        },
+        {
+          "id": "ezk99h92jzhwkn5",
+          "name": "Sharjah Warriors",
+          "slug": "sharjah-warriors"
+        },
+        {
+          "id": "l6ke6hd2rnsgq5d",
+          "name": "Gulf Giants",
+          "slug": "gulf-giants"
+        },
+        {
+          "id": "xvkj6hjw2pux793",
+          "name": "Desert Vipers",
+          "slug": "desert-vipers"
+        },
+        {
+          "id": "ndqmdhlo49bgqve",
+          "name": "Myanmar",
+          "slug": "myanmar"
+        },
+        {
+          "id": "g6769hxmm1ap7ry",
+          "name": "Cambodia",
+          "slug": "cambodia"
+        },
+        {
+          "id": "o07d0hdydz8h9qn",
+          "name": "Indonesia",
+          "slug": "indonesia"
+        },
+        {
+          "id": "xvkj6h9xx63ix79",
+          "name": "Saudi Arabia",
+          "slug": "saudi-arabia"
+        }
+      ]
+    },
+    "page_is410": false,
+    "languageJsonMap": {
+      "en": {
+        "map_common": {
+          "Home": "Home",
+          "Live Score": "Live Score",
+          "info": "info",
+          "Name": "Name",
+          "Date": "Date",
+          "Show more": "Show more",
+          "Results": "Results",
+          "Fixtures": "Fixtures",
+          "Top scorers": "Top scorers",
+          "About": "About",
+          "Matches Stats": "Matches Stats",
+          "Profile": "Profile",
+          "stats": "stats",
+          "Schedule": "Schedule",
+          "Transfer": "Transfer",
+          "Top Scorers": "Top Scorers",
+          "prediction": "prediction",
+          "live score": "live score",
+          "odds": "odds",
+          "Matches Today": "Matches Today",
+          "head to head": "head to head",
+          "standings": "standings",
+          "Hide": "Hide",
+          "Cancel": "Cancel",
+          "Confirm": "Confirm",
+          "No more": "No more",
+          "select": "select",
+          "Arrivals": "Arrivals",
+          "Departures": "Departures",
+          "Select team": "Select team",
+          "Select All": "Select All",
+          "schedule": "schedule",
+          "standing and table": "standing and table",
+          "match results": "match results",
+          "teams": "teams",
+          "transfer": "transfer",
+          "squad": "squad",
+          "top scorers": "top scorers",
+          "match": "match",
+          "trophies list": "trophies list",
+          "chat": "chat",
+          "h2h": "h2h",
+          "box score": "box score",
+          "Top Players": "Top Players",
+          "Teams Stats": "Teams Stats",
+          "Honors": "Honors",
+          "head-to-head": "head-to-head",
+          "total\u00a0matches": "total\u00a0matches",
+          "Home\u00a0Stadium": "Home\u00a0Stadium",
+          "Away\u00a0Stadium": "Away\u00a0Stadium",
+          "Total\u00a0Goals\u00a0Scored": "Total\u00a0Goals\u00a0Scored",
+          "Biggest\u00a0Aggregate": "Biggest\u00a0Aggregate",
+          "biggest score": "Biggest\u00a0{teamA}\u00a0score",
+          "date": "date",
+          "team": "team",
+          "HT": "HT",
+          "FT": "FT",
+          "Head\u00a0to\u00a0Head\u00a0Overall": "Head\u00a0to\u00a0Head\u00a0Overall",
+          "Head\u00a0to\u00a0Head\u00a0Record": "Head\u00a0to\u00a0Head\u00a0Record",
+          "Past\u00a0H2H\u00a0Results": "Past\u00a0H2H\u00a0Results",
+          "last\u00a0Matches\u00a0Stats": "Last\u00a05\u00a0{teamA}\u00a0Matches\u00a0Stats",
+          "record statistics": "{teamA}\u00a0vs\u00a0{teamB}\u00a0Head\u00a0to\u00a0Head\u00a0Record\u00a0Statistics",
+          "other events": "Head\u00a0to\u00a0head(H2H)\u00a0other\u00a0events",
+          "hot events": "Hot\u00a0events",
+          "Head to Head": "Head to Head",
+          "Head to Head matches list": "Head to Head matches list",
+          "teamA vs teamB head to head": "{teamA} vs {teamB} Head to Head",
+          "This page lists": "This page lists all H2H matches list for next days. For all those matches you can check h2h stats page.\nThe Head to Head matches list updated on {data} at {time}.",
+          "Total": "Total",
+          "Draws": "Draws",
+          "Next match": "Next match",
+          "Tournaments": "Tournaments",
+          "Football Teams": "Football Teams",
+          "Football Players": "Football Players",
+          "England Premier League Schedule": "England Premier League Schedule",
+          "Italian Serie A schedule": "Italian Serie A schedule",
+          "Spanish La Liga schedule": "Spanish La Liga schedule",
+          "German Bundesliga schedule": "German Bundesliga schedule",
+          "France Ligue 1 schedule": "France Ligue 1 schedule",
+          "Basketball Live Score": "Basketball Live Score",
+          "NBA Schedule": "NBA Schedule",
+          "NBA Standings": "NBA Standings",
+          "NBA Teams": "NBA Teams",
+          "NBA Stats": "NBA Stats",
+          "NBA Live Score": "NBA Live Score",
+          "CBA Schedule": "CBA Schedule",
+          "CBA Standings": "CBA Standings",
+          "CBA Stats": "CBA Stats",
+          "CBA Live Score": "CBA Live Score",
+          "Today\u2019s Matches": "Today\u2019s Matches",
+          "Next Match": "Next Match",
+          "Sign in to watch the live stream": "Sign in to watch the live stream",
+          "Sign in": "Sign in",
+          "Visit localized live score version of AiScore": "Visit localized {sports} live score version of AiScore",
+          "Score Win Prob": "Score Win Prob",
+          "Football Livescore": "Football Live Score",
+          "Basketball Livescore": "Basketball Live Score",
+          "Tennis Livescore": "Tennis Live Score",
+          "By\u00a0clicking": "By clicking \u201cAllow All\u201d, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts.",
+          "Cookie\u00a0Notice": "Cookie Notice",
+          "Customize\u00a0Settings": "Customize Settings",
+          "Allow\u00a0All": "Allow All",
+          "Privacy\u00a0Preference": "Privacy Preference Center",
+          "When\u00a0you\u00a0visit": "When you visit any web site, it may store or retrieve information on your browser, mostly in the form of cookies. This information might be about you, your preferences or your device and is mostly used to make the site work as you expect it to. The information does not usually directly identify you, but it can give you a more personalized web experience.",
+          "Because\u00a0we\u00a0respect": "Because we respect your right to privacy, you can choose not to allow some types of cookies. Click on the different category headings to find out more and change our default settings. However, blocking some types of cookies may impact your experience of the site and the services we are able to offer.",
+          "In\u00a0some\u00a0cases": "In some cases, data obtained from cookies is shared with third parties and may be considered a \u201csale of personal information\u201d under the California Consumer Privacy Act (CCPA). You can exercise your right to opt-out of that sharing at any time by disabling cookies.",
+          "Manage\u00a0Consent": "Manage Consent Preferences",
+          "Strictly\u00a0Necessary": "Strictly Necessary Cookies",
+          "Always\u00a0Active": "Always Active",
+          "Analytics\u00a0Cookies": "Analytics Cookies",
+          "Targeting\u00a0Cookies": "Targeting Cookies",
+          "Confirm\u00a0My\u00a0Choices": "Confirm My Choices",
+          "necessary\u00a0for": "These cookies are necessary for the website to function and cannot be switched off in our systems. They are usually only set in response to actions made by you which amount to a request for services, such as setting your privacy preferences, logging in or filling in forms.    You can set your browser to block or alert you about these cookies, but some parts of the site will not then work. These cookies do not store any personally identifiable information",
+          "allow\u00a0us\u00a0to\u00a0count": "These cookies allow us to count visits and traffic sources, so we can measure and improve the performance of our site. They help us know which pages are the most and least popular and see how visitors move around the site. All information these cookies collect is aggregated and therefore anonymous. If you do not allow these cookies, we will not know when you have visited our site.",
+          "may\u00a0be\u00a0set\u00a0through": "These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant adverts on other sites.    They do not store directly personal information, but are based on uniquely identifying your browser and internet device. If you do not allow these cookies, you will experience less targeted advertising.",
+          "amfootball Livescore": "American Football Live Score",
+          "icehockey Livescore": "Ice Hockey Live score",
+          "baseball Livescore": "Baseball Live Score",
+          "tableTennis Livescore": "Table Tennis Live Score",
+          "volleyball Livescore": "Volleyball Live Score",
+          "esports Livescore": "Esports Live Score",
+          "UEFA EURO 2020 Standings": "UEFA EURO 2020 Standings",
+          "UEFA EURO 2020 Schedule": "UEFA EURO 2020 Schedule",
+          "UEFA EURO 2020 Table": "UEFA EURO 2020 Table",
+          "UEFA EURO 2020 Result": "UEFA EURO 2020 Result",
+          "Africa Cup of Nations 2021": "Africa Cup of Nations 2021",
+          "Africa Cup of Nations Standings": "Africa Cup of Nations Standings",
+          "Africa Cup of Nations Schedule": "Africa Cup of Nations Schedule",
+          "Africa Cup of Nations Result": "Africa Cup of Nations Result",
+          "Badminton Livescore": "Badminton Live Score",
+          "Handball Livescore": "Handball Live Score",
+          "Snooker Livescore": "Snooker Live Score",
+          "WaterPolo Livescore": "Water Polo Live Score",
+          "Cricket Livescore": "Cricket Live Score",
+          "Prediction": "Prediction",
+          "Contact Us": "Contact Us",
+          "Terms of Service": "Terms of Service",
+          "Privacy Policy": "Privacy Policy",
+          "EPL Standings": "EPL Standings 2021-22",
+          "Serie Standings": "Serie A Standings 2021-22",
+          "LaLiga Standings": "LaLiga Standings 2021-22",
+          "Bundesliga Standings": "Bundesliga Standings 2021-22",
+          "Ligue Standings": "Ligue 1 Standings 2021-22",
+          "Primeira Standings": "Primeira Liga Standings 2021-22",
+          "Belgian Standings": "Belgian Pro League Standings 2021-22",
+          "UEFA Standings": "UEFA Champions League 2021-22",
+          "bread_football": "Football Live Score",
+          "bread_basketball": "Basketball Live Score",
+          "bread_volleyball": "Volleyball Live Score",
+          "bread_tabletennis": "Table Tennis Live Score",
+          "bread_baseball": "Baseball Live Score",
+          "bread_badminton": "Badminton Live Score",
+          "bread_handball": "Handball Live Score",
+          "bread_waterpolo": "Water Polo Live Score",
+          "bread_snooker": "Snooker Live Score",
+          "bread_icehockey": "Hockey Live Score",
+          "bread_cricket": "Cricket Live Score",
+          "bread_tennis": "Tennis Live Score",
+          "bread_amfootball": "American Football Live Score",
+          "bread_esports": "Esports Live Score",
+          "Total Sets": "Total Sets",
+          "Total Score": "Total Score",
+          "Matches found for Today": "Total:{nums} Matches found for Today",
+          "updating team formations": "We are updating team formations and line-ups for {home} vs {away} live in real time.",
+          "updating match commentary": "We are updating match commentary for {home} vs {away} live in real time.",
+          "Highlights": "Highlights",
+          "Commentary": "Commentary",
+          "match hightlight": "We are updating {home} vs {away} match hightlight after the match.",
+          "Explore stats": "Explore stats from {home} vs {away} live on AiScore - we are updating the numbers on this page every second of the game.",
+          "Live2": "Live",
+          "Transfer Fee": "Transfer Fee",
+          "Latest Transfers News": "Latest Transfers News",
+          "National": "National",
+          "Left": "Left",
+          "Joined": "Joined",
+          "Market value": "Market value",
+          "Transfer History": "Transfer History",
+          "Transfer Date": "Transfer Date",
+          "Latest Football Transfers News": "Latest Football Transfers News",
+          "Total Transfer Fee": "Total Transfer Fee",
+          "Transfer News": "Transfer News",
+          "In": "In",
+          "Out": "Out",
+          "Loan": "Loan",
+          "onlyone": "Only one condition is allowed.",
+          "transferType1": "Loan",
+          "transferType2": "End of loan",
+          "transferType3": "Transfer",
+          "transferType4": "End of career",
+          "transferType5": "Draft",
+          "transferType6": "Released",
+          "transferType7": "Signed",
+          "transferType8": "Unknown",
+          "Transfers News": "Transfers News"
+        },
+        "map_football": {
+          "All Games": "All Games",
+          "Live": "Live",
+          "Sort by time": "Sort by time",
+          "loading": "loading",
+          "Upcoming matches": "Upcoming matches",
+          "Live Stream": "Live Stream",
+          "Match Live": "Match Live",
+          "Overview": "Overview",
+          "Chat": "Chat",
+          "Lineups": "Lineups",
+          "Standings": "Standings",
+          "Attacks": "Attacks",
+          "Dangerous Attacks": "Dangerous Attack",
+          "Possession": "Ball possession",
+          "Player Rating": "AiScore ratings",
+          "Assist": "Assist",
+          "In": "In",
+          "Out": "Out",
+          "Referee": "Referee",
+          "dangers": "dangers",
+          "Starting Lineups": "Starting lineups",
+          "Substitutes": "Substitutes",
+          "Injured or suspended": "Injured or suspended",
+          "Coach": "Coach",
+          "Overall": "All",
+          "Home": "Home",
+          "Away": "Away",
+          "Team": "Team",
+          "Goals": "Goals",
+          "Pts": "Pts",
+          "P": "P",
+          "W": "W",
+          "D": "D",
+          "L": "L",
+          "Penalty": "Penalty",
+          "Penalty missed": "Penalty missed",
+          "Own Goal": "Own Goal",
+          "Yellow card": "Yellow card",
+          "Red card": "Red card",
+          "Second yellow": "Second yellow",
+          "Corner": "Corner",
+          "Substitution": "Substitution",
+          "Injured Substitution": "Injured Substitution",
+          "JAN": "JAN",
+          "FEB": "FEB",
+          "MAR": "MAR",
+          "APR": "APR",
+          "MAY": "MAY",
+          "JUN": "JUN",
+          "JUL": "JUL",
+          "AUG": "AUG",
+          "SEP": "SEP",
+          "OCT": "OCT",
+          "NOV": "NOV",
+          "DEC": "DEC",
+          "MON": "MON",
+          "TUE": "TUE",
+          "WED": "WED",
+          "THU": "THU",
+          "FRI": "FRI",
+          "SAT": "SAT",
+          "SUN": "SUN",
+          "Interrupted": "Interrupted",
+          "Canceled": "Canceled",
+          "Postponed": "Postponed",
+          "Cut": "Cut",
+          "TBD": "TBD",
+          "FT": "FT",
+          "On Target": "On Target",
+          "Off Target": "Off Target",
+          "Today": "Today",
+          "Cancel": "Cancel",
+          "Football": "Football",
+          "Download it for free on Google Play": "Download it for free on Google Play",
+          "Download it for free on App Store": "Download it for free on App Store",
+          "Download": "Download",
+          "H2H": "H2H",
+          "Odds": "Odds",
+          "Lastest matches": "Latest matches",
+          "Next 3 matches": "Next 3 matches",
+          "1X2": "1X2",
+          "Handicap": "Handicap",
+          "O/U": "O/U",
+          "odds_1": "1",
+          "odds_X": "X",
+          "odds_2": "2",
+          "Time": "Time",
+          "Over": "Over",
+          "Under": "Under",
+          "This League": "This League",
+          "Last": "Last",
+          "Win": "Win",
+          "Draw": "Draw",
+          "Lose": "Lose",
+          "score": "score",
+          "and": "and",
+          "conceded": "conceded",
+          "per game": "per game",
+          "days": "days",
+          "FIFA World Ranking": "FIFA World Ranking",
+          "Popular": "Popular",
+          "Other Leagues": "Other Leagues",
+          "Men": "Men",
+          "Women": "Women",
+          "Points": "Points",
+          "All confederations": "All confederations",
+          "Division Level": "Division Level",
+          "Season": "Season",
+          "Featured Match": "Featured Match",
+          "Team of The Week": "Team of The Week",
+          "Upper Division": "Upper Division",
+          "Lower Division": "Lower Division",
+          "From Upper Division": "From Upper Division",
+          "From Lower Division": "From Lower Division",
+          "Home team wins": "Home team wins",
+          "Away team wins": "Away team wins",
+          "Draws": "Draws",
+          "Average Goals": "Average Goals",
+          "Title holder": "Title holder",
+          "Most titles": "Most titles",
+          "Info": "Info",
+          "Host Country": "Host Country",
+          "Number of teams": "Number of teams",
+          "Rounds": "Rounds",
+          "Foreign Players": "Foreign Players",
+          "Average Age": "Average Age",
+          "Most Value Player": "Most Value Player",
+          "Top Scorers": "Top Scorers",
+          "Player": "Player",
+          "Assists": "Assists",
+          "Matches": "Matches",
+          "Group": "Group",
+          "Round": "Round",
+          "Team Stats": "Team Stats",
+          "Player Statistics": "Player Statistics",
+          "View All": "View All",
+          "Offensive Data": "Offensive Data",
+          "Scoring Frequency": "Scoring Frequency",
+          "goals": "goals",
+          "Total Shots": "Total Shots",
+          "Passes accuracy": "Passes accuracy",
+          "Key Passes": "Key Passes",
+          "Crosses accuracy": "Crosses accuracy",
+          "Long balls accuracy": "Long balls accuracy",
+          "Ball possession": "Ball possession",
+          "Shots per game": "Shots per game",
+          "Penalties won": "Penalties won",
+          "Corners per game": "Corners per game",
+          "Key passes per game": "Key passes per game",
+          "Accurate long balls per game": "Accurate long balls per game",
+          "Accurate crosses per game": "Accurate crosses per game",
+          "Defense data": "Defense data",
+          "Interceptions": "Interceptions",
+          "Clearances": "Clearances",
+          "Blocked Shots": "Blocked Shots",
+          "Saves": "Saves",
+          "Goals conceded": "Goals conceded",
+          "Tackles per game": "Tackles per game",
+          "Interceptions per game": "Interceptions per game",
+          "Clearances per game": "Clearances per game",
+          "Blocked shots per game": "Blocked shots per game",
+          "Other Data": "Other Data",
+          "Minutes Played": "Minutes Played",
+          "Yellow Cards": "Yellow Cards",
+          "Red Cards": "Red Cards",
+          "Fouls": "Fouls",
+          "Was fouled": "Was fouled",
+          "Turnovers per game": "Turnovers per game",
+          "Fouls per game": "Fouls per game",
+          "Players": "Players",
+          "Teams": "Teams",
+          "Total": "Total",
+          "PG": "PG",
+          "Champions": "Champions",
+          "Leagues": "Leagues",
+          "Venue": "Venue",
+          "Squad": "Squad",
+          "Player Champions": "Player Champions",
+          "Player statistics": "Player statistics",
+          "First Team": "First Team",
+          "Local Players": "Local Players",
+          "Current Transfer Record": "Current Transfer Record",
+          "Stadium": "Stadium",
+          "Capacity": "Capacity",
+          "City": "City",
+          "Arrivals": "Arrivals",
+          "Departures": "Departures",
+          "Latest Transfers": "Latest Transfers",
+          "No team": "No team",
+          "Show next matches": "Show next matches",
+          "Hide next matches": "Hide next matches",
+          "Forward": "Forward",
+          "Midfielder": "Midfielder",
+          "Defener": "Defener",
+          "Goalkeeper": "Goalkeeper",
+          "Others": "Others",
+          "Birthday": "Birthday",
+          "Foot": "Foot",
+          "Height": "Height",
+          "Weight": "Weight",
+          "Total market value": "Total market value",
+          "Club": "Club",
+          "Contract expires": "Contract expires",
+          "Place of birth": "Place of birth",
+          "Outfitter": "Outfitter",
+          "Player agent": "Player agent",
+          "Social media": "Social media",
+          "Strengths": "Strengths",
+          "Weaknesses": "Weaknesses",
+          "Market value over time": "Market value over time",
+          "Current market value": "Current market value",
+          "Last update": "Last update",
+          "Highest market value": "Highest market value",
+          "Transfer History": "Transfer History",
+          "Left": "Left",
+          "Right": "Right",
+          "Both": "Both",
+          "Main position": "Main position",
+          "No outstanding strengths": "No outstanding strengths",
+          "No outstanding weaknesses": "No outstanding weaknesses",
+          "Avg": "Avg",
+          "Market value": "Market value",
+          "Age": "Age",
+          "Loan": "Loan",
+          "End of loan": "End of loan",
+          "Transfer": "Transfer",
+          "End of career": "End of career",
+          "Draft": "Draft",
+          "Released": "Released",
+          "Signed": "Signed",
+          "Unknown": "Unknown",
+          "Total Played": "Total Played",
+          "Started": "Started",
+          "Minutes Per Game": "Minutes Per Game",
+          "Goalkeep Data": "Goalkeep Data",
+          "Goals Conceded Per Game": "Goals Conceded Per Game",
+          "Penalties Saved": "Penalties Saved",
+          "Clean sheets": "Clean sheets",
+          "Saves Per Game": "Saves Per Game",
+          "Success Runs Out Per Game": "Success Runs Out Per Game",
+          "Punches Per Game": "Punches Per Game",
+          "Good High Claims Per Game": "Good High Claims Per Game",
+          "Goals (PK)": "Goals (PK)",
+          "Scoring Frequency (Minutes)": "Scoring Frequency (Minutes)",
+          "Shots Per Game": "Shots Per Game",
+          "Accurate Passes Per Game": "Accurate Passes Per Game",
+          "Key Passes Per Game": "Key Passes Per Game",
+          "Accurate Long Balls Per Game": "Accurate Long Balls Per Game",
+          "Accurate Crosses Per Game": "Accurate Crosses Per Game",
+          "Success Dribbles Per Game": "Success Dribbles Per Game",
+          "Tackles Per Game": "Tackles Per Game",
+          "Interceptions Per Game": "Interceptions Per Game",
+          "Clearances Per Game": "Clearances Per Game",
+          "Block Shots Per Game": "Block Shots Per Game",
+          "Yellow-Red": "Yellow-Red",
+          "Turnovers Per Game": "Turnovers Per Game",
+          "Fouls Per Game": "Fouls Per Game",
+          "Be Fouled Per Game": "Be Fouled Per Game",
+          "Live Streaming Available": "Live Streaming Available",
+          "INSTALL": "INSTALL",
+          "Watch Live Stream For Free": "Watch Live Stream For Free",
+          "The Fastest Livescore App": "The Fastest LiveScore App",
+          "Watch Match Live and Chat Online with Sports Fans": "Watch Match Live and Chat Online with Sports Fans",
+          "Live Scores": "Live Scores",
+          "Match Details": "Match Details",
+          "Leagues & Teams": "Leagues & Teams",
+          "Favorites & Notifications": "Favorites & Notifications",
+          "Download AiScore App for free": "Download AiScore App for free",
+          "Free Agent": "Free Agent",
+          "Round of 16": "Round of 16",
+          "Quarter Finals": "Quarter Finals",
+          "Semi Finals": "Semi Finals",
+          "Final": "Final",
+          "career earnings": "career earnings",
+          "The Hightest Paid Player in competition season": "The Hightest Paid Player in {competition} {season}",
+          "Player Salary": "Player Salary",
+          "All Player Salary": "All Player Salary",
+          "teamname Player Salary season": "{teamname} Player Salary {season}",
+          "Player optional": "Player optional",
+          "Annual Salary": "Annual Salary",
+          "Weekly Salary": "Weekly Salary",
+          "Other TeamSalary": "Other TeamSalary",
+          "teamname Player Salary season All": "{teamname} Player Salary {season} All",
+          "playername teammate Salary": "{playername} teammate Salary",
+          "Strikers": "Forward",
+          "Midfielders": "Midfielder",
+          "Defender": "Defender",
+          "Goalkeepers": "Goalkeeper",
+          "Contract untill": "Contract until",
+          "Year": "Year",
+          "Shots": "Shots",
+          "Shots on Target": "Shots on Target",
+          "Free Kicks": "Free Kicks",
+          "Corners": "Corners",
+          "FIFA World Cup": "FIFA World Cup",
+          "All World Cup Host": "All World Cup Host",
+          "Qualifiers": "Qualifiers",
+          "Groups": "Groups",
+          "Schedule": "Schedule",
+          "showMore": "showMore",
+          "All World Cup Champions": "All World Cup Champions",
+          "Winners List": "Winners List",
+          "Host country": "Host country",
+          "Runner-up": "Runner-up",
+          "Third Place": "Third Place",
+          "Fourth Place": "Fourth Place",
+          "World Cup Awards": "World Cup Awards",
+          "Golden Ball Winners": "Golden Ball Winners",
+          "Country": "Country",
+          "Golden Boot Winners": "Golden Boot Winners",
+          "Matches Played": "Matches Played",
+          "Goals Scored": "Goals Scored",
+          "Golden Glove Winners": "Golden Glove Winners",
+          "Best Young Player": "Best Young Player",
+          "Fair Play Trophy": "Fair Play Trophy",
+          "World Cup Balls": "World Cup Balls",
+          "World Cup Stats": "World Cup Stats",
+          "North America": "North America",
+          "Europe": "Europe",
+          "Africa": "Africa",
+          "South America": "South America",
+          "Asian": "Asian",
+          "Oceania": "Oceania",
+          "Goals2": "Goals",
+          "Match day": "Match day",
+          "Stadiums": "Stadiums",
+          "The 32 teams qualified for the season World Cup": "The 32 teams qualified for the {season} World Cup",
+          "Host Stadiums": "Host Stadiums",
+          "Opening": "Opening",
+          "Cost": "Cost",
+          "Construction": "Construction",
+          "Contractor": "Contractor",
+          "Record": "Record",
+          "Belgium": "Belgium",
+          "Qatar": "Qatar",
+          "Russia": "Russia",
+          "France": "France",
+          "Brazil": "Brazil",
+          "England": "England",
+          "South Africa": "South Africa",
+          "Germany": "Germany",
+          "South Korea": "South Korea",
+          "Japan": "Japan",
+          "USA": "USA",
+          "Italy": "Italy",
+          "Mexico": "Mexico",
+          "Spain": "Spain",
+          "Argentina": "Argentina",
+          "Chile": "Chile",
+          "Sweden": "Sweden",
+          "Switzerland": "Switzerland",
+          "Uruguay": "Uruguay",
+          "Hosts": "Hosts",
+          "canceled": "Canceled",
+          "Canada": "Canada",
+          "Ball": "Ball",
+          "Qualified": "Qualified",
+          "worldcup_share_select": "Please select 2 qualified teams from each group",
+          "worldcup_share_quickselect": "Quick select",
+          "worldcup_share_knockout": "Go to Knockout",
+          "worldcup_share_finished": "Finished",
+          "worldcup_share_generating": "Generating",
+          "worldcup_share_sharepre": "Share your prediction",
+          "worldcup_share_makepre": "Make your prediction",
+          "worldcup_share_agree": "\u26bd I predicted the World Cup winner \ud83c\udfc6 and qualifying route on AiScore App, do you agree? \ud83e\udd29",
+          "worldcup_share_download": "\ud83d\udce5 Get it now:",
+          "worldcup_championpredict": "World Cup Champions Prediction",
+          "store_title": "AiScore - Live Sports Scores",
+          "Player Option": "Player Option",
+          "Team Option": "Team Option",
+          "Restricted Free Agent": "Restricted Free Agent",
+          "Regular season": "Regular season",
+          "Playoffs": "Playoffs",
+          "Preseason": "Preseason",
+          "Season Stats Details": "Season Stats Details",
+          "Winning%": "WIN%",
+          "Home Winning%": "Home WIN%",
+          "Away Winning%": "Away WIN%",
+          "Points Per Game": "Points Per Game",
+          "Home Points Per Game": "Home Points per game",
+          "Away Points Per Game": "Away Points per game",
+          "Total Matches": "Total Matches",
+          "Total Sets": "Total Sets",
+          "Total Runs": "Total Runs",
+          "Total Score": "Total Score",
+          "Total Goals": "Total Goals",
+          "Scoreboard": "Scoreboard",
+          "Scores": "Scores",
+          "Right-Handed": "Right-Handed",
+          "Left-Handed": "Left-Handed",
+          "Two-Handed": "Two-Handed",
+          "NBA Champions": "NBA Champions",
+          "NBA Seasons": "NBA Seasons",
+          "Playoffs Played": "Playoffs Played",
+          "All-Star Games": "All-Star Games",
+          "Season MVP": "Season MVP",
+          "Finals MVP": "Finals MVP",
+          "Rookie of the Year": "Rookie of the Year",
+          "Defensive Player": "Defensive Player",
+          "6th Man of the Year": "6th Man of the Year",
+          "Most improved Player": "Most improved Player",
+          "Coach of the Year": "Coach of the Year",
+          "All-NBA Teams": "All-NBA Teams",
+          "All-Defensive Teams": "All-Defensive Teams",
+          "All-Rookie Teams": "All-Rookie Teams",
+          "Scoring Leaders": "Scoring Leaders",
+          "Rebounds Leaders": "Rebounds Leaders",
+          "Assists Leaders": "Assists Leaders",
+          "Steals Leaders": "Steals Leaders",
+          "Blocks Leaders": "Blocks Leaders",
+          "NBA Regular Season Stats": "NBA Regular Season Stats",
+          "Stats Per Game": "Stats Per Game",
+          "Rebounds Per Game": "Rebounds Per Game",
+          "Assists Per Game": "Assists Per Game",
+          "Steals Per Game": "Steals Per Game",
+          "Blocks Per Game": "Blocks Per Game",
+          "Total Stats": "Total Stats",
+          "Total Points": "Total Points",
+          "Total Rebounds": "Total Rebounds",
+          "Total Assists": "Total Assists",
+          "Total Steals": "Total Steals",
+          "Total Blocks": "Total Blocks",
+          "NBA Playoffs Stats": "NBA Playoffs Stats",
+          "Salary": "Salary",
+          "Honors": "Honors",
+          "Career": "Career",
+          "Comparison": "Comparison",
+          "Compare": "Compare",
+          "Profile Info": "Profile Info",
+          "Experience": "Experience",
+          "Name": "Name",
+          "Draft Info": "Draft Info",
+          "Honors and Awards": "Honors and Awards",
+          "Betting Odds": "Betting Odds",
+          "Fixture Matches": "Fixture Matches",
+          "Match Review": "Match Review",
+          "About The Match": "About The Match",
+          "Other Match": "Other Match",
+          "Stats": "Stats",
+          "more": "more",
+          "fewer": "fewer",
+          "equal": "equal",
+          "good": "good",
+          "bad": "bad",
+          "years": "years",
+          "Match Referee": "Match Referee",
+          "Match Info": "Match Info",
+          "Match Detail": "Match Detail",
+          "Date": "Date",
+          "More Details": "More Details",
+          "live score": "live score",
+          "There are no live games at this moment": "There are no live games at this moment",
+          "Basketball": "Basketball",
+          "League": "League",
+          "Winner": "Winner",
+          "Host city": "Host city",
+          "Venues": "Venues",
+          "Total Rounds": "Total Rounds",
+          "Position": "Position",
+          "FIFA Women's World Cup": "FIFA Women's World Cup",
+          "FIBA World Cup": "FIBA World Cup"
+        },
+        "map_basketball": {
+          "An Error Occured": "An Error Occured",
+          "Back to AiScore": "Back to AiScore",
+          "No data": "No data",
+          "No match found": "No match found",
+          "There are no live games at this moment": "There are no live games at this moment",
+          "All Games": "All Games",
+          "Live": "Live",
+          "Sort by time": "Sort by time",
+          "loading": "loading",
+          "Upcoming matches": "Upcoming matches",
+          "Live Stream": "Live Stream",
+          "Match Live": "Match Live",
+          "Overview": "Overview",
+          "Chat": "Chat",
+          "Box Score": "Box Score",
+          "Q1": "Q1",
+          "Q2": "Q2",
+          "Q3": "Q3",
+          "Q4": "Q4",
+          "OT": "OT",
+          "Total": "Total",
+          "pts": "pts",
+          "Field goals": "Field goals",
+          "2 points": "2 points",
+          "3 points": "3 points",
+          "Free throws": "Free throws",
+          "Foul": "Foul",
+          "Share your views": "Share your views",
+          "On the court": "On the court",
+          "Glossary": "Glossary",
+          "Starters": "Starters",
+          "Bench": "Bench",
+          "Team": "Team",
+          "Injured or suspended": "Injured or suspended",
+          "Minutes Played": "Minutes Played",
+          "Points": "Points",
+          "Rebounds": "Rebounds",
+          "Assists": "Assists",
+          "Blocks": "Blocks",
+          "Steals": "Steals",
+          "Field Goals": "Field goals",
+          "3 Points": "3 points",
+          "Free Throws": "Free throws",
+          "Offensive Rebounds": "Offensive rebounds",
+          "Defensive Rebounds": "Defensive rebounds",
+          "Turnovers": "Turnovers",
+          "Assists/Turnovers": "Assists/Turnovers",
+          "Personal Fouls": "Personal Fouls",
+          "Plus Minus": "Plus Minus",
+          "OK": "OK",
+          "Venue": "Venue",
+          "Old Trafford": "Old Trafford",
+          "Basketball": "Basketball",
+          "H2H": "H2H",
+          "Odds": "Odds",
+          "Lastest matches": "Latest matches",
+          "Next 3 matches": "Next 3 matches",
+          "MoneyLine": "Money Line",
+          "Spread": "Spread",
+          "O/U": "O/U",
+          "Bet 365": "Bet 365",
+          "188bet": "188bet",
+          "Crown": "Crown",
+          "Over": "Over",
+          "odds_Total": "Total",
+          "Under": "Under",
+          "odds_1": "1",
+          "odds_2": "2",
+          "Time": "Time",
+          "PTS": "PTS",
+          "OPP PTS": "OPP PTS",
+          "Conference": "Conference",
+          "Division": "Division",
+          "Attribute Overview": "Attribute Overview",
+          "Points Per Game": "Points Per Game",
+          "Rebounds Per Game": "Rebounds Per Game",
+          "Assists Per Game": "Assists Per Game",
+          "Steals Per Game": "Steals Per Game",
+          "Blocks Per Game": "Blocks Per Game",
+          "Points Allowed Per Game": "Points Allowed Per Game",
+          "Field Goal %": "Field Goal %",
+          "Season Stats": "Season Stats",
+          "REB": "REB",
+          "AST": "AST",
+          "BLK": "BLK",
+          "ATL": "ATL",
+          "Position": "Position",
+          "Salary": "Salary",
+          "Club": "Club",
+          "Contract expires": "Contract expires",
+          "Draft Info": "Draft Info",
+          "Place of birth": "Place of birth",
+          "Stats": "Stats",
+          "Averages": "Averages",
+          "Totals": "Totals",
+          "Carrer": "Carrer",
+          "Games Played": "Games Played",
+          "Game Started": "Game Started",
+          "Record": "Record",
+          "Rank": "Rank",
+          "PPG": "PPG",
+          "OPG": "OPG",
+          "RPG": "RPG",
+          "APG": "APG",
+          "FG": "FG",
+          "Years": "Years",
+          "OREB": "OREB",
+          "DEEB": "DEEB",
+          "STL": "STL",
+          "TOV": "TOV",
+          "PF": "PF",
+          "AST/TO": "AST/TO",
+          "FGM": "FGM",
+          "Field Goals Made": "Field Goals Made",
+          "FGA": "FGA",
+          "Field Goals Attempted": "Field Goals Attempted",
+          "FG%": "FG%",
+          "Field Goal Percentage": "Field Goal Percentage",
+          "3PM": "3PM",
+          "3 Point Field Goals Made": "3 Point Field Goals Made",
+          "3PA": "3PA",
+          "3 Point Field Goals Attempted": "3 Point Field Goals Attempted",
+          "3P%": "3P%",
+          "3 Point Field Goals Percentage": "3 Point Field Goals Percentage",
+          "FTM": "FTM",
+          "Free Throws Made": "Free Throws Made",
+          "FTA": "FTA",
+          "Free Throws Attempted": "Free Throws Attempted",
+          "FT%": "FT%",
+          "Free Throw Percentage": "Free Throw Percentage",
+          "Avg.": "Avg.",
+          "General": "General",
+          "GP": "GP",
+          "MIN": "MIN",
+          "W": "W",
+          "L": "L",
+          "Win%": "Win%",
+          "STR": "STR",
+          "GB": "GB",
+          "P": "P",
+          "Honors": "Honors",
+          "career earnings": "career earnings",
+          "The Hightest Paid Player in competition season": "The Hightest Paid Player in {competition} {season}",
+          "Player Salary": "Player Salary",
+          "All Player Salary": "All Player Salary",
+          "teamname Player Salary season": "{teamname} Player Salary {season}",
+          "Player optional": "Player optional",
+          "Annual Salary": "Annual Salary",
+          "Weekly Salary": "Weekly Salary",
+          "Other TeamSalary": "Other TeamSalary",
+          "teamname Player Salary season All": "{teamname} Player Salary {season} All",
+          "playername teammate Salary": "{playername} teammate Salary",
+          "have a total of": "{teamName} have a total of {playerNums} players in their home squad. The highest earning player in the squad is {topSalaryPlayer} earning {topSalaryPlayerWeeklySalary} per week.",
+          "teamName play in the competition": "{teamName} play in the {competition}, {teamName} player wages bill is: {teamYearSalary} per year, {teamWeeklySalary} per week",
+          "Who is the highest": "Who is the highest paid player in {teamName} {year}?",
+          "topSalaryPlayer has the highest salary": "{topSalaryPlayer} has the highest salary at {teamName}, earning {topSalaryPlayerWeeklySalary} per week",
+          "yearly wage": "What is {teamName} yearly wage bill in {year}?",
+          "total salary bill": "{teamName} total salary bill is {teamYearSalary} per year",
+          "topValuePlayerName salary": "How much is {topValuePlayerName} salary?",
+          "signed an annual": "{topValuePlayerName} signed an annual average salary of {topValuePlayerYearSalary} contract with the {teamName}. {topValuePlayerName} earned {topSalaryPlayerWeeklySalary} per week in {teamName}.",
+          "teamname Player Salaries": "{teamname} Player Salaries",
+          "Free Agent": "Free Agent",
+          "Restricted Free Agent": "Restricted Free Agent",
+          "Center": "Center",
+          "Power Forward": "Power Forward",
+          "Small Forward": "Small Forward",
+          "Point Guard": "Point Guard",
+          "Shooting Guard": "Shooting Guard",
+          "Forward": "Forward",
+          "Guard": "Guard",
+          "People also ask": "People also ask {teamName} Player Salary",
+          "Market value": "Market value "
+        },
+        "map_tennis": {
+          "Tennis": "Tennis",
+          "ATP": "ATP",
+          "First serve": "First serve",
+          "First serve points": "First serve points",
+          "Break points": "Break points",
+          "Aces": "Aces",
+          "Double faults": "Double faults",
+          "Winner": "Winner",
+          "Games": "Games",
+          "Red clay": "Red clay",
+          "Grass": "Grass",
+          "Hard": "Hard",
+          "Double": "Doubles",
+          "Singles": "Singles",
+          "Retired": "Retired",
+          "Rankings": "Rankings",
+          "Tournaments": "Tournaments",
+          "Find player or country": "Find player or country",
+          "Surface": "Surface",
+          "Sets": "Sets",
+          "Total prize money": "Total prize money",
+          "Average Age": "Average age",
+          "Host city": "Host city",
+          "Host country": "Host country",
+          "Carpet": "Carpet",
+          "Doubles": "Doubles",
+          "Career": "Career",
+          "Rank": "Rank",
+          "Titles": "Titles",
+          "Prize Money": "Prize Money",
+          "Plays": "Plays",
+          "Backhand": "Backhand",
+          "Residence": "Residence",
+          "Birthplace": "Birthplace"
+        },
+        "map_amfootball": {
+          "AMFootball": "AM. Football",
+          "TD": "TD",
+          "FG": "FG",
+          "Safaty": "Safaty",
+          "PAT": "PAT",
+          "2-PT CONV": "2-PT CONV",
+          "Attendance": "Attendance"
+        },
+        "map_icehockey": {
+          "Hockey": "Hockey",
+          "Interrupted": "Interrupted",
+          "Abandoned": "Abandoned"
+        },
+        "map_volleyball": {
+          "volleyball": "Volleyball"
+        },
+        "map_tabletennis": {
+          "tableTennis": "Table Tennis",
+          "v86_005": "Money Line",
+          "handicapGames": "Handicap Games",
+          "totalPoints": "Total Points",
+          "v4_047": "Handicap",
+          "v86_002": "Total",
+          "v86_001": "Total Goals"
+        },
+        "map_baseball": {
+          "baseball": "Baseball"
+        },
+        "map_badminton": {
+          "badminton": "Badminton"
+        },
+        "map_handball": {
+          "handball": "Handball"
+        },
+        "map_waterpolo": {
+          "waterpolo": "Water Polo"
+        },
+        "map_snooker": {
+          "snooker": "Snooker"
+        },
+        "map_cricket": {
+          "cricket": "Cricket",
+          "scorecard": "Scorecard",
+          "teams": "Teams",
+          "Wicket-Keeper": "Wicket-Keeper",
+          "Batsman": "Batsman",
+          "All-Rounder": "All-Rounder",
+          "Bowler": "Bowler",
+          "Playing XI": "Playing XI",
+          "Extras": "Extras"
+        },
+        "map_newseo": {
+          "Top_Scorers": "Top Scorers",
+          "Competition": "Competition",
+          "All": "All",
+          "Total": "Total",
+          "Total_games": "Total games",
+          "Players": "Players",
+          "Select_Season": "Select Season",
+          "Show": "Show",
+          "Current_Club": "Current Club",
+          "Total_Goals": "Total Goals",
+          "Above_team": "Above are {teamname}'s top scorers {competition} {season} and the totals they have scored.",
+          "This_page": "This page was last updated on: {date}",
+          "Above_competition": "Above are {competition}'s top scorers {season} and the totals they have scored.",
+          "All_Time": "All Time",
+          "all_time": "all time",
+          "predictions for": "{home} vs {away} predictions for {date} {week}'s {competition}. {home} vs {away} head to head record shows that of the recent {h2hmatches} meetings they've had, {Home} has won {homewins} times and {away} has won {awaywins} times, {drawnums} times they has ended in a draw. \nIn {home} previous game against {homelastrival}, they {score} {beatorlose} their opponents. Can {home} complete the job in the {competition} against {away} team?  And you guess who will win? Read on for all our free predictions and betting tips.",
+          "Last 5 {team} Matches Stats": "Last 5 {team} Matches Stats",
+          "{team} Fixture": "{team} Fixture",
+          "Future Matches Prediction": "Future Matches Prediction",
+          "{teamA} vs {teamB} Prediction Tips": "{teamA} vs {teamB} Prediction Tips",
+          "Football Games Prediction Today": "Football Games Prediction Today",
+          "Tomorrow": "Tomorrow",
+          "Upcoming Major Matches": "Upcoming Major Matches",
+          "Standings": "Standings",
+          "Goals": "Goals",
+          "Average Goals per Match": "Average Goals per Match",
+          "Average Shots per Match": "Average Shots per Match",
+          "Possession": "Possession",
+          "Average Corners per Match": "Average Corners per Match",
+          "Average Yellow cards per Match": "Average Yellow cards per Match",
+          "Average Red cards per Match": "Average Red cards per Match",
+          "Last 5 Match": "Last 5 Match",
+          "Goal Distribution": "Goal Distribution",
+          "Conceded": "Conceded",
+          "Scored": "Scored",
+          "distribution from": "{competition} Goal distribution from {matchesnum} Match",
+          "Football Prediction": "Football Prediction",
+          "Prediction": "Prediction",
+          "Football Games Prediction Tomorrow": "Football Games Prediction Tomorrow",
+          "predictions page updated": "This page list all football games predictions for {data}. For all those matches you can check football predictions stats page.\nThe football games predictions page updated on {data}.",
+          "Win": "Win",
+          "Draw": "Draw",
+          "Lose": "Lose",
+          "predictions for2": "{home} vs {away} predictions for {date} {week}'s {competition}. In {home} previous game against {homelastrival}, they {score} {beatorlose} their opponents. Can {home} complete the job in the {competition} against {away} team?  And you guess who will win? Read on for all our free predictions and betting tips.",
+          "predictions for3": "In {home} previous game against {homelastrival}, they {score} {beatorlose} their opponents. So you guess who will win? Read on for all our free predictions and betting tips."
+        },
+        "map_esports": {
+          "esports": "Esports",
+          "Economy": "Economy",
+          "EXP": "EXP",
+          "Tower": "Tower",
+          "Barracks": "Barracks",
+          "Nashor": "Nashor",
+          "Drakes": "Drakes",
+          "Inhibitor": "Inhibitor",
+          "Map": "Map",
+          "Blue": "Blue",
+          "Red": "Red",
+          "Radiant": "Radiant",
+          "Dire": "Dire",
+          "FB": "FB",
+          "FT": "FT",
+          "F5K": "F5K",
+          "F10K": "F10K",
+          "FD": "FD",
+          "FN": "FN"
+        },
+        "map_newTranslate": {
+          "all": "All",
+          "Search": "Search",
+          "Odds markets": "Odds markets",
+          "1X2": "1X2",
+          "Asian Handicap": "Asian Handicap",
+          "Total Goals": "Total Goals",
+          "Total Corners": "Total Corners",
+          "Money Line": "Money Line",
+          "Spread": "Spread",
+          "Total": "Total",
+          "Total Games": "Total Games",
+          "Timeline": "Timeline",
+          "Last 14 days": "Last 14 days",
+          "Teams": "Teams",
+          "Leagues": "Leagues",
+          "Players": "Players",
+          "No data": "No data",
+          "Today": "Today",
+          "Over": "Over",
+          "Under": "Under",
+          "hint": "Delete all finished games from Favorites?",
+          "Cancel": "Cancel",
+          "OK": "OK",
+          "View all": "View all",
+          "To win": "To win",
+          "Handicap": "Handicap",
+          "Handicap-Games": "Handicap - Games",
+          "Handicap-Sets": "Handicap - Sets",
+          "Total Points": "Total Points",
+          "Handicap-Runs": "Handicap - Runs",
+          "Odds Format": "Odds Format",
+          "Total Runs": "Total Runs",
+          "Total Frames": "Total Frames",
+          "Handicap-Frames": "Handicap - Frames",
+          "More": "More",
+          "Group": "Group",
+          "Round": "Round",
+          "Ball Possession": "Ball Possession",
+          "Total Shots": "Total Shots",
+          "Shots off target": "Shots off target",
+          "Shots on target": "Shots on target",
+          "Blocked Shots": "Blocked Shots",
+          "Penalties Awarded": "Penalties Awarded",
+          "Corner Kicks": "Corner Kicks",
+          "Offsides": "Offsides",
+          "Fouls": "Fouls",
+          "Yellow Cards": "Yellow Cards",
+          "Red Cards": "Red Cards",
+          "Total Passes": "Total Passes",
+          "Key Passes": "Key Passes",
+          "Accurate Passes": "Accurate Passes",
+          "Accurate Crosses": "Accurate Crosses",
+          "Accurate Long Balls": "Accurate Long Balls",
+          "Tackles": "Tackles",
+          "Interceptions": "Interceptions",
+          "Clearances": "Clearances",
+          "Saves": "Saves",
+          "Field Goals": "Field Goal",
+          "Field Goals %": "Field Goal %",
+          "3-Point": "3-Point",
+          "3-Point %": "3-Point %",
+          "Free Throws": "Free Throws",
+          "Free Throws %": "Free Throws %",
+          "Rebounds %": "Rebounds",
+          "Offensive Rebounds": "Offensive Rebounds",
+          "Defensive Rebounds": "Defensive Rebounds",
+          "Assists": "Assists",
+          "Blocks": "Blocks",
+          "Steals": "Steals",
+          "Turnovers": "Turnovers",
+          "Aces": "Aces",
+          "Double Faults": "Double Faults",
+          "1st serve": "1st serve",
+          "1st serve %": "1st serve %",
+          "2nd serve": "2nd serve",
+          "2nd serve %": "2nd serve %",
+          "Break points": "Break points",
+          "Break points %": "Break points %",
+          "Unforced error": "Unforced error",
+          "Points won": "Points won",
+          "1st serve points": "1st serve points",
+          "1st serve points %": "1st serve points %",
+          "2nd serve points": "2nd serve points",
+          "2nd serve points %": "2nd serve points %",
+          "Max points in a row": "Max points in a row",
+          "Receiver points won": "Receiver points won",
+          "Service Points": "Service Points",
+          "Service Points %": "Service Points %",
+          "Receiver Points": "Receiver Points",
+          "Receiver Points %": "Receiver Points %",
+          "Service Errors": "Service Errors",
+          "Timeouts": "Timeout",
+          "Puck Possession": "Puck Possession",
+          "Shots on Goal": "Shots on Goal",
+          "Shooting %": "Shooting %",
+          "Goalkeeper Saves": "Goalkeeper Saves",
+          "Saves %": "Saves %",
+          "Penalties": "Penalties",
+          "Penalty in minutes": "Penalties in minutes",
+          "Power-play Goals": "Power-play Goals",
+          "Shorthanded Goals": "Shorthanded Goals",
+          "Power-play %": "Power-play %",
+          "Penalty Kill %": "Penalty Kill %",
+          "Hits": "Hits",
+          "Faceoffs Won": "Faceoffs Won",
+          "Faceoffs %": "Faceoffs %",
+          "Empty Net Goals": "Empty Net Goals",
+          "Errors": "Errors",
+          "2B \u00b7 Doubles": "2B \u00b7 Doubles",
+          "3B \u00b7 Triples": "3B \u00b7 Triples",
+          "Home Runs": "Home Runs",
+          "At Bats": "At Bats",
+          "Batting %": "Batting %",
+          "Run Batted in": "Run Batted in",
+          "Left on Base": "Left on Base",
+          "Stolen Bases": "Stolen Bases",
+          "Strike Outs": "Strike Outs",
+          "Base on Balls": "Base on Balls",
+          "1st Downs": "1st Downs",
+          "Total Yards": "Total Yards",
+          "Passing Yards": "Passing Yards",
+          "Rushing Yards": "Rushing Yards",
+          "Penalties Yards": "Penalties Yards",
+          "Punts": "Punts",
+          "Touchdowns": "Touchdowns",
+          "Rushing Touchdowns": "Rushing Touchdowns",
+          "Passing Touchdowns": "Passing Touchdowns",
+          "Turnover Touchdowns": "Turnover Touchdowns",
+          "Field Goals Succeeded": "Field Goals Succeeded",
+          "Field Goals Attempted": "Field Goals Attempted",
+          "Interception Thrown": 21,
+          "Fumbles Lost": "Fumbles Lost",
+          "Sacks Allowed": "Sacks Allowed",
+          "Comeback to win": "Comeback to win",
+          "Biggest lead": "Biggest lead",
+          "1st Half": "1st Half",
+          "2nd Half": "2nd Half",
+          "Extra Time": "Extra Time",
+          "penalty": "Penalty",
+          "Opening odds": "Opening odds",
+          "Pre-match odds": "Pre-match odds",
+          "In-play odds": "In-play odds",
+          "Half Time": "Half Time",
+          "Full Time": "Full Time",
+          "After Extra Time": "After Extra Time",
+          "After Penalties": "After Penalties",
+          "After Overtime": "After Overtime",
+          "Extra Inning": "Extra Inning",
+          "Postponed": "Postponed",
+          "Interrupted": "Interrupted",
+          "Abandoned": "Abandoned",
+          "Canceled": "Canceled",
+          "Pending": "Pending",
+          "worldcup_share_select": "Please select 2 qualified teams from each group",
+          "worldcup_share_quickselect": "Quick select",
+          "worldcup_share_knockout": "Go to Knockout",
+          "worldcup_share_finished": "Finished",
+          "worldcup_share_generating": "Generating",
+          "worldcup_share_sharepre": "Share your prediction",
+          "worldcup_share_makepre": "Make your prediction",
+          "This League": "This league",
+          "per game": "per game",
+          "BLK": "Blocks",
+          "Top Scorers": "Top Scorers",
+          "Points": "Points",
+          "W": "W",
+          "D": "D",
+          "L": "L",
+          "Clay": "Clay",
+          "Grass": "Grass",
+          "Hard": "Hard",
+          "Singles": "Singles",
+          "doubles": "Doubles",
+          "Live": "Live",
+          "Finished": "Finished",
+          "Schedule": "Schedule",
+          "Sign in": "Sign in",
+          "Setting": "Setting",
+          "Language": "Language",
+          "Timezone": "Timezone",
+          "Odds format": "Odds format",
+          "Favoutires": "Favoutires",
+          "Dark": "Dark",
+          "competition": "competition",
+          "No match found": "No match found",
+          "Sign in with Facebook": "Sign in with Facebook",
+          "Sign in with Google": "Sign in with Google",
+          "An Error Occured ?": "An Error Occured ?",
+          "week0": "Sunday",
+          "week1": "Monday",
+          "week2": "Tuesday",
+          "week3": "Wednesday",
+          "week4": "Thursday",
+          "week5": "Friday",
+          "week6": "Saturday",
+          "Don\u2019t have Google Play?": "Don\u2019t have Google Play?",
+          "Download the app here": "Download the app here",
+          "HT": "HT",
+          "ET": "ET",
+          "FT": "FT",
+          "AET": "AET",
+          "AP": "AP",
+          "Opening Odds": "Opening odds",
+          "Pre-match Odds": "Pre-match odds",
+          "Key Players": "Key Players",
+          "Season Leaders": "Season Leaders",
+          "knockout": "knockout",
+          "Series": "Series",
+          "Close": "Close",
+          "Watch on": "Watch on",
+          "Match": "Match",
+          "worldcup_share_agree": "\u26bd I predicted the World Cup winner \ud83c\udfc6 and qualifying route on AiScore App, do you agree? \ud83e\udd29",
+          "worldcup_share_download": "\ud83d\udce5 Get it now:",
+          "others": "others"
+        }
+      }
+    },
+    "oddsListData": {},
+    "oddsUpdate": {},
+    "ispure": 0,
+    "isboot": false,
+    "headerTitle": "Cricket",
+    "ballRouteUrl": "cricket",
+    "homePre": "cricket",
+    "sport_id": 5,
+    "bet365Odds": [],
+    "bet365OddType": "",
+    "oddsType": "De",
+    "isShowSearch": false,
+    "isFixed": false,
+    "userData": null,
+    "cidData": {
+      "time": 1765969537,
+      "cid": 88,
+      "country_code": "IN"
+    },
+    "advsData": {
+      "countryId": 88,
+      "companies": [
+        {
+          "id": 101,
+          "logo": "f52cc9537bcd485297b7.png",
+          "link": "https://affpa.top//L?tag=d_915003m_1260c_m_odds_india&site=915003&ad=1260",
+          "multiples": 1,
+          "adName": "xb_in"
+        }
+      ],
+      "countryCode": "IN"
+    },
+    "fData": {
+      "compIds": [
+        "p0ndkz6izigq3z1",
+        "rn527r3i9s17evx",
+        "l5wv78xijujkrjn",
+        "r1edq09i0fyqxgo",
+        "jw34kgmixh1ko92",
+        "yw69759i8c2k23e",
+        "1edq09ignayqxgo",
+        "xzjek33i1tvko29",
+        "jmo07dnivixknxy",
+        "48vrqwni9sjqn2o",
+        "9oj7x9i2zse7g3y",
+        "xo17pji8oi37jw5",
+        "2eg6763iph47ryv",
+        "w2j374oi0f4qo6d",
+        "m4ndqmli2u5kveg",
+        "8vmqy9iolcek9r3",
+        "2jr7owiwys1q0em",
+        "n527r3i5xh17evx",
+        "5xvkjoilecr7938",
+        "0ndkz6irrbgq3z1",
+        "n527r3ipms17evx",
+        "g63kv9i0giz7ezv",
+        "g63kv9imvhz7ezv",
+        "yzrkn6i2rcjqle4",
+        "8vmqy9ij4tek9r3",
+        "xo17pji02i37jw5",
+        "2jr7owi6es1q0em",
+        "0ndkz6igragq3z1",
+        "0ndkz6i8zfgq3z1",
+        "0ndkz6iywtgq3z1",
+        "r8lk2dil5t0736d",
+        "zjek33ij1uvko29",
+        "xo17pji01ph37jw",
+        "zjek33ien6ivko2",
+        "59gklzi3ls37xdv",
+        "mo07dni2vfxknxy",
+        "w69759ij3yb2k23",
+        "n527r3iymf17evx",
+        "eg6763izrf47ryv",
+        "r8lk2di1xb0736d",
+        "el6kegipofn75dp",
+        "yzrkn6iorbjqle4",
+        "0ndkz6ixrhgq3z1",
+        "rn527rjsei1kevx",
+        "0ndkzys1jsg73z1",
+        "4ndqmrsgls5kveg",
+        "2ezk90sg0h2kn51",
+        "29oj7x6spie7g3y",
+        "4ndqmrsjla5kveg",
+        "mo07dzsonaxknxy",
+        "eg676jsygu4kryv",
+        "9oj7xrue9ebe7g3",
+        "8vmqyzum6zae79r",
+        "xo17pguv19a37jw",
+        "w69756uv6vi2k23",
+        "zjek3du98duvqo2",
+        "mo07d5u25wuxknx",
+        "w69756uvg6a2k23",
+        "r8lk2nu5ryc0k36",
+        "0m2q1dug16tpq6x",
+        "yzrknzu908fjkle",
+        "9oj7xru6ejue7g3",
+        "8vmqyzupm5be79r",
+        "xo17pguzvgf37jw",
+        "59gklou3m8b3kxd",
+        "0ndkzru91eigq3z",
+        "n527rnuv18u1qev",
+        "5wv785uje2tj7rj",
+        "1edq03u5nmiyqxg",
+        "g63kv3u4n5bz7ez",
+        "w69756uv0va2k23",
+        "r8lk2nu5y1f0k36",
+        "g63kv3u428hz7ez",
+        "zjek3du91ytvqo2",
+        "mo07d5u2gofxknx",
+        "zjek3du90ntvqo2",
+        "4ndqm0uoggf5kve",
+        "2j3746uew3a4qo6",
+        "eg6766uw3lb47ry",
+        "2ezk92u56xu27n5",
+        "el6ke5ue38ink5d",
+        "zjek3due18fvqo2",
+        "mo07d5u1gnixknx",
+        "n527rnuvd6u1qev",
+        "5wv785uj4mcj7rj",
+        "2j3746un5vt4qo6",
+        "eg6766uy00a47ry",
+        "5xvkjyulx3frk93",
+        "mo07d5u54gtxknx",
+        "8vrqwju423hjkn2",
+        "4ndqm0uwy3h5kve",
+        "2j3746u06os4qo6",
+        "eg6766u595f47ry",
+        "0m2q1du5nxhpq6x",
+        "0m2q1duw34tpq6x",
+        "yzrknzueweijkle",
+        "2jr7o0uj1gb170e",
+        "59gklou3r8f3kxd",
+        "el6ke5u1d9hnk5d",
+        "4ndqm0up6xf5kve",
+        "5wv785ujgmbj7rj",
+        "1edq03u5edbyqxg",
+        "5xvkjyulrzurk93",
+        "0m2q1du50pupq6x",
+        "2j3746ulxdi4qo6",
+        "5xvkjyu5j9ark93",
+        "g63kv3ulv1tz7ez",
+        "zjek3duw5lhvqo2",
+        "r8lk2nuny0c0k36",
+        "8vrqwjujzotjkn2",
+        "4ndqm0uvgzc5kve",
+        "w69756uj8zs2k23",
+        "r8lk2nu896h0k36",
+        "g63kv3uv2msz7ez",
+        "w69756uvega2k23",
+        "r8lk2nu5p3b0k36",
+        "4ndqm0uon6t5kve",
+        "2j3746ueygh4qo6",
+        "4ndqm0uo29h5kve",
+        "2j3746ueo6u4qo6",
+        "0m2q1du159apq6x",
+        "yzrknzu0o2fjkle",
+        "5wv788hjwzij7rj",
+        "mo07d0h6y5ixqnx",
+        "2jr7o2hl85s1q0e",
+        "zrkn2hm9ozsjkle",
+        "oj7x1hr69oiekg3",
+        "5xvkj6hmrwtr793",
+        "8vmqy5hprnue79r",
+        "jek3nh6963tv7o2",
+        "xo17pnc0dgs3kjw",
+        "2jr7onc64gs1q0e",
+        "wv78wcpj5wcj7rj",
+        "59gklnc0ews37xd",
+        "xvkjxc9or2fr793",
+        "2j374rc1x3c4qo6",
+        "mo07drcdzohxqnx",
+        "8vrqw0cojlbj7n2",
+        "4ndqmncxvgf57ve",
+        "8vrqwpi8g1cjkn2",
+        "eg6768id6ws4qry",
+        "527r6ie9nya17ev",
+        "wv78gipd8whjqrj",
+        "2ezk95idxyu27n5",
+        "mo07d9i6mjtxqnx",
+        "2jr7o8bevmc1q0e",
+        "59gkllbgmra3kxd",
+        "0ndkzpb51nhg73z",
+        "1edq0nb6y2aykxg",
+        "5wv78nbo35cj7rj",
+        "r8lk2ebevxu0k36",
+        "yzrknrbjeosjqle",
+        "59gkllbgrri3kxd",
+        "n527rwb8lnu1qev",
+        "9gkl1s0l1dc3qxd",
+        "ndkzlszm34igq3z",
+        "34kges2vdof1qo9",
+        "6975ys3w6rc2q23",
+        "8lk2xsg0ndh0q36",
+        "63kv1smzvwbzkez",
+        "2jr7o1se00u1k0e",
+        "59gkl1sg8zi3qxd",
+        "j3742s18nji4ko6",
+        "4ndqm8b161t57ve",
+        "ndqml6cxx8vb5kv",
+        "j374oxc113xt4qo",
+        "g6763zcvvrzh47r",
+        "ezk96jcnng8t2kn",
+        "ndqml6cx4vrt5kv",
+        "j374oxc18mps4qo",
+        "g6763zcvnjnt47r",
+        "ezk96jcn09ni2kn",
+        "l6keg3czz6jan75",
+        "ndkz69czzr8hgq3",
+        "zrkn68cmm9phjql",
+        "oj7x9jcrr62he7g",
+        "jr7owrc66y1c1q0",
+        "zjek3waln6bv7o2",
+        "zjek3walnyfv7o2",
+        "5wv78yao89ujqrj",
+        "g63kvxadgzbz7ez",
+        "r8lk23aedes0q36"
+      ]
+    },
+    "isSendAdvs": true,
+    "isSendTime": true,
+    "isSendIds": true,
+    "seoH2h": {
+      "tab": "index",
+      "lists": [],
+      "teamsMap": {},
+      "updateTime": 0,
+      "h2hDetailData": {},
+      "detail_compsMap": {},
+      "detail_teamsMap": {},
+      "detail_homeMap": {},
+      "detail_awayMap": {},
+      "detail_venuesMap": {},
+      "home": "",
+      "away": "",
+      "hot_h2h": {},
+      "hot_h2h_maps": {},
+      "matchInfo": {},
+      "homeResult": {},
+      "awayResult": {}
+    },
+    "cricket": {
+      "tab": "Live",
+      "hideFinished": false,
+      "currentDate": 1765969537094,
+      "sortBy": 1,
+      "serverTime": 1765969537,
+      "liveLength": 3,
+      "favoritesLength": 0,
+      "leftData_categoriesClone": [],
+      "htmlfontSize": 39,
+      "noData": {
+        "index": {
+          "leftNav": true,
+          "mainList": true
+        },
+        "detail": {
+          "commonHeader": true,
+          "overview_score": true,
+          "overview_playbyplay": true,
+          "overview_topplayers": true,
+          "overview_stats": true,
+          "boxscore": true,
+          "odds": true,
+          "h2h": true,
+          "standings": true,
+          "live": true
+        }
+      },
+      "matchToCompMap": {
+        "l6ke6hrm6vvhvq5": {
+          "id": "mo07d0h6y5ixqnx",
+          "sportId": 5,
+          "country": {
+            "id": 72,
+            "name": "Australia",
+            "iso": "AU",
+            "logo": "4442e4af0916f53a07fb8ca9a49b98ed.png!w80",
+            "squareLogo": "aus.png"
+          },
+          "name": "Big Bash League",
+          "logo": "04730b30c473d2ffdb8552d179927eee.png!w80",
+          "weight": 8500,
+          "hasStats": 1,
+          "slug": "big-bash-league"
+        },
+        "ndkz1h2vpgofx73": {
+          "id": "oj7x1hrlpnhekg3",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "Test Series Australia vs England",
+          "logo": "4d9b58b41d73a40965cdf2423f1f783d.png!w80",
+          "hasStats": 1,
+          "slug": "test-series-australia-vs-england"
+        },
+        "l6ke6h4zg0vfvq5": {
+          "id": "jek3nh60vzav7o2",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "T20 SEA Games Women",
+          "logo": "eac6cc09a11e0e2d00a8e73a53139e71.png!w80",
+          "hasStats": 1,
+          "slug": "t20-sea-games-women"
+        },
+        "69758hx38x9cg72": {
+          "id": "jek3nh60vzav7o2",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "T20 SEA Games Women",
+          "logo": "eac6cc09a11e0e2d00a8e73a53139e71.png!w80",
+          "hasStats": 1,
+          "slug": "t20-sea-games-women"
+        },
+        "edq02h29vpntekx": {
+          "id": "eg6769hvx6u47ry",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "T20I Series India vs South Africa",
+          "logo": "abe6be52beb66f057f2f29233aae4f72.png!w80",
+          "hasStats": 1,
+          "slug": "t20i-series-india-vs-south-africa"
+        },
+        "69758hxwe4rcg72": {
+          "id": "el6ke6hexzanq5d",
+          "sportId": 5,
+          "country": {
+            "name": "Others",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80"
+          },
+          "name": "ACC MEN'S U19 ASIA CUP",
+          "logo": "6ca9ded3194815bb4094b5041add578a.png!w80",
+          "hasStats": 1,
+          "slug": "acc-men's-u19-asia-cup"
+        },
+        "g6769h9nooobo7r": {
+          "id": "el6ke6hexzanq5d",
+          "sportId": 5,
+          "country": {
+            "name": "Others",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80"
+          },
+          "name": "ACC MEN'S U19 ASIA CUP",
+          "logo": "6ca9ded3194815bb4094b5041add578a.png!w80",
+          "hasStats": 1,
+          "slug": "acc-men's-u19-asia-cup"
+        },
+        "63kv6h5jv4jsx7e": {
+          "id": "edq02hmjleaykxg",
+          "sportId": 5,
+          "country": {
+            "name": "Others",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80"
+          },
+          "name": "T20 Maxx Challenge Cup",
+          "logo": "f2d18bb60b9c0bd1435cac73ba61ea22.png!w80",
+          "hasStats": 1,
+          "slug": "t20-maxx-challenge-cup"
+        },
+        "8lk22h3zogptzk3": {
+          "id": "jek3nh6dmvuv7o2",
+          "sportId": 5,
+          "country": {
+            "id": 2294,
+            "name": "United Arab Emirates",
+            "logo": "8db59fb09cfaca39617f502ad640e26b.png!w80"
+          },
+          "name": "International League T20",
+          "logo": "fecfb9c4749fb6ad1c691cc514b02abc.png!w80",
+          "hasStats": 1,
+          "slug": "international-league-t20"
+        }
+      },
+      "matchesData_competitions": [
+        {
+          "id": "mo07d0h6y5ixqnx",
+          "sportId": 5,
+          "country": {
+            "id": 72,
+            "name": "Australia",
+            "iso": "AU",
+            "logo": "4442e4af0916f53a07fb8ca9a49b98ed.png!w80",
+            "squareLogo": "aus.png"
+          },
+          "name": "Big Bash League",
+          "logo": "04730b30c473d2ffdb8552d179927eee.png!w80",
+          "weight": 8500,
+          "hasStats": 1,
+          "slug": "big-bash-league"
+        },
+        {
+          "id": "jek3nh6dmvuv7o2",
+          "sportId": 5,
+          "country": {
+            "id": 2294,
+            "name": "United Arab Emirates",
+            "logo": "8db59fb09cfaca39617f502ad640e26b.png!w80"
+          },
+          "name": "International League T20",
+          "logo": "fecfb9c4749fb6ad1c691cc514b02abc.png!w80",
+          "hasStats": 1,
+          "slug": "international-league-t20"
+        },
+        {
+          "id": "jek3nh60vzav7o2",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "T20 SEA Games Women",
+          "logo": "eac6cc09a11e0e2d00a8e73a53139e71.png!w80",
+          "hasStats": 1,
+          "slug": "t20-sea-games-women"
+        },
+        {
+          "id": "oj7x1hrlpnhekg3",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "Test Series Australia vs England",
+          "logo": "4d9b58b41d73a40965cdf2423f1f783d.png!w80",
+          "hasStats": 1,
+          "slug": "test-series-australia-vs-england"
+        },
+        {
+          "id": "eg6769hvx6u47ry",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "T20I Series India vs South Africa",
+          "logo": "abe6be52beb66f057f2f29233aae4f72.png!w80",
+          "hasStats": 1,
+          "slug": "t20i-series-india-vs-south-africa"
+        },
+        {
+          "id": "el6ke6hexzanq5d",
+          "sportId": 5,
+          "country": {
+            "name": "Others",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80"
+          },
+          "name": "ACC MEN'S U19 ASIA CUP",
+          "logo": "6ca9ded3194815bb4094b5041add578a.png!w80",
+          "hasStats": 1,
+          "slug": "acc-men's-u19-asia-cup"
+        },
+        {
+          "id": "edq02hmjleaykxg",
+          "sportId": 5,
+          "country": {
+            "name": "Others",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80"
+          },
+          "name": "T20 Maxx Challenge Cup",
+          "logo": "f2d18bb60b9c0bd1435cac73ba61ea22.png!w80",
+          "hasStats": 1,
+          "slug": "t20-maxx-challenge-cup"
+        }
+      ],
+      "matchesData_matches": [
+        {
+          "id": "l6ke6hrm6vvhvq5",
+          "sportId": 5,
+          "competition": {
+            "id": "mo07d0h6y5ixqnx"
+          },
+          "season": {
+            "sid": 55088
+          },
+          "homeTeam": {
+            "id": "1edq02hzorh4kxg"
+          },
+          "awayTeam": {
+            "id": "xo17p2hd94b2kjw"
+          },
+          "times": null,
+          "matchTime": 1765959300,
+          "statusId": 533,
+          "menu": 320,
+          "users": 5678,
+          "matchStatus": 2,
+          "venue": {
+            "id": 192
+          },
+          "referee": {},
+          "ext": {
+            "odds": {
+              "oddItems": [
+                {},
+                {
+                  "odd": [
+                    "3",
+                    "0",
+                    "1.4",
+                    "0"
+                  ]
+                },
+                {}
+              ]
+            }
+          },
+          "ckScores": {
+            "ft": [
+              159,
+              95
+            ],
+            "p1": [
+              159,
+              95
+            ],
+            "p2": [],
+            "innings": [
+              {
+                "runs": 159,
+                "belong": 1,
+                "overs": 20,
+                "wickets": 9
+              },
+              {
+                "runs": 95,
+                "belong": 2,
+                "overs": 12.100000381469727,
+                "wickets": 4
+              }
+            ]
+          },
+          "awayScoresRed2": 2,
+          "awayScoresTotal": 95,
+          "awayScores": [
+            12.100000381469727,
+            95,
+            4
+          ],
+          "homeScores": [
+            20,
+            159,
+            9
+          ]
+        },
+        {
+          "id": "ndkz1h2vpgofx73",
+          "sportId": 5,
+          "competition": {
+            "id": "oj7x1hrlpnhekg3"
+          },
+          "season": {
+            "sid": 55825
+          },
+          "homeTeam": {
+            "id": "2j374nhm9zhrko6"
+          },
+          "awayTeam": {
+            "id": "8vmqy5h5wvi479r"
+          },
+          "times": {
+            "day": 1
+          },
+          "matchTime": 1765927800,
+          "statusId": 544,
+          "menu": 320,
+          "users": 25,
+          "matchStatus": 2,
+          "venue": {
+            "id": 105
+          },
+          "referee": {},
+          "ext": {
+            "odds": {
+              "oddItems": [
+                {},
+                {
+                  "odd": [
+                    "1.33",
+                    "0",
+                    "3.25",
+                    "0"
+                  ]
+                },
+                {}
+              ]
+            }
+          },
+          "ckScores": {
+            "ft": [
+              326,
+              0
+            ],
+            "p1": [
+              326,
+              0
+            ],
+            "innings": [
+              {
+                "runs": 326,
+                "belong": 1,
+                "overs": 83,
+                "wickets": 8
+              }
+            ]
+          }
+        },
+        {
+          "id": "l6ke6h4zg0vfvq5",
+          "sportId": 5,
+          "competition": {
+            "id": "jek3nh60vzav7o2"
+          },
+          "season": {
+            "sid": 56869
+          },
+          "homeTeam": {
+            "id": "j374nhme2vsrko6"
+          },
+          "awayTeam": {
+            "id": "g6769hvw9l6ip7r"
+          },
+          "times": {},
+          "matchTime": 1765936800,
+          "statusId": 100,
+          "menu": 320,
+          "users": 42,
+          "matchStatus": 3,
+          "venue": {},
+          "referee": {},
+          "ext": {
+            "odds": {
+              "oddItems": [
+                {},
+                {
+                  "odd": [
+                    "1.01",
+                    "0",
+                    "26",
+                    "0"
+                  ]
+                },
+                {}
+              ]
+            }
+          },
+          "ckScores": {
+            "ft": [
+              63,
+              62
+            ],
+            "p1": [
+              63,
+              62
+            ],
+            "winby": 2,
+            "margin": 8,
+            "winner": 1,
+            "innings": [
+              {
+                "runs": 63,
+                "belong": 1,
+                "overs": 8.199999809265137,
+                "wickets": 2
+              },
+              {
+                "runs": 62,
+                "belong": 2,
+                "overs": 20,
+                "wickets": 9
+              }
+            ]
+          }
+        },
+        {
+          "id": "69758hx38x9cg72",
+          "sportId": 5,
+          "competition": {
+            "id": "jek3nh60vzav7o2"
+          },
+          "season": {
+            "sid": 56869
+          },
+          "homeTeam": {
+            "id": "m2q13hvmp9cmk6x"
+          },
+          "awayTeam": {
+            "id": "63kv6hl4nptp7ez"
+          },
+          "times": {},
+          "matchTime": 1765953000,
+          "statusId": 100,
+          "menu": 320,
+          "users": 22,
+          "matchStatus": 3,
+          "venue": {},
+          "referee": {},
+          "ext": {
+            "odds": {
+              "oddItems": [
+                {},
+                {
+                  "odd": [
+                    "1.18",
+                    "0",
+                    "4.5",
+                    "0"
+                  ]
+                },
+                {}
+              ]
+            }
+          },
+          "ckScores": {
+            "ft": [
+              123,
+              51
+            ],
+            "p1": [
+              123,
+              51
+            ],
+            "winby": 1,
+            "margin": 72,
+            "winner": 1,
+            "innings": [
+              {
+                "runs": 123,
+                "belong": 1,
+                "overs": 20,
+                "wickets": 7
+              },
+              {
+                "runs": 51,
+                "belong": 2,
+                "overs": 15.5,
+                "wickets": 10
+              }
+            ]
+          }
+        },
+        {
+          "id": "edq02h29vpntekx",
+          "sportId": 5,
+          "competition": {
+            "id": "eg6769hvx6u47ry"
+          },
+          "season": {
+            "sid": 54692
+          },
+          "homeTeam": {
+            "id": "9oj7x1hl0nsrkg3"
+          },
+          "awayTeam": {
+            "id": "xo17p2hdy4h2kjw"
+          },
+          "times": {},
+          "matchTime": 1765978200,
+          "statusId": 1,
+          "menu": 320,
+          "users": 60,
+          "matchStatus": 1,
+          "venue": {
+            "id": 4531
+          },
+          "referee": {},
+          "ext": {
+            "odds": {
+              "oddItems": [
+                {},
+                {
+                  "odd": [
+                    "1.33",
+                    "0",
+                    "3.4",
+                    "0"
+                  ]
+                },
+                {}
+              ]
+            }
+          },
+          "ckScores": {}
+        },
+        {
+          "id": "69758hxwe4rcg72",
+          "sportId": 5,
+          "competition": {
+            "id": "el6ke6hexzanq5d"
+          },
+          "season": {
+            "sid": 56804
+          },
+          "homeTeam": {
+            "id": "2ezk99h1zxhwkn5"
+          },
+          "awayTeam": {
+            "id": "l6ke6h2xy3ugq5d"
+          },
+          "times": {},
+          "matchTime": 1765947600,
+          "statusId": 100,
+          "menu": 320,
+          "users": 24,
+          "matchStatus": 3,
+          "venue": {},
+          "referee": {},
+          "ext": {
+            "odds": {
+              "oddItems": [
+                {},
+                {
+                  "odd": [
+                    "1.22",
+                    "0",
+                    "4",
+                    "0"
+                  ]
+                },
+                {}
+              ]
+            }
+          },
+          "ckScores": {
+            "ft": [
+              125,
+              124
+            ],
+            "p1": [
+              125,
+              124
+            ],
+            "winby": 2,
+            "margin": 6,
+            "winner": 1,
+            "innings": [
+              {
+                "runs": 125,
+                "belong": 1,
+                "overs": 26.5,
+                "wickets": 4
+              },
+              {
+                "runs": 124,
+                "belong": 2,
+                "overs": 46.400001525878906,
+                "wickets": 10
+              }
+            ]
+          }
+        },
+        {
+          "id": "g6769h9nooobo7r",
+          "sportId": 5,
+          "competition": {
+            "id": "el6ke6hexzanq5d"
+          },
+          "season": {
+            "sid": 56804
+          },
+          "homeTeam": {
+            "id": "mo07d0hz56h9qnx"
+          },
+          "awayTeam": {
+            "id": "el6ke6h581hgq5d"
+          },
+          "times": {},
+          "matchTime": 1765947600,
+          "statusId": 533,
+          "menu": 320,
+          "users": 68,
+          "matchStatus": 2,
+          "venue": {},
+          "referee": {},
+          "ext": {
+            "odds": {
+              "oddItems": [
+                {},
+                {
+                  "odd": [
+                    "1.08",
+                    "0",
+                    "8",
+                    "0"
+                  ]
+                },
+                {}
+              ]
+            }
+          },
+          "ckScores": {
+            "ft": [
+              225,
+              83
+            ],
+            "p1": [
+              225,
+              83
+            ],
+            "innings": [
+              {
+                "runs": 225,
+                "belong": 1,
+                "overs": 46.20000076293945,
+                "wickets": 9
+              },
+              {
+                "runs": 83,
+                "belong": 2,
+                "overs": 28,
+                "wickets": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "63kv6h5jv4jsx7e",
+          "sportId": 5,
+          "competition": {
+            "id": "edq02hmjleaykxg"
+          },
+          "season": {
+            "sid": 53766
+          },
+          "homeTeam": {
+            "id": "l6ke6hzpp24ugq5"
+          },
+          "awayTeam": {
+            "id": "vmqy5hj889xc479"
+          },
+          "times": {},
+          "matchTime": 1765969200,
+          "statusId": 1,
+          "users": 40,
+          "matchStatus": 1,
+          "venue": {},
+          "referee": {},
+          "ext": {},
+          "ckScores": {}
+        },
+        {
+          "id": "8lk22h3zogptzk3",
+          "sportId": 5,
+          "competition": {
+            "id": "jek3nh6dmvuv7o2"
+          },
+          "season": {
+            "sid": 56231
+          },
+          "homeTeam": {
+            "id": "ndqmdh6e9wsgqve"
+          },
+          "awayTeam": {
+            "id": "g6769hjzp9tp7ry"
+          },
+          "times": {},
+          "matchTime": 1765981800,
+          "statusId": 1,
+          "menu": 320,
+          "users": 33,
+          "matchStatus": 1,
+          "venue": {},
+          "referee": {},
+          "ext": {
+            "odds": {
+              "oddItems": [
+                {},
+                {
+                  "odd": [
+                    "2.2",
+                    "0",
+                    "1.66",
+                    "0"
+                  ]
+                },
+                {}
+              ]
+            }
+          },
+          "ckScores": {}
+        }
+      ],
+      "matchesData_seasons": [],
+      "matchesData_teams": [
+        {
+          "id": "ndqmdh6e9wsgqve",
+          "sportId": 5,
+          "country": {
+            "ioc": "ARE"
+          },
+          "name": "Dubai Capitals",
+          "logo": "ef4ec9bcbb6c7b7062598d0c0081c9d0.png!w80",
+          "hasStats": 1,
+          "slug": "dubai-capitals"
+        },
+        {
+          "id": "g6769hvw9l6ip7r",
+          "sportId": 5,
+          "country": {
+            "emoji": "PH163",
+            "ioc": "PHI"
+          },
+          "name": "Philippines Women",
+          "logo": "8880da5a1dbdf445eb5e659fc43f89ad.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "philippines-women"
+        },
+        {
+          "id": "2j374nhm9zhrko6",
+          "sportId": 5,
+          "country": {
+            "emoji": "AU72",
+            "ioc": "AUS"
+          },
+          "name": "Australia",
+          "logo": "cd9304f60c2064bbee0b1554c32614fa.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "australia"
+        },
+        {
+          "id": "8vmqy5h5wvi479r",
+          "sportId": 5,
+          "country": {
+            "emoji": "GB1",
+            "ioc": "ENG"
+          },
+          "name": "England",
+          "logo": "590a6cfdda02e14e54d5880283d5cde7.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "england"
+        },
+        {
+          "id": "el6ke6h581hgq5d",
+          "sportId": 5,
+          "country": {
+            "emoji": "LK148",
+            "ioc": "SRI"
+          },
+          "name": "Sri Lanka U19",
+          "logo": "54f7c65694661bdd6bdcc336d091bb33.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "sri-lanka-u19"
+        },
+        {
+          "id": "l6ke6h2xy3ugq5d",
+          "sportId": 5,
+          "country": {
+            "emoji": "NP208",
+            "ioc": "NEP"
+          },
+          "name": "Nepal U19",
+          "logo": "9873b777c190400cedae9b186d9c460d.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "nepal-u19"
+        },
+        {
+          "id": "1edq02hzorh4kxg",
+          "sportId": 5,
+          "country": {
+            "ioc": "AUS"
+          },
+          "name": "Sydney Sixers",
+          "logo": "8d2b5e0d89f85c433db8d3705b6cac6e.png!w80",
+          "hasStats": 1,
+          "slug": "sydney-sixers"
+        },
+        {
+          "id": "j374nhme2vsrko6",
+          "sportId": 5,
+          "country": {
+            "emoji": "MY77",
+            "ioc": "MAS"
+          },
+          "name": "Malaysia Women",
+          "logo": "b188caeb78e96e7f1aac3261259a9f50.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "malaysia-women"
+        },
+        {
+          "id": "m2q13hvmp9cmk6x",
+          "sportId": 5,
+          "country": {
+            "emoji": "MM131",
+            "ioc": "MYA"
+          },
+          "name": "Myanmar Women",
+          "logo": "c8dc60ec05a1c110fe12be86b8802b7b.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "myanmar-women"
+        },
+        {
+          "id": "xo17p2hd94b2kjw",
+          "sportId": 5,
+          "name": "Adelaide Strikers",
+          "logo": "008f837f7e76e268c5faba8189495a87.png!w80",
+          "hasStats": 1,
+          "slug": "adelaide-strikers"
+        },
+        {
+          "id": "9oj7x1hl0nsrkg3",
+          "sportId": 5,
+          "country": {
+            "emoji": "IN88",
+            "ioc": "IND"
+          },
+          "name": "India",
+          "logo": "c592dafcd99b4bcc61170fcd1c923a4a.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "india"
+        },
+        {
+          "id": "vmqy5hj889xc479",
+          "sportId": 5,
+          "name": "Blasters",
+          "hasStats": 1,
+          "slug": "blasters"
+        },
+        {
+          "id": "g6769hjzp9tp7ry",
+          "sportId": 5,
+          "country": {
+            "ioc": "ARE"
+          },
+          "name": "Mi Emirates",
+          "logo": "b1dcfd234bea03b987371aa0e9a419a0.png!w80",
+          "hasStats": 1,
+          "slug": "mi-emirates"
+        },
+        {
+          "id": "63kv6hl4nptp7ez",
+          "sportId": 5,
+          "name": "Singapore Women",
+          "logo": "52f3949cca0a8acdc310eb59ccbf6294.png!w80",
+          "hasStats": 1,
+          "slug": "singapore-women"
+        },
+        {
+          "id": "l6ke6hzpp24ugq5",
+          "sportId": 5,
+          "name": "Royals",
+          "hasStats": 1,
+          "slug": "royals"
+        },
+        {
+          "id": "mo07d0hz56h9qnx",
+          "sportId": 5,
+          "country": {
+            "emoji": "BD176",
+            "ioc": "NAG"
+          },
+          "name": "Bangladesh U19",
+          "logo": "dd3836188830cce533dcebfed09f2dd2.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "bangladesh-u19"
+        },
+        {
+          "id": "2ezk99h1zxhwkn5",
+          "sportId": 5,
+          "country": {
+            "emoji": "AF199",
+            "ioc": "AFG"
+          },
+          "name": "Afghanistan U19",
+          "logo": "444e8429f5cdfc9b1d9dd25e4f3583af.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "afghanistan-u19"
+        },
+        {
+          "id": "xo17p2hdy4h2kjw",
+          "sportId": 5,
+          "country": {
+            "emoji": "ZA92",
+            "ioc": "RSA"
+          },
+          "name": "South Africa",
+          "logo": "7d82975f4b3354e8b70c04bf8dc0ba02.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "south-africa"
+        }
+      ],
+      "matchesDataMap": {
+        "mo07d0h6y5ixqnx": [
+          {
+            "id": "l6ke6hrm6vvhvq5",
+            "time": {},
+            "matchStatus": 2,
+            "matchTime": 1765959300
+          }
+        ],
+        "oj7x1hrlpnhekg3": [
+          {
+            "id": "ndkz1h2vpgofx73",
+            "time": {
+              "day": 1
+            },
+            "matchStatus": 2,
+            "matchTime": 1765927800
+          }
+        ],
+        "jek3nh60vzav7o2": [
+          {
+            "id": "l6ke6h4zg0vfvq5",
+            "time": {},
+            "matchStatus": 3,
+            "matchTime": 1765936800
+          },
+          {
+            "id": "69758hx38x9cg72",
+            "time": {},
+            "matchStatus": 3,
+            "matchTime": 1765953000
+          }
+        ],
+        "eg6769hvx6u47ry": [
+          {
+            "id": "edq02h29vpntekx",
+            "time": {},
+            "matchStatus": 1,
+            "matchTime": 1765978200
+          }
+        ],
+        "el6ke6hexzanq5d": [
+          {
+            "id": "69758hxwe4rcg72",
+            "time": {},
+            "matchStatus": 3,
+            "matchTime": 1765947600
+          },
+          {
+            "id": "g6769h9nooobo7r",
+            "time": {},
+            "matchStatus": 2,
+            "matchTime": 1765947600
+          }
+        ],
+        "edq02hmjleaykxg": [
+          {
+            "id": "63kv6h5jv4jsx7e",
+            "time": {},
+            "matchStatus": 1,
+            "matchTime": 1765969200
+          }
+        ],
+        "jek3nh6dmvuv7o2": [
+          {
+            "id": "8lk22h3zogptzk3",
+            "time": {},
+            "matchStatus": 1,
+            "matchTime": 1765981800
+          }
+        ]
+      },
+      "matchesCompMap": {
+        "mo07d0h6y5ixqnx": {
+          "id": "mo07d0h6y5ixqnx",
+          "sportId": 5,
+          "country": {
+            "id": 72,
+            "name": "Australia",
+            "iso": "AU",
+            "logo": "4442e4af0916f53a07fb8ca9a49b98ed.png!w80",
+            "squareLogo": "aus.png"
+          },
+          "name": "Big Bash League",
+          "logo": "04730b30c473d2ffdb8552d179927eee.png!w80",
+          "weight": 8500,
+          "hasStats": 1,
+          "slug": "big-bash-league"
+        },
+        "jek3nh6dmvuv7o2": {
+          "id": "jek3nh6dmvuv7o2",
+          "sportId": 5,
+          "country": {
+            "id": 2294,
+            "name": "United Arab Emirates",
+            "logo": "8db59fb09cfaca39617f502ad640e26b.png!w80"
+          },
+          "name": "International League T20",
+          "logo": "fecfb9c4749fb6ad1c691cc514b02abc.png!w80",
+          "hasStats": 1,
+          "slug": "international-league-t20"
+        },
+        "jek3nh60vzav7o2": {
+          "id": "jek3nh60vzav7o2",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "T20 SEA Games Women",
+          "logo": "eac6cc09a11e0e2d00a8e73a53139e71.png!w80",
+          "hasStats": 1,
+          "slug": "t20-sea-games-women"
+        },
+        "oj7x1hrlpnhekg3": {
+          "id": "oj7x1hrlpnhekg3",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "Test Series Australia vs England",
+          "logo": "4d9b58b41d73a40965cdf2423f1f783d.png!w80",
+          "hasStats": 1,
+          "slug": "test-series-australia-vs-england"
+        },
+        "eg6769hvx6u47ry": {
+          "id": "eg6769hvx6u47ry",
+          "sportId": 5,
+          "country": {
+            "id": 2208,
+            "name": "International",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+            "weight": 1000010
+          },
+          "name": "T20I Series India vs South Africa",
+          "logo": "abe6be52beb66f057f2f29233aae4f72.png!w80",
+          "hasStats": 1,
+          "slug": "t20i-series-india-vs-south-africa"
+        },
+        "el6ke6hexzanq5d": {
+          "id": "el6ke6hexzanq5d",
+          "sportId": 5,
+          "country": {
+            "name": "Others",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80"
+          },
+          "name": "ACC MEN'S U19 ASIA CUP",
+          "logo": "6ca9ded3194815bb4094b5041add578a.png!w80",
+          "hasStats": 1,
+          "slug": "acc-men's-u19-asia-cup"
+        },
+        "edq02hmjleaykxg": {
+          "id": "edq02hmjleaykxg",
+          "sportId": 5,
+          "country": {
+            "name": "Others",
+            "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80"
+          },
+          "name": "T20 Maxx Challenge Cup",
+          "logo": "f2d18bb60b9c0bd1435cac73ba61ea22.png!w80",
+          "hasStats": 1,
+          "slug": "t20-maxx-challenge-cup"
+        }
+      },
+      "matchesTeamMap": {
+        "ndqmdh6e9wsgqve": {
+          "id": "ndqmdh6e9wsgqve",
+          "sportId": 5,
+          "country": {
+            "ioc": "ARE"
+          },
+          "name": "Dubai Capitals",
+          "logo": "ef4ec9bcbb6c7b7062598d0c0081c9d0.png!w80",
+          "hasStats": 1,
+          "slug": "dubai-capitals"
+        },
+        "g6769hvw9l6ip7r": {
+          "id": "g6769hvw9l6ip7r",
+          "sportId": 5,
+          "country": {
+            "emoji": "PH163",
+            "ioc": "PHI"
+          },
+          "name": "Philippines Women",
+          "logo": "8880da5a1dbdf445eb5e659fc43f89ad.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "philippines-women"
+        },
+        "2j374nhm9zhrko6": {
+          "id": "2j374nhm9zhrko6",
+          "sportId": 5,
+          "country": {
+            "emoji": "AU72",
+            "ioc": "AUS"
+          },
+          "name": "Australia",
+          "logo": "cd9304f60c2064bbee0b1554c32614fa.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "australia"
+        },
+        "8vmqy5h5wvi479r": {
+          "id": "8vmqy5h5wvi479r",
+          "sportId": 5,
+          "country": {
+            "emoji": "GB1",
+            "ioc": "ENG"
+          },
+          "name": "England",
+          "logo": "590a6cfdda02e14e54d5880283d5cde7.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "england"
+        },
+        "el6ke6h581hgq5d": {
+          "id": "el6ke6h581hgq5d",
+          "sportId": 5,
+          "country": {
+            "emoji": "LK148",
+            "ioc": "SRI"
+          },
+          "name": "Sri Lanka U19",
+          "logo": "54f7c65694661bdd6bdcc336d091bb33.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "sri-lanka-u19"
+        },
+        "l6ke6h2xy3ugq5d": {
+          "id": "l6ke6h2xy3ugq5d",
+          "sportId": 5,
+          "country": {
+            "emoji": "NP208",
+            "ioc": "NEP"
+          },
+          "name": "Nepal U19",
+          "logo": "9873b777c190400cedae9b186d9c460d.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "nepal-u19"
+        },
+        "1edq02hzorh4kxg": {
+          "id": "1edq02hzorh4kxg",
+          "sportId": 5,
+          "country": {
+            "ioc": "AUS"
+          },
+          "name": "Sydney Sixers",
+          "logo": "8d2b5e0d89f85c433db8d3705b6cac6e.png!w80",
+          "hasStats": 1,
+          "slug": "sydney-sixers"
+        },
+        "j374nhme2vsrko6": {
+          "id": "j374nhme2vsrko6",
+          "sportId": 5,
+          "country": {
+            "emoji": "MY77",
+            "ioc": "MAS"
+          },
+          "name": "Malaysia Women",
+          "logo": "b188caeb78e96e7f1aac3261259a9f50.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "malaysia-women"
+        },
+        "m2q13hvmp9cmk6x": {
+          "id": "m2q13hvmp9cmk6x",
+          "sportId": 5,
+          "country": {
+            "emoji": "MM131",
+            "ioc": "MYA"
+          },
+          "name": "Myanmar Women",
+          "logo": "c8dc60ec05a1c110fe12be86b8802b7b.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "myanmar-women"
+        },
+        "xo17p2hd94b2kjw": {
+          "id": "xo17p2hd94b2kjw",
+          "sportId": 5,
+          "name": "Adelaide Strikers",
+          "logo": "008f837f7e76e268c5faba8189495a87.png!w80",
+          "hasStats": 1,
+          "slug": "adelaide-strikers"
+        },
+        "9oj7x1hl0nsrkg3": {
+          "id": "9oj7x1hl0nsrkg3",
+          "sportId": 5,
+          "country": {
+            "emoji": "IN88",
+            "ioc": "IND"
+          },
+          "name": "India",
+          "logo": "c592dafcd99b4bcc61170fcd1c923a4a.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "india"
+        },
+        "vmqy5hj889xc479": {
+          "id": "vmqy5hj889xc479",
+          "sportId": 5,
+          "name": "Blasters",
+          "hasStats": 1,
+          "slug": "blasters"
+        },
+        "g6769hjzp9tp7ry": {
+          "id": "g6769hjzp9tp7ry",
+          "sportId": 5,
+          "country": {
+            "ioc": "ARE"
+          },
+          "name": "Mi Emirates",
+          "logo": "b1dcfd234bea03b987371aa0e9a419a0.png!w80",
+          "hasStats": 1,
+          "slug": "mi-emirates"
+        },
+        "63kv6hl4nptp7ez": {
+          "id": "63kv6hl4nptp7ez",
+          "sportId": 5,
+          "name": "Singapore Women",
+          "logo": "52f3949cca0a8acdc310eb59ccbf6294.png!w80",
+          "hasStats": 1,
+          "slug": "singapore-women"
+        },
+        "l6ke6hzpp24ugq5": {
+          "id": "l6ke6hzpp24ugq5",
+          "sportId": 5,
+          "name": "Royals",
+          "hasStats": 1,
+          "slug": "royals"
+        },
+        "mo07d0hz56h9qnx": {
+          "id": "mo07d0hz56h9qnx",
+          "sportId": 5,
+          "country": {
+            "emoji": "BD176",
+            "ioc": "NAG"
+          },
+          "name": "Bangladesh U19",
+          "logo": "dd3836188830cce533dcebfed09f2dd2.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "bangladesh-u19"
+        },
+        "2ezk99h1zxhwkn5": {
+          "id": "2ezk99h1zxhwkn5",
+          "sportId": 5,
+          "country": {
+            "emoji": "AF199",
+            "ioc": "AFG"
+          },
+          "name": "Afghanistan U19",
+          "logo": "444e8429f5cdfc9b1d9dd25e4f3583af.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "afghanistan-u19"
+        },
+        "xo17p2hdy4h2kjw": {
+          "id": "xo17p2hdy4h2kjw",
+          "sportId": 5,
+          "country": {
+            "emoji": "ZA92",
+            "ioc": "RSA"
+          },
+          "name": "South Africa",
+          "logo": "7d82975f4b3354e8b70c04bf8dc0ba02.png!w80",
+          "national": 1,
+          "hasStats": 1,
+          "slug": "south-africa"
+        }
+      },
+      "stages": null,
+      "matchTimeMap": {
+        "l6ke6hrm6vvhvq5": null,
+        "ndkz1h2vpgofx73": {
+          "day": 1
+        },
+        "l6ke6h4zg0vfvq5": {},
+        "69758hx38x9cg72": {},
+        "edq02h29vpntekx": {},
+        "69758hxwe4rcg72": {},
+        "g6769h9nooobo7r": {},
+        "63kv6h5jv4jsx7e": {},
+        "8lk22h3zogptzk3": {}
+      },
+      "leftData_hotComps": [],
+      "leftData_categories": [],
+      "categoriesMap": {},
+      "collectComp": [],
+      "collectLock": 0,
+      "markLock": 0,
+      "matchesRenderFilter": [
+        {
+          "competition": {
+            "country": {
+              "id": 72,
+              "name": "Australia",
+              "iso": "AU",
+              "logo": "4442e4af0916f53a07fb8ca9a49b98ed.png!w80",
+              "squareLogo": "aus.png"
+            },
+            "id": "mo07d0h6y5ixqnx",
+            "sportId": 5,
+            "name": "Big Bash League",
+            "logo": "04730b30c473d2ffdb8552d179927eee.png!w80",
+            "weight": 8500,
+            "hasStats": 1,
+            "slug": "big-bash-league"
+          },
+          "key": "mo07d0h6y5ixqnx_bottom",
+          "list": [
+            {
+              "id": "l6ke6hrm6vvhvq5",
+              "sportId": 5,
+              "competition": {
+                "id": "mo07d0h6y5ixqnx"
+              },
+              "season": {
+                "sid": 55088
+              },
+              "homeTeam": {
+                "id": "1edq02hzorh4kxg"
+              },
+              "awayTeam": {
+                "id": "xo17p2hd94b2kjw"
+              },
+              "times": {},
+              "matchTime": 1765959300,
+              "statusId": 533,
+              "menu": 320,
+              "users": 5678,
+              "matchStatus": 2,
+              "venue": {
+                "id": 192
+              },
+              "referee": {},
+              "ext": {
+                "odds": {
+                  "oddItems": [
+                    {},
+                    {
+                      "odd": [
+                        "3",
+                        "0",
+                        "1.4",
+                        "0"
+                      ]
+                    },
+                    {}
+                  ]
+                }
+              },
+              "ckScores": {
+                "ft": [
+                  159,
+                  95
+                ],
+                "p1": [
+                  159,
+                  95
+                ],
+                "p2": [],
+                "innings": [
+                  {
+                    "runs": 159,
+                    "belong": 1,
+                    "overs": 20,
+                    "wickets": 9
+                  },
+                  {
+                    "runs": 95,
+                    "belong": 2,
+                    "overs": 12.100000381469727,
+                    "wickets": 4
+                  }
+                ]
+              },
+              "one_or_two": "one",
+              "homeScores": [
+                20,
+                159,
+                9
+              ],
+              "awayScores": [
+                12.100000381469727,
+                95,
+                4
+              ],
+              "homeScoresTotal": 159,
+              "awayScoresTotal": 95,
+              "homeTeamDetail": {
+                "id": "1edq02hzorh4kxg",
+                "sportId": 5,
+                "country": {
+                  "ioc": "AUS"
+                },
+                "name": "Sydney Sixers",
+                "logo": "8d2b5e0d89f85c433db8d3705b6cac6e.png!w80",
+                "hasStats": 1,
+                "slug": "sydney-sixers"
+              },
+              "awayTeamDetail": {
+                "id": "xo17p2hd94b2kjw",
+                "sportId": 5,
+                "name": "Adelaide Strikers",
+                "logo": "008f837f7e76e268c5faba8189495a87.png!w80",
+                "hasStats": 1,
+                "slug": "adelaide-strikers"
+              },
+              "stage": "",
+              "weight": 8500,
+              "level": null,
+              "comName": "Big Bash League",
+              "countryName": "Australia",
+              "comId": "mo07d0h6y5ixqnx",
+              "awayScoresRed2": 2
+            }
+          ],
+          "size": 86.19,
+          "copyKey": "0mo07d0h6y5ixqnx_bottom"
+        },
+        {
+          "competition": {
+            "country": {
+              "id": 2208,
+              "name": "International",
+              "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+              "weight": 1000010
+            },
+            "id": "oj7x1hrlpnhekg3",
+            "sportId": 5,
+            "name": "Test Series Australia vs England",
+            "logo": "4d9b58b41d73a40965cdf2423f1f783d.png!w80",
+            "hasStats": 1,
+            "slug": "test-series-australia-vs-england"
+          },
+          "key": "oj7x1hrlpnhekg3_bottom",
+          "list": [
+            {
+              "id": "ndkz1h2vpgofx73",
+              "sportId": 5,
+              "competition": {
+                "id": "oj7x1hrlpnhekg3"
+              },
+              "season": {
+                "sid": 55825
+              },
+              "homeTeam": {
+                "id": "2j374nhm9zhrko6"
+              },
+              "awayTeam": {
+                "id": "8vmqy5h5wvi479r"
+              },
+              "times": {
+                "day": 1
+              },
+              "matchTime": 1765927800,
+              "statusId": 544,
+              "menu": 320,
+              "users": 25,
+              "matchStatus": 2,
+              "venue": {
+                "id": 105
+              },
+              "referee": {},
+              "ext": {
+                "odds": {
+                  "oddItems": [
+                    {},
+                    {
+                      "odd": [
+                        "1.33",
+                        "0",
+                        "3.25",
+                        "0"
+                      ]
+                    },
+                    {}
+                  ]
+                }
+              },
+              "ckScores": {
+                "ft": [
+                  326,
+                  0
+                ],
+                "p1": [
+                  326,
+                  0
+                ],
+                "innings": [
+                  {
+                    "runs": 326,
+                    "belong": 1,
+                    "overs": 83,
+                    "wickets": 8
+                  }
+                ]
+              },
+              "one_or_two": "one",
+              "homeScores": [
+                83,
+                326,
+                8
+              ],
+              "awayScores": [
+                0,
+                0,
+                0
+              ],
+              "homeScoresTotal": 326,
+              "awayScoresTotal": 0,
+              "homeTeamDetail": {
+                "id": "2j374nhm9zhrko6",
+                "sportId": 5,
+                "country": {
+                  "emoji": "AU72",
+                  "ioc": "AUS"
+                },
+                "name": "Australia",
+                "logo": "cd9304f60c2064bbee0b1554c32614fa.png!w80",
+                "national": 1,
+                "hasStats": 1,
+                "slug": "australia"
+              },
+              "awayTeamDetail": {
+                "id": "8vmqy5h5wvi479r",
+                "sportId": 5,
+                "country": {
+                  "emoji": "GB1",
+                  "ioc": "ENG"
+                },
+                "name": "England",
+                "logo": "590a6cfdda02e14e54d5880283d5cde7.png!w80",
+                "national": 1,
+                "hasStats": 1,
+                "slug": "england"
+              },
+              "stage": "",
+              "weight": null,
+              "level": null,
+              "comName": "Test Series Australia vs England",
+              "countryName": "International",
+              "comId": "oj7x1hrlpnhekg3"
+            }
+          ],
+          "size": 86.19,
+          "copyKey": "1oj7x1hrlpnhekg3_bottom"
+        },
+        {
+          "competition": {
+            "country": {
+              "name": "Others",
+              "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80"
+            },
+            "id": "el6ke6hexzanq5d",
+            "sportId": 5,
+            "name": "ACC MEN'S U19 ASIA CUP",
+            "logo": "6ca9ded3194815bb4094b5041add578a.png!w80",
+            "hasStats": 1,
+            "slug": "acc-men's-u19-asia-cup"
+          },
+          "key": "el6ke6hexzanq5d_bottom",
+          "list": [
+            {
+              "id": "g6769h9nooobo7r",
+              "sportId": 5,
+              "competition": {
+                "id": "el6ke6hexzanq5d"
+              },
+              "season": {
+                "sid": 56804
+              },
+              "homeTeam": {
+                "id": "mo07d0hz56h9qnx"
+              },
+              "awayTeam": {
+                "id": "el6ke6h581hgq5d"
+              },
+              "times": {},
+              "matchTime": 1765947600,
+              "statusId": 533,
+              "menu": 320,
+              "users": 68,
+              "matchStatus": 2,
+              "venue": {},
+              "referee": {},
+              "ext": {
+                "odds": {
+                  "oddItems": [
+                    {},
+                    {
+                      "odd": [
+                        "1.08",
+                        "0",
+                        "8",
+                        "0"
+                      ]
+                    },
+                    {}
+                  ]
+                }
+              },
+              "ckScores": {
+                "ft": [
+                  225,
+                  83
+                ],
+                "p1": [
+                  225,
+                  83
+                ],
+                "innings": [
+                  {
+                    "runs": 225,
+                    "belong": 1,
+                    "overs": 46.20000076293945,
+                    "wickets": 9
+                  },
+                  {
+                    "runs": 83,
+                    "belong": 2,
+                    "overs": 28,
+                    "wickets": 5
+                  }
+                ]
+              },
+              "one_or_two": "one",
+              "homeScores": [
+                46.20000076293945,
+                225,
+                9
+              ],
+              "awayScores": [
+                28,
+                83,
+                5
+              ],
+              "homeScoresTotal": 225,
+              "awayScoresTotal": 83,
+              "homeTeamDetail": {
+                "id": "mo07d0hz56h9qnx",
+                "sportId": 5,
+                "country": {
+                  "emoji": "BD176",
+                  "ioc": "NAG"
+                },
+                "name": "Bangladesh U19",
+                "logo": "dd3836188830cce533dcebfed09f2dd2.png!w80",
+                "national": 1,
+                "hasStats": 1,
+                "slug": "bangladesh-u19"
+              },
+              "awayTeamDetail": {
+                "id": "el6ke6h581hgq5d",
+                "sportId": 5,
+                "country": {
+                  "emoji": "LK148",
+                  "ioc": "SRI"
+                },
+                "name": "Sri Lanka U19",
+                "logo": "54f7c65694661bdd6bdcc336d091bb33.png!w80",
+                "national": 1,
+                "hasStats": 1,
+                "slug": "sri-lanka-u19"
+              },
+              "stage": "",
+              "weight": null,
+              "level": null,
+              "comName": "ACC MEN'S U19 ASIA CUP",
+              "countryName": "Others",
+              "comId": "el6ke6hexzanq5d"
+            }
+          ],
+          "size": 86.19,
+          "copyKey": "2el6ke6hexzanq5d_bottom"
+        }
+      ],
+      "FavoriteIds_comp": [
+        "p0ndkz6izigq3z1",
+        "rn527r3i9s17evx",
+        "l5wv78xijujkrjn",
+        "r1edq09i0fyqxgo",
+        "jw34kgmixh1ko92",
+        "yw69759i8c2k23e",
+        "1edq09ignayqxgo",
+        "xzjek33i1tvko29",
+        "jmo07dnivixknxy",
+        "48vrqwni9sjqn2o",
+        "9oj7x9i2zse7g3y",
+        "xo17pji8oi37jw5",
+        "2eg6763iph47ryv",
+        "w2j374oi0f4qo6d",
+        "m4ndqmli2u5kveg",
+        "8vmqy9iolcek9r3",
+        "2jr7owiwys1q0em",
+        "n527r3i5xh17evx",
+        "5xvkjoilecr7938",
+        "0ndkz6irrbgq3z1",
+        "n527r3ipms17evx",
+        "g63kv9i0giz7ezv",
+        "g63kv9imvhz7ezv",
+        "yzrkn6i2rcjqle4",
+        "8vmqy9ij4tek9r3",
+        "xo17pji02i37jw5",
+        "2jr7owi6es1q0em",
+        "0ndkz6igragq3z1",
+        "0ndkz6i8zfgq3z1",
+        "0ndkz6iywtgq3z1",
+        "r8lk2dil5t0736d",
+        "zjek33ij1uvko29",
+        "xo17pji01ph37jw",
+        "zjek33ien6ivko2",
+        "59gklzi3ls37xdv",
+        "mo07dni2vfxknxy",
+        "w69759ij3yb2k23",
+        "n527r3iymf17evx",
+        "eg6763izrf47ryv",
+        "r8lk2di1xb0736d",
+        "el6kegipofn75dp",
+        "yzrkn6iorbjqle4",
+        "0ndkz6ixrhgq3z1",
+        "rn527rjsei1kevx",
+        "0ndkzys1jsg73z1",
+        "4ndqmrsgls5kveg",
+        "2ezk90sg0h2kn51",
+        "29oj7x6spie7g3y",
+        "4ndqmrsjla5kveg",
+        "mo07dzsonaxknxy",
+        "eg676jsygu4kryv",
+        "9oj7xrue9ebe7g3",
+        "8vmqyzum6zae79r",
+        "xo17pguv19a37jw",
+        "w69756uv6vi2k23",
+        "zjek3du98duvqo2",
+        "mo07d5u25wuxknx",
+        "w69756uvg6a2k23",
+        "r8lk2nu5ryc0k36",
+        "0m2q1dug16tpq6x",
+        "yzrknzu908fjkle",
+        "9oj7xru6ejue7g3",
+        "8vmqyzupm5be79r",
+        "xo17pguzvgf37jw",
+        "59gklou3m8b3kxd",
+        "0ndkzru91eigq3z",
+        "n527rnuv18u1qev",
+        "5wv785uje2tj7rj",
+        "1edq03u5nmiyqxg",
+        "g63kv3u4n5bz7ez",
+        "w69756uv0va2k23",
+        "r8lk2nu5y1f0k36",
+        "g63kv3u428hz7ez",
+        "zjek3du91ytvqo2",
+        "mo07d5u2gofxknx",
+        "zjek3du90ntvqo2",
+        "4ndqm0uoggf5kve",
+        "2j3746uew3a4qo6",
+        "eg6766uw3lb47ry",
+        "2ezk92u56xu27n5",
+        "el6ke5ue38ink5d",
+        "zjek3due18fvqo2",
+        "mo07d5u1gnixknx",
+        "n527rnuvd6u1qev",
+        "5wv785uj4mcj7rj",
+        "2j3746un5vt4qo6",
+        "eg6766uy00a47ry",
+        "5xvkjyulx3frk93",
+        "mo07d5u54gtxknx",
+        "8vrqwju423hjkn2",
+        "4ndqm0uwy3h5kve",
+        "2j3746u06os4qo6",
+        "eg6766u595f47ry",
+        "0m2q1du5nxhpq6x",
+        "0m2q1duw34tpq6x",
+        "yzrknzueweijkle",
+        "2jr7o0uj1gb170e",
+        "59gklou3r8f3kxd",
+        "el6ke5u1d9hnk5d",
+        "4ndqm0up6xf5kve",
+        "5wv785ujgmbj7rj",
+        "1edq03u5edbyqxg",
+        "5xvkjyulrzurk93",
+        "0m2q1du50pupq6x",
+        "2j3746ulxdi4qo6",
+        "5xvkjyu5j9ark93",
+        "g63kv3ulv1tz7ez",
+        "zjek3duw5lhvqo2",
+        "r8lk2nuny0c0k36",
+        "8vrqwjujzotjkn2",
+        "4ndqm0uvgzc5kve",
+        "w69756uj8zs2k23",
+        "r8lk2nu896h0k36",
+        "g63kv3uv2msz7ez",
+        "w69756uvega2k23",
+        "r8lk2nu5p3b0k36",
+        "4ndqm0uon6t5kve",
+        "2j3746ueygh4qo6",
+        "4ndqm0uo29h5kve",
+        "2j3746ueo6u4qo6",
+        "0m2q1du159apq6x",
+        "yzrknzu0o2fjkle",
+        "5wv788hjwzij7rj",
+        "mo07d0h6y5ixqnx",
+        "2jr7o2hl85s1q0e",
+        "zrkn2hm9ozsjkle",
+        "oj7x1hr69oiekg3",
+        "5xvkj6hmrwtr793",
+        "8vmqy5hprnue79r",
+        "jek3nh6963tv7o2",
+        "xo17pnc0dgs3kjw",
+        "2jr7onc64gs1q0e",
+        "wv78wcpj5wcj7rj",
+        "59gklnc0ews37xd",
+        "xvkjxc9or2fr793",
+        "2j374rc1x3c4qo6",
+        "mo07drcdzohxqnx",
+        "8vrqw0cojlbj7n2",
+        "4ndqmncxvgf57ve",
+        "8vrqwpi8g1cjkn2",
+        "eg6768id6ws4qry",
+        "527r6ie9nya17ev",
+        "wv78gipd8whjqrj",
+        "2ezk95idxyu27n5",
+        "mo07d9i6mjtxqnx",
+        "2jr7o8bevmc1q0e",
+        "59gkllbgmra3kxd",
+        "0ndkzpb51nhg73z",
+        "1edq0nb6y2aykxg",
+        "5wv78nbo35cj7rj",
+        "r8lk2ebevxu0k36",
+        "yzrknrbjeosjqle",
+        "59gkllbgrri3kxd",
+        "n527rwb8lnu1qev",
+        "9gkl1s0l1dc3qxd",
+        "ndkzlszm34igq3z",
+        "34kges2vdof1qo9",
+        "6975ys3w6rc2q23",
+        "8lk2xsg0ndh0q36",
+        "63kv1smzvwbzkez",
+        "2jr7o1se00u1k0e",
+        "59gkl1sg8zi3qxd",
+        "j3742s18nji4ko6",
+        "4ndqm8b161t57ve",
+        "ndqml6cxx8vb5kv",
+        "j374oxc113xt4qo",
+        "g6763zcvvrzh47r",
+        "ezk96jcnng8t2kn",
+        "ndqml6cx4vrt5kv",
+        "j374oxc18mps4qo",
+        "g6763zcvnjnt47r",
+        "ezk96jcn09ni2kn",
+        "l6keg3czz6jan75",
+        "ndkz69czzr8hgq3",
+        "zrkn68cmm9phjql",
+        "oj7x9jcrr62he7g",
+        "jr7owrc66y1c1q0",
+        "zjek3waln6bv7o2",
+        "zjek3walnyfv7o2",
+        "5wv78yao89ujqrj",
+        "g63kvxadgzbz7ez",
+        "r8lk23aedes0q36"
+      ],
+      "FavoriteIds_match": null,
+      "markedIds_comp": [],
+      "hotCompIdArr": [],
+      "scheduledData": [
+        {
+          "competition": {
+            "country": {
+              "id": 2208,
+              "name": "International",
+              "logo": "3b3038cc69ba1e3700a196f030bc0099.png!w80",
+              "weight": 1000010
+            },
+            "id": "eg6769hvx6u47ry",
+            "sportId": 5,
+            "name": "T20I Series India vs South Africa",
+            "logo": "abe6be52beb66f057f2f29233aae4f72.png!w80",
+            "hasStats": 1,
+            "slug": "t20i-series-india-vs-south-africa"
+          },
+          "key": "eg6769hvx6u47ry_1765978200",
+          "list": [
+            {
+              "id": "edq02h29vpntekx",
+              "sportId": 5,
+              "competition": {
+                "id": "eg6769hvx6u47ry"
+              },
+              "season": {
+                "sid": 54692
+              },
+              "homeTeam": {
+                "id": "9oj7x1hl0nsrkg3"
+              },
+              "awayTeam": {
+                "id": "xo17p2hdy4h2kjw"
+              },
+              "times": {},
+              "matchTime": 1765978200,
+              "statusId": 1,
+              "menu": 320,
+              "users": 60,
+              "matchStatus": 1,
+              "venue": {
+                "id": 4531
+              },
+              "referee": {},
+              "ext": {
+                "odds": {
+                  "oddItems": [
+                    {},
+                    {
+                      "odd": [
+                        "1.33",
+                        "0",
+                        "3.4",
+                        "0"
+                      ]
+                    },
+                    {}
+                  ]
+                }
+              },
+              "ckScores": {},
+              "one_or_two": "one",
+              "homeScores": [
+                0,
+                0,
+                0
+              ],
+              "awayScores": [
+                0,
+                0,
+                0
+              ],
+              "homeScoresTotal": 0,
+              "awayScoresTotal": 0,
+              "homeTeamDetail": {
+                "id": "9oj7x1hl0nsrkg3",
+                "sportId": 5,
+                "country": {
+                  "emoji": "IN88",
+                  "ioc": "IND"
+                },
+                "name": "India",
+                "logo": "c592dafcd99b4bcc61170fcd1c923a4a.png!w80",
+                "national": 1,
+                "hasStats": 1,
+                "slug": "india"
+              },
+              "awayTeamDetail": {
+                "id": "xo17p2hdy4h2kjw",
+                "sportId": 5,
+                "country": {
+                  "emoji": "ZA92",
+                  "ioc": "RSA"
+                },
+                "name": "South Africa",
+                "logo": "7d82975f4b3354e8b70c04bf8dc0ba02.png!w80",
+                "national": 1,
+                "hasStats": 1,
+                "slug": "south-africa"
+              },
+              "stage": "",
+              "weight": null,
+              "level": null,
+              "comName": "T20I Series India vs South Africa",
+              "countryName": "International",
+              "comId": "eg6769hvx6u47ry"
+            }
+          ],
+          "size": 86.19,
+          "copyKey": "0eg6769hvx6u47ry_1765978200"
+        },
+        {
+          "competition": {
+            "country": {
+              "id": 2294,
+              "name": "United Arab Emirates",
+              "logo": "8db59fb09cfaca39617f502ad640e26b.png!w80"
+            },
+            "id": "jek3nh6dmvuv7o2",
+            "sportId": 5,
+            "name": "International League T20",
+            "logo": "fecfb9c4749fb6ad1c691cc514b02abc.png!w80",
+            "hasStats": 1,
+            "slug": "international-league-t20"
+          },
+          "key": "jek3nh6dmvuv7o2_1765981800",
+          "list": [
+            {
+              "id": "8lk22h3zogptzk3",
+              "sportId": 5,
+              "competition": {
+                "id": "jek3nh6dmvuv7o2"
+              },
+              "season": {
+                "sid": 56231
+              },
+              "homeTeam": {
+                "id": "ndqmdh6e9wsgqve"
+              },
+              "awayTeam": {
+                "id": "g6769hjzp9tp7ry"
+              },
+              "times": {},
+              "matchTime": 1765981800,
+              "statusId": 1,
+              "menu": 320,
+              "users": 33,
+              "matchStatus": 1,
+              "venue": {},
+              "referee": {},
+              "ext": {
+                "odds": {
+                  "oddItems": [
+                    {},
+                    {
+                      "odd": [
+                        "2.2",
+                        "0",
+                        "1.66",
+                        "0"
+                      ]
+                    },
+                    {}
+                  ]
+                }
+              },
+              "ckScores": {},
+              "one_or_two": "one",
+              "homeScores": [
+                0,
+                0,
+                0
+              ],
+              "awayScores": [
+                0,
+                0,
+                0
+              ],
+              "homeScoresTotal": 0,
+              "awayScoresTotal": 0,
+              "homeTeamDetail": {
+                "id": "ndqmdh6e9wsgqve",
+                "sportId": 5,
+                "country": {
+                  "ioc": "ARE"
+                },
+                "name": "Dubai Capitals",
+                "logo": "ef4ec9bcbb6c7b7062598d0c0081c9d0.png!w80",
+                "hasStats": 1,
+                "slug": "dubai-capitals"
+              },
+              "awayTeamDetail": {
+                "id": "g6769hjzp9tp7ry",
+                "sportId": 5,
+                "country": {
+                  "ioc": "ARE"
+                },
+                "name": "Mi Emirates",
+                "logo": "b1dcfd234bea03b987371aa0e9a419a0.png!w80",
+                "hasStats": 1,
+                "slug": "mi-emirates"
+              },
+              "stage": "",
+              "weight": null,
+              "level": null,
+              "comName": "International League T20",
+              "countryName": "United Arab Emirates",
+              "comId": "jek3nh6dmvuv7o2"
+            }
+          ],
+          "size": 86.19,
+          "copyKey": "1jek3nh6dmvuv7o2_1765981800"
+        }
+      ],
+      "listSSR": false,
+      "league_loading": true,
+      "matchLive": {},
+      "listske": false,
+      "leaSke": true,
+      "cricketStatus": {
+        "0": "",
+        "1": "-",
+        "14": "Delayed",
+        "15": "Postponed",
+        "16": "Canceled",
+        "17": "Interrupted",
+        "18": "Suspended",
+        "19": "Abandoned",
+        "99": "Pending",
+        "100": "FT",
+        "532": "1st Inning",
+        "533": "1st Inning",
+        "534": "2nd Inning",
+        "535": "2nd Inning",
+        "536": "Waiting for Super Over",
+        "537": "Super Over",
+        "538": "Super Over",
+        "539": "After Super Over",
+        "540": "Break Time",
+        "541": "Break Time of Super Over",
+        "542": "Lunch",
+        "543": "Tea",
+        "544": "Stumps",
+        "545": "3rd Inning",
+        "546": "3rd Inning",
+        "547": "4th Inning",
+        "548": "4th Inning"
+      },
+      "WebMatchData": {},
+      "cricketHistroyData": {},
+      "detailTab": "",
+      "detailMatchId": "",
+      "HistroyDataList": {
+        "compsObj": {},
+        "teamsObj": {}
+      },
+      "h2hCheckedList": {},
+      "h2hCheckboxes": {},
+      "cricketDetailMatchData": {},
+      "firstRender": "",
+      "name": "",
+      "h2hMaps": {
+        "compsMap": {},
+        "teamsMap": {},
+        "homeTeam": {},
+        "awayTeam": {},
+        "compId": "",
+        "h2hDatas_h2h": [],
+        "h2hDatas_home": [],
+        "h2hDatas_away": [],
+        "h2hDatas_nextHome": [],
+        "h2hDatas_nextAway": []
+      },
+      "leaguesData": {
+        "countries": [],
+        "countryHighestComp": [],
+        "hotComps": [],
+        "countriesMap": {}
+      },
+      "teamTotal": {
+        "homeTeam": [],
+        "awayTeam": []
+      },
+      "detail_loading": false,
+      "hasprefetchLoad": {},
+      "incidents": [],
+      "oddsDetailData": {},
+      "oddLoading": true,
+      "tables": {},
+      "ball_by_ball": {},
+      "scorecardData": {},
+      "lineupsData": {},
+      "activeMatchTab": "Live",
+      "favorites": {
+        "compIds": [
+          "p0ndkz6izigq3z1",
+          "rn527r3i9s17evx",
+          "l5wv78xijujkrjn",
+          "r1edq09i0fyqxgo",
+          "jw34kgmixh1ko92",
+          "yw69759i8c2k23e",
+          "1edq09ignayqxgo",
+          "xzjek33i1tvko29",
+          "jmo07dnivixknxy",
+          "48vrqwni9sjqn2o",
+          "9oj7x9i2zse7g3y",
+          "xo17pji8oi37jw5",
+          "2eg6763iph47ryv",
+          "w2j374oi0f4qo6d",
+          "m4ndqmli2u5kveg",
+          "8vmqy9iolcek9r3",
+          "2jr7owiwys1q0em",
+          "n527r3i5xh17evx",
+          "5xvkjoilecr7938",
+          "0ndkz6irrbgq3z1",
+          "n527r3ipms17evx",
+          "g63kv9i0giz7ezv",
+          "g63kv9imvhz7ezv",
+          "yzrkn6i2rcjqle4",
+          "8vmqy9ij4tek9r3",
+          "xo17pji02i37jw5",
+          "2jr7owi6es1q0em",
+          "0ndkz6igragq3z1",
+          "0ndkz6i8zfgq3z1",
+          "0ndkz6iywtgq3z1",
+          "r8lk2dil5t0736d",
+          "zjek33ij1uvko29",
+          "xo17pji01ph37jw",
+          "zjek33ien6ivko2",
+          "59gklzi3ls37xdv",
+          "mo07dni2vfxknxy",
+          "w69759ij3yb2k23",
+          "n527r3iymf17evx",
+          "eg6763izrf47ryv",
+          "r8lk2di1xb0736d",
+          "el6kegipofn75dp",
+          "yzrkn6iorbjqle4",
+          "0ndkz6ixrhgq3z1",
+          "rn527rjsei1kevx",
+          "0ndkzys1jsg73z1",
+          "4ndqmrsgls5kveg",
+          "2ezk90sg0h2kn51",
+          "29oj7x6spie7g3y",
+          "4ndqmrsjla5kveg",
+          "mo07dzsonaxknxy",
+          "eg676jsygu4kryv",
+          "9oj7xrue9ebe7g3",
+          "8vmqyzum6zae79r",
+          "xo17pguv19a37jw",
+          "w69756uv6vi2k23",
+          "zjek3du98duvqo2",
+          "mo07d5u25wuxknx",
+          "w69756uvg6a2k23",
+          "r8lk2nu5ryc0k36",
+          "0m2q1dug16tpq6x",
+          "yzrknzu908fjkle",
+          "9oj7xru6ejue7g3",
+          "8vmqyzupm5be79r",
+          "xo17pguzvgf37jw",
+          "59gklou3m8b3kxd",
+          "0ndkzru91eigq3z",
+          "n527rnuv18u1qev",
+          "5wv785uje2tj7rj",
+          "1edq03u5nmiyqxg",
+          "g63kv3u4n5bz7ez",
+          "w69756uv0va2k23",
+          "r8lk2nu5y1f0k36",
+          "g63kv3u428hz7ez",
+          "zjek3du91ytvqo2",
+          "mo07d5u2gofxknx",
+          "zjek3du90ntvqo2",
+          "4ndqm0uoggf5kve",
+          "2j3746uew3a4qo6",
+          "eg6766uw3lb47ry",
+          "2ezk92u56xu27n5",
+          "el6ke5ue38ink5d",
+          "zjek3due18fvqo2",
+          "mo07d5u1gnixknx",
+          "n527rnuvd6u1qev",
+          "5wv785uj4mcj7rj",
+          "2j3746un5vt4qo6",
+          "eg6766uy00a47ry",
+          "5xvkjyulx3frk93",
+          "mo07d5u54gtxknx",
+          "8vrqwju423hjkn2",
+          "4ndqm0uwy3h5kve",
+          "2j3746u06os4qo6",
+          "eg6766u595f47ry",
+          "0m2q1du5nxhpq6x",
+          "0m2q1duw34tpq6x",
+          "yzrknzueweijkle",
+          "2jr7o0uj1gb170e",
+          "59gklou3r8f3kxd",
+          "el6ke5u1d9hnk5d",
+          "4ndqm0up6xf5kve",
+          "5wv785ujgmbj7rj",
+          "1edq03u5edbyqxg",
+          "5xvkjyulrzurk93",
+          "0m2q1du50pupq6x",
+          "2j3746ulxdi4qo6",
+          "5xvkjyu5j9ark93",
+          "g63kv3ulv1tz7ez",
+          "zjek3duw5lhvqo2",
+          "r8lk2nuny0c0k36",
+          "8vrqwjujzotjkn2",
+          "4ndqm0uvgzc5kve",
+          "w69756uj8zs2k23",
+          "r8lk2nu896h0k36",
+          "g63kv3uv2msz7ez",
+          "w69756uvega2k23",
+          "r8lk2nu5p3b0k36",
+          "4ndqm0uon6t5kve",
+          "2j3746ueygh4qo6",
+          "4ndqm0uo29h5kve",
+          "2j3746ueo6u4qo6",
+          "0m2q1du159apq6x",
+          "yzrknzu0o2fjkle",
+          "5wv788hjwzij7rj",
+          "mo07d0h6y5ixqnx",
+          "2jr7o2hl85s1q0e",
+          "zrkn2hm9ozsjkle",
+          "oj7x1hr69oiekg3",
+          "5xvkj6hmrwtr793",
+          "8vmqy5hprnue79r",
+          "jek3nh6963tv7o2",
+          "xo17pnc0dgs3kjw",
+          "2jr7onc64gs1q0e",
+          "wv78wcpj5wcj7rj",
+          "59gklnc0ews37xd",
+          "xvkjxc9or2fr793",
+          "2j374rc1x3c4qo6",
+          "mo07drcdzohxqnx",
+          "8vrqw0cojlbj7n2",
+          "4ndqmncxvgf57ve",
+          "8vrqwpi8g1cjkn2",
+          "eg6768id6ws4qry",
+          "527r6ie9nya17ev",
+          "wv78gipd8whjqrj",
+          "2ezk95idxyu27n5",
+          "mo07d9i6mjtxqnx",
+          "2jr7o8bevmc1q0e",
+          "59gkllbgmra3kxd",
+          "0ndkzpb51nhg73z",
+          "1edq0nb6y2aykxg",
+          "5wv78nbo35cj7rj",
+          "r8lk2ebevxu0k36",
+          "yzrknrbjeosjqle",
+          "59gkllbgrri3kxd",
+          "n527rwb8lnu1qev",
+          "9gkl1s0l1dc3qxd",
+          "ndkzlszm34igq3z",
+          "34kges2vdof1qo9",
+          "6975ys3w6rc2q23",
+          "8lk2xsg0ndh0q36",
+          "63kv1smzvwbzkez",
+          "2jr7o1se00u1k0e",
+          "59gkl1sg8zi3qxd",
+          "j3742s18nji4ko6",
+          "4ndqm8b161t57ve",
+          "ndqml6cxx8vb5kv",
+          "j374oxc113xt4qo",
+          "g6763zcvvrzh47r",
+          "ezk96jcnng8t2kn",
+          "ndqml6cx4vrt5kv",
+          "j374oxc18mps4qo",
+          "g6763zcvnjnt47r",
+          "ezk96jcn09ni2kn",
+          "l6keg3czz6jan75",
+          "ndkz69czzr8hgq3",
+          "zrkn68cmm9phjql",
+          "oj7x9jcrr62he7g",
+          "jr7owrc66y1c1q0",
+          "zjek3waln6bv7o2",
+          "zjek3walnyfv7o2",
+          "5wv78yao89ujqrj",
+          "g63kvxadgzbz7ez",
+          "r8lk23aedes0q36"
+        ],
+        "matchIds": [],
+        "teamIds": [],
+        "playerIds": []
+      }
+    }
+  },
+  "serverRendered": true,
+  "routePath": "/cricket",
+  "config": {
+    "_app": {
+      "basePath": "/",
+      "assetsPath": "/_nuxt/",
+      "cdnURL": null
+    }
+  }
+}
