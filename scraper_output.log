@@ -1,4 +1,4 @@
-[2025-12-17 15:27:23] [SUPERVISOR] Starting Scraper Loop...
+[2025-12-17 15:37:31] [SUPERVISOR] Starting Scraper Loop...
  * Serving Flask app 'scraper_service'
  * Debug mode: off
 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
@@ -6,6 +6,8 @@
  * Running on http://127.0.0.1:8080
  * Running on http://192.168.68.108:8080
 [33mPress CTRL+C to quit[0m
-127.0.0.1 - - [17/Dec/2025 15:27:28] "GET /health HTTP/1.1" 200 -
-127.0.0.1 - - [17/Dec/2025 15:27:28] "GET /logs HTTP/1.1" 200 -
-[2025-12-17 15:27:41] [SUCCESS] Connected to NeonDB and verified schemas.
+[2025-12-17 15:37:49] [SUCCESS] Connected to NeonDB and verified schemas.
+[2025-12-17 15:37:49] [DEBUG] Launching Playwright...
+[2025-12-17 15:37:49] [DEBUG] Launching Chromium...
+[2025-12-17 15:37:50] [DEBUG] Browser Launched.
+[2025-12-17 15:37:50] [DEBUG] Page created. Entering main loop.

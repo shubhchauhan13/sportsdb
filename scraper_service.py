@@ -338,22 +338,31 @@ def run_scraper():
         conn = None
         browser = None
         
+
         try:
             conn = initialize_db()
             if not conn:
                 time.sleep(10)
                 continue
 
+            log_msg("[DEBUG] Launching Playwright...")
             with sync_playwright() as p:
-                # Use a more real-looking User Agent
-                browser = p.chromium.launch(
-                    headless=True,
-                    args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-                )
+                log_msg("[DEBUG] Launching Chromium...")
+                try:
+                    browser = p.chromium.launch(
+                        headless=True,
+                        args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
+                    )
+                    log_msg("[DEBUG] Browser Launched.")
+                except Exception as be:
+                    log_msg(f"[ERROR] Browser Launch Failed: {be}")
+                    raise be
+
                 context = browser.new_context(
                     user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
                 )
                 page = context.new_page()
+                log_msg("[DEBUG] Page created. Entering main loop.")
                 
                 cycle_count = 0
                 max_cycles = 50 # Restart browser periodically to free memory
@@ -366,9 +375,12 @@ def run_scraper():
                             # DB Check
                             if conn.closed: raise Exception("DB Conn Closed")
 
+                            # log_msg(f"[DEBUG] Fetching {sport}...") 
                             matches = fetch_sofascore_live(page, config['slug'])
                             if matches:
                                 upsert_matches(conn, sport, matches, page)
+                            else:
+                                pass # log_msg(f"[DEBUG] No matches for {sport}")
                             
                         except Exception as e:
                             log_msg(f"[ERROR] {sport}: {e}")
@@ -379,6 +391,7 @@ def run_scraper():
                     elapsed = time.time() - start_time
                     # 15s to 30s cycle to be polite with odds fetching
                     sleep_time = max(10.0, 30.0 - elapsed)
+                    # log_msg(f"[DEBUG] Sleeping {sleep_time:.2f}s...")
                     time.sleep(sleep_time) 
                     
                     cycle_count += 1
