@@ -169,7 +169,7 @@ def get_batting_team(match, home_team, away_team):
 def get_team_name(match, side='home', team_map=None):
 
     team_obj = match.get(f"{side}Team", {})
-    if 'name' in team_obj: return team_obj['name']
+    if 'name' in team_obj and team_obj['name']: return team_obj['name']
     
     tid = team_obj.get('id')
     if team_map and tid in team_map:
@@ -207,13 +207,22 @@ def get_odds(match):
 # --- Main Scraper Logic ---
 
 def fetch_aiscore_live(page, sport_slug, state_key):
-    url = f"https://www.aiscore.com/{sport_slug}" 
+    url = f"https://www.aiscore.com/{sport_slug}"
+    if sport_slug == 'football':
+        url += "/live"
+    
     matches = []
     
     try:
         if page.is_closed(): return []
         
         response = page.goto(url, timeout=30000, wait_until='domcontentloaded')
+        
+        # Brief wait for dynamic content (1s instead of 3s to avoid timeout issues)
+        if sport_slug == 'football':
+            page.wait_for_timeout(4000)
+        else:
+            page.wait_for_timeout(1000)
         
         # Extract __NUXT__
         data = page.evaluate("""() => {
@@ -237,11 +246,38 @@ def fetch_aiscore_live(page, sport_slug, state_key):
                 for t in sport_state['matchesData_teams']:
                     team_map[t['id']] = t['name']
             
+            # Debug Keys
+            log_msg(f"[DEBUG] {sport_slug} keys: {list(sport_state.keys())}")
+            
             # 2. Find Matches
-            found_matches = []
             if 'matchesData_matches' in sport_state:
                 found_matches = sport_state['matchesData_matches']
-                
+            elif 'matches' in sport_state:
+                found_matches = sport_state['matches']
+            
+            # Football: state.football['home-new']['matchesData']
+            if not found_matches:
+                home_new = sport_state.get('home-new', {})
+                if 'matchesData' in home_new:
+                    m_data = home_new['matchesData']
+                    if isinstance(m_data, list):
+                        found_matches = m_data
+                    elif isinstance(m_data, dict):
+                        # 1. Direct key
+                        if 'matches' in m_data:
+                            found_matches = m_data['matches']
+                        else:
+                            # 2. Nested competitions (iterate values)
+                            nested_matches = []
+                            for k, v in m_data.items():
+                                if isinstance(v, dict) and 'matches' in v:
+                                    nested_matches.extend(v['matches'])
+                            
+                            if nested_matches:
+                                found_matches = nested_matches
+            
+            log_msg(f"[DEBUG] {sport_slug}: Found {len(found_matches)} matches in state.")
+            
             for m in found_matches:
                 m['home_name_resolved'] = get_team_name(m, 'home', team_map)
                 m['away_name_resolved'] = get_team_name(m, 'away', team_map)
@@ -255,6 +291,7 @@ def fetch_aiscore_live(page, sport_slug, state_key):
         SCRAPER_STATS['last_error'] = f"Fetch {sport_slug}: {str(e)}"
         
     return matches
+
 
 def upsert_matches(conn, sport_key, matches):
     if not matches: return []
@@ -357,7 +394,41 @@ def upsert_matches(conn, sport_key, matches):
         
     return ids
 
+def cleanup_stale_matches(conn, sport_key, active_ids):
+    """
+    Marks matches as 'Finished' if they are no longer in the live feed.
+    This handles matches that finished and disappeared from AiScore.
+    """
+    if not active_ids:
+        return
+    
+    config = SPORTS_CONFIG[sport_key]
+    table_name = config['table']
+    
+    try:
+        cur = conn.cursor()
+        
+        # Find matches that are marked as 'Live' but not in the active set
+        placeholders = ','.join(['%s'] * len(active_ids))
+        cur.execute(f"""
+            UPDATE {table_name}
+            SET status = 'Finished', is_live = FALSE, last_updated = NOW()
+            WHERE is_live = TRUE 
+            AND match_id NOT IN ({placeholders});
+        """, active_ids)
+        
+        updated = cur.rowcount
+        if updated > 0:
+            log_msg(f"[CLEANUP] {sport_key}: Marked {updated} stale matches as Finished.")
+        
+        conn.commit()
+        
+    except Exception as e:
+        log_msg(f"[CLEANUP ERROR] {sport_key}: {e}")
+        conn.rollback()
+
 # --- Supervisor ---
+
 
 def run_scraper():
     while True:
@@ -378,12 +449,18 @@ def run_scraper():
                     args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
                 )
                 
-                # Mobile Context to save bandwidth
-                iphone = p.devices['iPhone 12']
-                context = browser.new_context(**iphone)
-                page = context.new_page()
+                # 1. Desktop Context (For Basketball)
+                context_desktop = browser.new_context(
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                )
+                page_desktop = context_desktop.new_page()
                 
-                log_msg("[DEBUG] Page created. Entering main loop.")
+                # 2. Mobile Context (For Everything Else)
+                iphone = p.devices['iPhone 12']
+                context_mobile = browser.new_context(**iphone)
+                page_mobile = context_mobile.new_page()
+                
+                log_msg("[DEBUG] Pages created (Mobile + Desktop). Entering main loop.")
                 
                 cycle_count = 0
                 max_cycles = 50 
@@ -395,11 +472,23 @@ def run_scraper():
                         try:
                             if conn.closed: raise Exception("DB Conn Closed")
 
-                            matches = fetch_aiscore_live(page, config['slug'], config['state_key'])
-                            if matches:
-                                upsert_matches(conn, sport, matches)
+                            log_msg(f"[DEBUG] Fetching {sport}...")
+                            
+                            # Select page based on sport
+                            if sport == 'basketball':
+                                target_page = page_desktop
                             else:
-                                pass # No matches found/fetched
+                                target_page = page_mobile
+                                
+                            matches = fetch_aiscore_live(target_page, config['slug'], config['state_key'])
+                            
+                            if matches:
+                                active_ids = upsert_matches(conn, sport, matches)
+                                cleanup_stale_matches(conn, sport, active_ids)
+                            else:
+                                # No live matches, mark all as finished
+                                cleanup_stale_matches(conn, sport, [])
+
                             
                         except Exception as e:
                             log_msg(f"[ERROR] {sport}: {e}")
