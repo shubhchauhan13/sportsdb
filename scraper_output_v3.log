@@ -1,0 +1,23 @@
+/Users/shubhchauhan/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[2025-12-17 16:20:43] [SUPERVISOR] Starting Scraper Loop...
+ * Serving Flask app 'scraper_service'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.68.108:8080
+[33mPress CTRL+C to quit[0m
+[2025-12-17 16:21:00] [SUCCESS] Connected to NeonDB and verified schemas.
+[2025-12-17 16:21:00] [DEBUG] Launching Playwright...
+[2025-12-17 16:21:01] [DEBUG] Launching Chromium...
+[2025-12-17 16:21:01] [DEBUG] Browser Launched.
+127.0.0.1 - - [17/Dec/2025 16:21:01] "GET /health HTTP/1.1" 200 -
+[2025-12-17 16:21:01] [DEBUG] Warming up session (visiting homepage)...
+[2025-12-17 16:21:08] [DEBUG] Warmup complete.
+[2025-12-17 16:21:08] [DEBUG] Entering main loop.
+[2025-12-17 16:21:08] [DEBUG] Fetching Cricket (Cricbuzz)...
+[2025-12-17 16:21:15] [SYNC] cricket: Upserted 30 matches.
+[2025-12-17 16:21:15] [DEBUG] Fetching Football (FotMob)...
+[2025-12-17 16:21:21] [DEBUG] No Football matches
+[2025-12-17 16:21:38] [DEBUG] Fetching Cricket (Cricbuzz)...

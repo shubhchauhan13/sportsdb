@@ -6,62 +6,126 @@ import time
 
 def verify_sofascore():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context(
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        # Mobile Emulation Strategy
+        iphone = p.devices['iPhone 12']
+        browser = p.chromium.launch(
+            headless=True,
+            args=['--no-sandbox', '--disable-blink-features=AutomationControlled']
         )
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            locale='en-US',
+            timezone_id='Asia/Kolkata',
+            extra_http_headers={
+                 'Accept-Language': 'en-US,en;q=0.9',
+            }
+        )
+        
+        # --- Stealth Injection (The Pro Move) ---
+        context.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined
+            });
+            Object.defineProperty(navigator, 'languages', {
+                get: () => ['en-US', 'en']
+            });
+            Object.defineProperty(navigator, 'plugins', {
+                get: () => [1, 2, 3, 4, 5]
+            });
+            window.chrome = { runtime: {} };
+        """)
+        
         page = context.new_page()
 
-        # Try 1: www.sofascore.com (Seen in logs)
-        url1 = "https://www.sofascore.com/api/v1/sport/cricket/events/live"
-        print(f"[*] Trying Direct API Access: {url1}")
+        # 1. Warmup (Crucial for Cookies & Trust)
+        target_url = "https://www.sofascore.com/"
+        print(f"[*] Visiting Homepage: {target_url}")
+        
+        # Check actual UA
+        ua = page.evaluate("navigator.userAgent")
+        print(f"[*] Actual User-Agent: {ua}")
+        platform = page.evaluate("navigator.platform")
+        print(f"[*] Actual Platform: {platform}")
         
         try:
-            response = page.goto(url1, timeout=30000)
-            if response.status == 200:
-                content = page.content()
-                # Content will be wrapped in <html><body><pre>... or just text
-                text = page.inner_text("body")
-
-                try:
-                    data = json.loads(text)
-                    events = data.get('events', [])
-                    print(f"[SUCCESS] Retrieved {len(events)} live matches from WWW.")
-                    if events:
-                        m = events[0]
-                        print("Sample Match Data:")
-                        print(f"Status Description: {m.get('status', {}).get('description')}")
-                        print(f"Last Period: {m.get('lastPeriod')}")
-                        print(f"Periods: {json.dumps(m.get('periods', {}), indent=2)}")
-                        print(f"Home Score: {m.get('homeScore', {}).get('display')}")
-                        print(f"Away Score: {m.get('awayScore', {}).get('display')}")
-                    return
-                except:
-                    print(f"[WARN] Failed to parse JSON from WWW: {text[:100]}")
-            else:
-                print(f"[FAIL] WWW gave status {response.status}")
-                
+            page.goto(target_url, timeout=60000, wait_until='domcontentloaded') # Faster than networkidle
+            print("[*] Page loaded. Waiting 5s...")
+            time.sleep(5)
+            
+            title = page.title()
+            print(f"[*] Page Title: {title}")
+            
+            # Check for Cloudflare/Challenge text
+            if "Just a moment" in title or "Challenge" in title:
+                print("[!] CLOUDFLARE CHALLENGE DETECTED. Waiting 10s more...")
+                time.sleep(10)
+                print(f"[*] Post-wait Title: {page.title()}")
         except Exception as e:
-            print(f"[ERROR] WWW failed: {e}")
+            print(f"[ERROR] Warmup navigation failed: {e}")
+            
+    
+        def handle_response(response):
+            # Capture ALL JSON responses to see what's working
+            try:
+                if "application/json" in response.headers.get("content-type", ""):
+                    print(f"[INTERCEPT] URL: {response.url} | Status: {response.status}")
+                    if response.status == 200:
+                        text = response.text()
+                        if "events" in text:
+                            print(f"[FOUND-EVENTS] This URL contains event data!")
+                            # print(text[:200]) # Preview
+            except:
+                pass
 
-        # Try 2: api.sofascore.com (User suggestion)
-        url2 = "https://api.sofascore.com/api/v1/sport/cricket/events/live"
-        print(f"[*] Trying API Domain: {url2}")
+        page.on("response", handle_response)
+
+        # 3. Use UI Navigation to trigger requests
+        target_url = "https://www.sofascore.com/cricket/live"
+        print(f"[*] Navigating to UI: {target_url}")
         
         try:
-            response = page.goto(url2, timeout=30000)
-            if response.status == 200:
-                text = page.inner_text("body")
-                data = json.loads(text)
-                events = data.get('events', [])
-                print(f"[SUCCESS] Retrieved {len(events)} live matches from API domain.")
-                if events:
-                    print(json.dumps(events[0], indent=2))
-            else:
-                print(f"[FAIL] API domain gave status {response.status}")
-                
+            page.goto(target_url, timeout=60000, wait_until='domcontentloaded')
+            print("[*] Page loaded. Checking for data blobs...")
+            
+            # Check for __NEXT_DATA__ or similar
+            content = page.content()
+            if "__NEXT_DATA__" in content:
+                print("[SUCCESS] Found __NEXT_DATA__")
+            if "window.__INITIAL_STATE__" in content:
+                print("[SUCCESS] Found window.__INITIAL_STATE__")
+            
+            # Try to evaluate and get match count
+            # Often data is in __NEXT_DATA__.props.pageProps.initialState...
+            try:
+                data = page.evaluate("""() => {
+                    if (window.__NEXT_DATA__) return window.__NEXT_DATA__;
+                    return null;
+                }""")
+                if data:
+                    print("[DATA] Extracted __NEXT_DATA__")
+                    # Inspect Structure
+                    try:
+                        props = data.get('props', {})
+                        pageProps = props.get('pageProps', {})
+                        print(f"PageProps Keys: {pageProps.keys()}")
+                        
+                        initialState = pageProps.get('initialState', {})
+                        print(f"InitialState Keys: {initialState.keys()}")
+                        
+                        initialProps = pageProps.get('initialProps', {})
+                        print(f"InitialProps Keys: {initialProps.keys()}")
+                        
+                        # Check deep keys
+                        # Sometimes it's in a dehydrated state
+                    except Exception as e:
+                        print(f"Error inspecting data: {e}")
+                else:
+                    print("[FAIL] __NEXT_DATA__ object not found in JS context")
+            except Exception as e:
+                print(f"[WARN] JS Eval failed: {e}")
+
         except Exception as e:
-            print(f"[ERROR] API domain failed: {e}")
+            print(f"[ERROR] Logic failed: {e}")
             
         browser.close()
 
