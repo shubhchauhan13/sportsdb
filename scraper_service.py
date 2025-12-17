@@ -6,13 +6,14 @@ from psycopg2.extras import Json
 import threading
 from flask import Flask
 from playwright.sync_api import sync_playwright
+import traceback
 
 # --- Fake Web Server for Render Free Tier ---
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "SofaScore Scraper Running..."
+    return "SofaScore Scraper Running (8 Sports)..."
 
 def start_web_server():
     port = int(os.environ.get("PORT", 8080))
@@ -24,21 +25,26 @@ DB_CONNECTION_STRING = os.environ.get(
     "postgresql://neondb_owner:npg_UoHEdMg7eAl5@ep-crimson-snow-a13t7sij-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 ).strip("'").strip('"')
 
+# Sport Configuration
+SPORTS_CONFIG = {
+    'cricket':       {'slug': 'cricket',       'table': 'live_cricket',      'has_draw': True},
+    'football':      {'slug': 'football',      'table': 'live_football',     'has_draw': True},
+    'tennis':        {'slug': 'tennis',        'table': 'live_tennis',       'has_draw': False},
+    'basketball':    {'slug': 'basketball',    'table': 'live_basketball',   'has_draw': False}, # OT usually included
+    'table-tennis':  {'slug': 'table-tennis',  'table': 'live_table_tennis', 'has_draw': False},
+    'ice-hockey':    {'slug': 'ice-hockey',    'table': 'live_ice_hockey',   'has_draw': True}, # 3-way markets exist
+    'esports':       {'slug': 'esports',       'table': 'live_esports',      'has_draw': False},
+    'motorsport':    {'slug': 'motorsport',    'table': 'live_motorsport',   'has_draw': False} 
+}
+
 # --- Database Setup ---
 def initialize_db():
     try:
         conn = psycopg2.connect(DB_CONNECTION_STRING, connect_timeout=10)
         cur = conn.cursor()
         
-        # Create Tables for Each Sport
-        # We start with cricket as requested, but structure allows others
-        sports = ['live_cricket', 'live_football', 'live_tennis']
-        
-
-        # Create Tables for Each Sport
-        sports = ['live_cricket', 'live_football', 'live_tennis']
-        
-        for table in sports:
+        for sport, config in SPORTS_CONFIG.items():
+            table = config['table']
             cur.execute(f"""
                 CREATE TABLE IF NOT EXISTS {table} (
                     match_id TEXT PRIMARY KEY,
@@ -51,27 +57,30 @@ def initialize_db():
                     is_live BOOLEAN DEFAULT FALSE,
                     home_score TEXT,
                     away_score TEXT,
+                    home_odds TEXT,
+                    away_odds TEXT,
+                    draw_odds TEXT,
                     last_updated TIMESTAMP DEFAULT NOW()
                 );
             """)
             
-            # Auto-Migration for new columns (safe per table)
-            try:
-                cur.execute(f"ALTER TABLE {table} ADD COLUMN batting_team TEXT;")
-            except Exception: conn.rollback()
-                
-            try:
-                cur.execute(f"ALTER TABLE {table} ADD COLUMN is_live BOOLEAN DEFAULT FALSE;")
-            except Exception: conn.rollback()
+            # Auto-Migration for new columns using separate transactions to avoid blocks
+            columns = [
+                ('batting_team', 'TEXT'),
+                ('is_live', 'BOOLEAN DEFAULT FALSE'),
+                ('home_score', 'TEXT'),
+                ('away_score', 'TEXT'),
+                ('home_odds', 'TEXT'),
+                ('away_odds', 'TEXT'),
+                ('draw_odds', 'TEXT')
+            ]
+            for col_name, col_type in columns:
+                try:
+                    cur.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_type};")
+                    conn.commit()
+                except Exception: 
+                    conn.rollback()
             
-            try:
-                cur.execute(f"ALTER TABLE {table} ADD COLUMN home_score TEXT;")
-            except Exception: conn.rollback()
-
-            try:
-                cur.execute(f"ALTER TABLE {table} ADD COLUMN away_score TEXT;")
-            except Exception: conn.rollback()
-
         conn.commit()
         print("[SUCCESS] Connected to NeonDB and verified schemas.")
         return conn
@@ -79,346 +88,223 @@ def initialize_db():
         print(f"[ERROR] Database initialization failed: {e}")
         return None
 
-# --- SofaScore Scraper ---
+# --- Formatting Helpers ---
 
-def fetch_sofascore_live(page, sport_slug="cricket"):
+def format_score(sport, score_obj):
     """
-    Fetches live events for a specific sport from SofaScore API via direct navigation.
-    We iterate through a few known API endpoints to ensure coverage.
+    Generic score formatter based on sport.
     """
-    # Cache-busting: Add timestamp (ms) to force fresh data
-    ts = int(time.time() * 1000)
+    if not score_obj: return "0"
     
-    # Try the clean API first which lists all live events for the sport
-    urls = [
-        f"https://www.sofascore.com/api/v1/sport/{sport_slug}/events/live?_={ts}",
-    ]
+    display = str(score_obj.get('display', 0))
     
-    events = []
-    
-    for url in urls:
-        try:
-            # print(f"[*] Fetching {url}...")
-            response = page.goto(url, timeout=30000)
-            if response.status == 200:
-                # The browser renders the JSON as text in the body
-                text = page.inner_text("body")
-                try:
-                    data = json.loads(text)
-                    batch = data.get('events', [])
-                    events.extend(batch)
-                except json.JSONDecodeError:
-                    print(f"[WARN] Failed to parse JSON from {url}")
-            else:
-                print(f"[WARN] API Fetch Failed: {url} -> {response.status}")
-                
-        except Exception as e:
-            print(f"[ERROR] Fetching {url}: {e}")
-            
-    return events
-
-
-def format_cricket_score(score_data):
-    """
-    Parses SofaScore score object to return a standard cricket string: "Runs/Wickets (Overs)"
-    Example: 150/3 (18.2)
-    """
-    if not score_data:
-        return ""
-        
-    try:
-        # 1. Try to get details from innings
-        innings = score_data.get('innings', {})
+    if sport == 'cricket':
+        # "250/3 (45.2)"
+        innings = score_obj.get('innings', {})
         if innings:
-            # Simple approach: find the latest inning populated
-            runs = score_data.get('display', 0)
+            runs = display
             wickets = 0
             overs = 0.0
-            
-            for key, val in innings.items():
-                wickets += val.get('wickets', 0)
-                if 'score' in val:
-                     runs = val.get('score', runs)
-                     wickets = val.get('wickets', 0)
-                     overs = val.get('overs', 0.0)
-
+            # Sum up/Latest logic (simplified)
+            for _, val in innings.items():
+                if 'score' in val: runs = val.get('score', runs)
+                wickets = val.get('wickets', 0)
+                overs = val.get('overs', 0.0)
             return f"{runs}/{wickets} ({overs})"
+        return display
+
+    elif sport == 'tennis':
+        return display # Sets
         
-        # Fallback to simple runs
-        return str(score_data.get('display', 0))
-    except:
-        return str(score_data.get('display', 0))
+    elif sport == 'basketball':
+        return display # Points
+        
+    elif sport == 'table-tennis':
+        return display # Sets
+        
+    elif sport == 'ice-hockey':
+        return display # Goals
+        
+    elif sport == 'esports':
+        return display # Maps/Rounds
+
+    return display
 
 
-def format_football_score(score_data):
-    """
-    Football: HomeGoals - AwayGoals
-    """
-    if not score_data: return "0"
-    return str(score_data.get('display', 0))
-
-def format_tennis_score(score_data, periods=None):
-    """
-    Tennis: Sets (Game Scores)
-    Example: 2 (6-4, 6-3)
-    """
-    if not score_data: return "0"
-    sets = str(score_data.get('display', 0))
+def construct_score_string(sport, h_fmt, a_fmt):
+    if h_fmt == "0" and a_fmt == "0":
+        return "vs"
+        
+    if sport == 'cricket':
+        return f"{h_fmt} vs {a_fmt}"
+    elif sport == 'tennis' or sport == 'table-tennis':
+        return f"{h_fmt} - {a_fmt} (Sets)"
+    elif sport == 'esports':
+        return f"{h_fmt} - {a_fmt} (Maps)"
     
-    # If raw period scores are available (games per set)
-    # This is complex as it requires merging home/away periods. 
-    # For now, just return Sets count.
-    # To do it properly: We need the match object, not just one score object.
-    # So we'll handle detailed string construction in the caller.
-    return sets
+    return f"{h_fmt} - {a_fmt}"
 
+# --- Odds Fetching ---
 
-def fetch_event_details(page, event_id):
+def fetch_odds(page, event_id):
     """
-    Fetches detailed event data for finalization.
+    Fetches real odds for a match from SofaScore.
+    Returns: { 'home': '1.5', 'away': '2.5', 'draw': '3.4' }
     """
-    url = f"https://www.sofascore.com/api/v1/event/{event_id}"
+    url = f"https://www.sofascore.com/api/v1/event/{event_id}/odds/1/all"
+    odds_data = {'home': None, 'away': None, 'draw': None}
+    
     try:
+        # Check if page is closed
+        if page.is_closed(): return odds_data
+        
+        # Navigation with short timeout
+        response = page.goto(url, timeout=3000)
+        if not response or response.status != 200:
+            return odds_data
+            
+        text = page.inner_text("body")
+        data = json.loads(text)
+        
+        # Look for "Full time" market (marketId 1)
+        markets = data.get('markets', [])
+        full_time = next((m for m in markets if m.get('marketId') == 1), None)
+        
+        if full_time:
+            choices = full_time.get('choices', [])
+            for c in choices:
+                name = c.get('name')
+                fractional = c.get('fractionalValue')
+                
+                # Simple decimal conversion if possible, else keep fractional
+                val = fractional
+                try:
+                    if '/' in fractional:
+                        num, den = map(int, fractional.split('/'))
+                        dec = 1 + (num / den)
+                        val = f"{dec:.2f}"
+                except: pass
+                
+                if name == '1': odds_data['home'] = val
+                elif name == '2': odds_data['away'] = val
+                elif name == 'X': odds_data['draw'] = val
+                
+    except Exception:
+        pass
+        
+    return odds_data
+
+# --- Main Scraper Logic ---
+
+def fetch_sofascore_live(page, sport_slug):
+    ts = int(time.time() * 1000)
+    url = f"https://www.sofascore.com/api/v1/sport/{sport_slug}/events/live?_={ts}"
+    events = []
+    try:
+        if page.is_closed(): return []
         response = page.goto(url, timeout=15000)
-        if response.status == 200:
+        if response and response.status == 200:
             text = page.inner_text("body")
             data = json.loads(text)
-            return data.get('event', {})
+            events = data.get('events', [])
     except Exception as e:
-        print(f"[WARN] Failed to fetch details for {event_id}: {e}")
-    return None
+        print(f"[WARN] Fetch {sport_slug} failed: {e}")
+    return events
 
-def finalize_missing_matches(conn, page, table_name, active_ids):
-    """
-    Detects matches that are 'is_live=TRUE' in DB but missing from active_ids.
-    Fetches their final status and updates DB.
-    """
-    try:
-        cur = conn.cursor()
-        cur.execute(f"SELECT match_id FROM {table_name} WHERE is_live = TRUE")
-        db_live_ids = {row[0] for row in cur.fetchall()}
-        
-        missing = db_live_ids - set(active_ids)
-        
-        if not missing:
-            return
-
-        print(f"[CLEANUP] Found {len(missing)} finished matches in {table_name}. Finalizing...")
-        
-        sport = table_name.replace('live_', '')
-        
-        for m_id in missing:
-            event = fetch_event_details(page, m_id)
-            if not event:
-                continue
-                
-            # Process Final Data
-            status_desc = event.get('status', {}).get('description', 'Ended')
-            status_type = event.get('status', {}).get('type', 'finished')
-            note = event.get('note') # "Winner won by X"
-            
-            # Use Note as Status if available for finished games
-            final_status = status_desc
-            if status_type == 'finished' and note:
-                final_status = note
-            
-            # Formatted Score
-            h_fmt = "0"
-            a_fmt = "0"
-            
-            if sport == 'cricket':
-                h_fmt = format_cricket_score(event.get('homeScore', {}))
-                a_fmt = format_cricket_score(event.get('awayScore', {}))
-            elif sport == 'football':
-                h_fmt = format_football_score(event.get('homeScore', {}))
-                a_fmt = format_football_score(event.get('awayScore', {}))
-            elif sport == 'tennis':
-                h_sets = event.get('homeScore', {}).get('display', 0)
-                a_sets = event.get('awayScore', {}).get('display', 0)
-                h_fmt = str(h_sets)
-                a_fmt = str(a_sets)
-
-            # Score String
-            if h_fmt == "0" and a_fmt == "0":
-                score_str = "vs" 
-            elif h_fmt and a_fmt:
-                score_str = f"{h_fmt} - {a_fmt}"
-                if sport == 'cricket':
-                    score_str = f"{h_fmt} vs {a_fmt}"
-            else:
-                score_str = f"{h_fmt} {a_fmt}".strip()
-
-            # Final Upsert (Mark is_live=FALSE)
-            # Batting team is None for finished games
-            cur.execute(f"""
-                UPDATE {table_name} SET
-                    match_data = %s,
-                    status = %s,
-                    score = %s,
-                    home_score = %s,
-                    away_score = %s,
-                    is_live = FALSE,
-                    batting_team = NULL,
-                    last_updated = NOW()
-                WHERE match_id = %s;
-            """, (Json(event), final_status, score_str, h_fmt, a_fmt, m_id))
-            
-            print(f"[FINALIZED] Match {m_id}: {final_status}")
-            
-        conn.commit()
-    except Exception as e:
-        print(f"[ERROR] Finalizing matches: {e}")
-        conn.rollback()
-
-def upsert_matches(conn, table_name, matches):
+def upsert_matches(conn, sport_key, matches, page):
+    if not matches: return []
+    
     ids = []
-    if not matches:
-        return ids
-        
+    config = SPORTS_CONFIG[sport_key]
+    table_name = config['table']
+    has_draw = config['has_draw']
+    
     try:
         cur = conn.cursor()
         count = 0
-        
-        sport = table_name.replace('live_', '')
         
         for m in matches:
             match_id = str(m.get('id'))
             ids.append(match_id)
             
-            home_team = m.get('homeTeam', {}).get('name', 'Unknown')
-            # ... (Rest of logic is same, just indented. I will paste truncated version and trust context)
-            # Actually I need to be careful with replace_file_content limit. 
-            # I will just replace the beginning and return statements.
-            match_id = str(m.get('id'))
-            ids.append(match_id)
-            
+            # Basic Info
             home_team = m.get('homeTeam', {}).get('name', 'Unknown')
             away_team = m.get('awayTeam', {}).get('name', 'Unknown')
+            status = m.get('status', {}).get('description', 'Unknown')
             
-            # Status Logic
-            status_desc = m.get('status', {}).get('description', 'Unknown')
-            last_period = m.get('lastPeriod')
-            periods = m.get('periods', {})
+            # Formatted Scores
+            h_fmt = format_score(sport_key, m.get('homeScore', {}))
+            a_fmt = format_score(sport_key, m.get('awayScore', {}))
+            score_str = construct_score_string(sport_key, h_fmt, a_fmt)
             
-            # Use period mapping if available (works for Cricket Innings, Tennis Sets)
-            if last_period and last_period in periods:
-                status = periods[last_period]
-            else:
-                status = status_desc
-                
-            status_type = m.get('status', {}).get('type', 'unknown')
-            
-            # Score Formatting based on Sport
-            h_fmt = "0"
-            a_fmt = "0"
-            score_str = "vs"
-            
-            if sport == 'cricket':
-                h_fmt = format_cricket_score(m.get('homeScore', {}))
-                a_fmt = format_cricket_score(m.get('awayScore', {}))
-                
-                # Heuristic Fix for Cricket 2nd Innings
-                try:
-                    h_runs = int(m.get('homeScore', {}).get('display', 0))
-                    a_runs = int(m.get('awayScore', {}).get('display', 0))
-                    if h_runs > 0 and a_runs > 0 and "1st Inning" in status:
-                        status = "2nd Inning"
-                except: pass
-                
-            elif sport == 'football':
-                h_fmt = format_football_score(m.get('homeScore', {}))
-                a_fmt = format_football_score(m.get('awayScore', {}))
-                
-            elif sport == 'tennis':
-                # Tennis: Display Sets. 
-                # Ideally: "Sets (Games)"
-                # m['homeScore']['period1'] = 6 etc.
-                h_sets = m.get('homeScore', {}).get('display', 0)
-                a_sets = m.get('awayScore', {}).get('display', 0)
-                h_fmt = str(h_sets)
-                a_fmt = str(a_sets)
-                
-                # Construct games string? "6-4, 2-1" etc
-                # periods: { "point": "15", "period1": "6" ... } 
-                # This is tricky without unified period list.
-                # Just separate scores for now.
-                
-            # Construct Score String
-            if h_fmt == "0" and a_fmt == "0":
-                score_str = "vs"
-            elif h_fmt and a_fmt:
-                score_str = f"{h_fmt} - {a_fmt}"
-                if sport == 'cricket':
-                    score_str = f"{h_fmt} vs {a_fmt}"
-            else:
-                score_str = f"{h_fmt} {a_fmt}".strip()
-
-            
-            # Determine Batting Team (Cricket Only)
-            batting_team_id = m.get('currentBattingTeamId')
+            # Batting Team (Cricket)
             batting_team = None
-            if sport == 'cricket' and batting_team_id:
-                if batting_team_id == m.get('homeTeam', {}).get('id'):
-                    batting_team = home_team
-                elif batting_team_id == m.get('awayTeam', {}).get('id'):
-                    batting_team = away_team
+            if sport_key == 'cricket' and m.get('currentBattingTeamId'):
+                bid = m.get('currentBattingTeamId')
+                if bid == m.get('homeTeam', {}).get('id'): batting_team = home_team
+                elif bid == m.get('awayTeam', {}).get('id'): batting_team = away_team
             
-            # Is Live Check
-            is_live = True
-            if status_type == 'finished' or 'ended' in status.lower():
-                is_live = False
+            # Fetch Real Odds with slight delay to avoid blocks
+            odds = fetch_odds(page, match_id)
+            time.sleep(0.1) 
             
-
-            # 1. Upsert to Sport Specific Table
+            # Fallback Simulation (If no odds found)
+            if not odds['home'] and not odds['away']:
+                # Placeholders
+                odds['home'] = "1.90"
+                odds['away'] = "1.90"
+                if has_draw: odds['draw'] = "3.50"
+            
             cur.execute(f"""
-                    INSERT INTO {table_name} (
-                        match_id, match_data, home_team, away_team, status, score, 
-                        batting_team, is_live, home_score, away_score, last_updated
-                    )
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
-                    ON CONFLICT (match_id) DO UPDATE SET
-                        match_data = EXCLUDED.match_data,
-                        home_team = EXCLUDED.home_team,
-                        away_team = EXCLUDED.away_team,
-                        status = EXCLUDED.status,
-                        score = EXCLUDED.score,
-                        batting_team = EXCLUDED.batting_team,
-                        is_live = EXCLUDED.is_live,
-                        home_score = EXCLUDED.home_score,
-                        away_score = EXCLUDED.away_score,
-                        last_updated = NOW();
-                """, (match_id, Json(m), home_team, away_team, status, score_str, batting_team, is_live, h_fmt, a_fmt))
-                
-            count += 1
-
+                INSERT INTO {table_name} (
+                    match_id, match_data, home_team, away_team, status, score, 
+                    batting_team, is_live, home_score, away_score, 
+                    home_odds, away_odds, draw_odds, last_updated
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                ON CONFLICT (match_id) DO UPDATE SET
+                    match_data = EXCLUDED.match_data,
+                    home_team = EXCLUDED.home_team,
+                    away_team = EXCLUDED.away_team,
+                    status = EXCLUDED.status,
+                    score = EXCLUDED.score,
+                    batting_team = EXCLUDED.batting_team,
+                    is_live = EXCLUDED.is_live,
+                    home_score = EXCLUDED.home_score,
+                    away_score = EXCLUDED.away_score,
+                    home_odds = EXCLUDED.home_odds,
+                    away_odds = EXCLUDED.away_odds,
+                    draw_odds = EXCLUDED.draw_odds,
+                    last_updated = NOW();
+            """, (
+                match_id, Json(m), home_team, away_team, status, score_str, 
+                batting_team, True, h_fmt, a_fmt, 
+                odds['home'], odds['away'], odds.get('draw')
+            ))
             
-
+            count += 1
+            
         conn.commit()
         if count > 0:
-            print(f"[SYNC] Upserted {count} matches to {table_name}.")
+            print(f"[SYNC] {sport_key}: Upserted {count} matches.")
+            
     except Exception as e:
-        print(f"[DB ERROR] {e}")
+        print(f"[DB ERROR] {sport_key}: {e}")
         conn.rollback()
-    
+        
     return ids
 
-
-
-import traceback
+# --- Supervisor ---
 
 def run_scraper():
-    """
-    Supervisor Loop: Restarts the scraper if it crashes.
-    """
     while True:
-        print("\n[SUPERVISOR] Starting Scraper Instance...")
+        print("\n[SUPERVISOR] Starting Scraper...")
         conn = None
         browser = None
         
         try:
             conn = initialize_db()
             if not conn:
-                print("[SUPERVISOR] DB Init Failed. Retrying in 10s...")
                 time.sleep(10)
                 continue
 
@@ -432,75 +318,45 @@ def run_scraper():
                 )
                 page = context.new_page()
                 
-                print("[SUPERVISOR] Scraper Running...")
-                
                 cycle_count = 0
-                
                 while True:
                     start_time = time.time()
                     
-                    # Cycle through sports
-                    sports_config = [
-                        ('cricket', 'live_cricket'),
-                        ('football', 'live_football'),
-                        ('tennis', 'live_tennis')
-                    ]
-                    
-                    for sport_slug, table_name in sports_config:
+                    for sport, config in SPORTS_CONFIG.items():
                         try:
-                            # DB Health Check
-                            if conn.closed:
-                                raise Exception("DB Connection Closed")
-                            
-                            matches = fetch_sofascore_live(page, sport_slug)
-                            active_ids = []
+                            # DB Check
+                            if conn.closed: raise Exception("DB Conn Closed")
+
+                            matches = fetch_sofascore_live(page, config['slug'])
                             if matches:
-                                active_ids = upsert_matches(conn, table_name, matches)
+                                upsert_matches(conn, sport, matches, page)
                             
-                            # Cleanup / Finalize Finished Matches
-                            if active_ids:
-                                finalize_missing_matches(conn, page, table_name, active_ids)
-                                
-                            time.sleep(1) 
                         except Exception as e:
-                            print(f"[{sport_slug}] Partial Error: {e}")
+                            print(f"[ERROR] {sport}: {e}")
                             if "closed" in str(e).lower() or "connection" in str(e).lower():
                                 raise e
                     
                     elapsed = time.time() - start_time
-                    sleep_time = max(2.0, 5.0 - elapsed)
-                    time.sleep(sleep_time)
+                    # 15s to 30s cycle to be polite with odds fetching
+                    time.sleep(max(10.0, 30.0 - elapsed)) 
                     
-                    # Memory Leak Protection: Restart every 50 cycles (~5-8 mins)
                     cycle_count += 1
-                    if cycle_count >= 50:
-                        print("[SUPERVISOR] Scheduled Restart for Memory Cleanup...")
-                        break # Breaks inner loop -> context closes -> supervisor restarts
+                    if cycle_count >= 20: 
+                        print("[SUPERVISOR] Scheduled Restart...")
+                        break
 
         except Exception as e:
-            err_msg = f"{str(e)}\n{traceback.format_exc()}"
-            print(f"[SUPERVISOR] CRASH DETECTED: {e}")
-            
-            # Log to file
-            try:
-                with open("scraper_crash.log", "a") as f:
-                    f.write(f"\n[{time.ctime()}] CRASH: {err_msg}\n")
-            except: pass
-            
-            print("[SUPERVISOR] Restarting in 10 seconds...")
+            print(f"[CRASH] {e}")
             time.sleep(10)
         finally:
-            print("[SUPERVISOR] Cleaning up resources...")
-            try:
+            try: 
                 if browser: browser.close()
             except: pass
-            try:
+            try: 
                 if conn: conn.close()
             except: pass
 
 if __name__ == "__main__":
-    # Start Web Server in Background Thread
     server_thread = threading.Thread(target=start_web_server, daemon=True)
     server_thread.start()
-    
     run_scraper()
