@@ -313,13 +313,31 @@ def upsert_matches(conn, sport_key, matches):
             away_team = m.get('away_name_resolved', 'Unknown')
             
             # Status
+            # Status
             status_code = m.get('matchStatus', 0)
-            status = "Upcoming"
-            if status_code == 2: status = "Live"
-            elif status_code == 3: status = "Finished"
-            elif status_code == 4: status = "Postponed" # Guess
+            status_map = {
+                1: "Upcoming",
+                2: "Live",
+                3: "Finished",
+                4: "Postponed",
+                5: "Cancelled",
+                6: "Interrupted",
+                7: "Abandoned",
+                8: "Finished", # Retired
+                9: "Walkover",
+                11: "Halftime", # Sometimes used
+                12: "Extra Time",
+                13: "Penalties"
+            }
+            if status_code in status_map:
+                status = status_map[status_code]
+            else:
+                # Fallback
+                if status_code > 2: status = "Finished"
+                else: status = "Upcoming"
             
-            is_live = (status == "Live")
+            # Live only if code is 2 or specifically representing active play
+            is_live = (status_code == 2 or status in ["Live", "Halftime", "Extra Time", "Penalties"])
             
             # Formatted Score
             score_str = format_score_aiscore(sport_key, m)
