@@ -4,16 +4,44 @@ import os
 import psycopg2
 from psycopg2.extras import Json
 import threading
-from flask import Flask
+from flask import Flask, jsonify
 from playwright.sync_api import sync_playwright
 import traceback
+import collections
+from datetime import datetime
+
+# --- Global State for Diagnostics ---
+SCRAPER_STATS = {
+    'started_at': str(datetime.now()),
+    'sports': {},
+    'last_error': None
+}
+LOG_BUFFER = collections.deque(maxlen=100)
+
+def log_msg(msg):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = f"[{timestamp}] {msg}"
+    print(entry)
+    LOG_BUFFER.append(entry)
 
 # --- Fake Web Server for Render Free Tier ---
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "SofaScore Scraper Running (8 Sports)..."
+    return f"SofaScore Scraper Running... Last Error: {SCRAPER_STATS.get('last_error')}"
+
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "running",
+        "stats": SCRAPER_STATS,
+        "logs_tail": list(LOG_BUFFER)[-5:]
+    })
+
+@app.route('/logs')
+def logs():
+    return jsonify(list(LOG_BUFFER))
 
 def start_web_server():
     port = int(os.environ.get("PORT", 8080))
@@ -82,10 +110,11 @@ def initialize_db():
                     conn.rollback()
             
         conn.commit()
-        print("[SUCCESS] Connected to NeonDB and verified schemas.")
+        log_msg("[SUCCESS] Connected to NeonDB and verified schemas.")
         return conn
     except Exception as e:
-        print(f"[ERROR] Database initialization failed: {e}")
+        log_msg(f"[ERROR] Database initialization failed: {e}")
+        SCRAPER_STATS['last_error'] = str(e)
         return None
 
 # --- Formatting Helpers ---
@@ -159,7 +188,7 @@ def fetch_odds(page, event_id):
         if page.is_closed(): return odds_data
         
         # Navigation with short timeout
-        response = page.goto(url, timeout=3000)
+        response = page.goto(url, timeout=5000) # Increased timeout slightly
         if not response or response.status != 200:
             return odds_data
             
@@ -202,13 +231,14 @@ def fetch_sofascore_live(page, sport_slug):
     events = []
     try:
         if page.is_closed(): return []
-        response = page.goto(url, timeout=15000)
+        response = page.goto(url, timeout=20000) # Increased timeout
         if response and response.status == 200:
             text = page.inner_text("body")
             data = json.loads(text)
             events = data.get('events', [])
     except Exception as e:
-        print(f"[WARN] Fetch {sport_slug} failed: {e}")
+        log_msg(f"[WARN] Fetch {sport_slug} failed: {e}")
+        SCRAPER_STATS['last_error'] = f"Fetch {sport_slug}: {str(e)}"
     return events
 
 def upsert_matches(conn, sport_key, matches, page):
@@ -286,10 +316,16 @@ def upsert_matches(conn, sport_key, matches, page):
             
         conn.commit()
         if count > 0:
-            print(f"[SYNC] {sport_key}: Upserted {count} matches.")
+            log_msg(f"[SYNC] {sport_key}: Upserted {count} matches.")
+            # Update Stats
+            if sport_key not in SCRAPER_STATS['sports']:
+                SCRAPER_STATS['sports'][sport_key] = {}
+            SCRAPER_STATS['sports'][sport_key]['last_sync'] = str(datetime.now())
+            SCRAPER_STATS['sports'][sport_key]['matches'] = count
             
     except Exception as e:
-        print(f"[DB ERROR] {sport_key}: {e}")
+        log_msg(f"[DB ERROR] {sport_key}: {e}")
+        SCRAPER_STATS['last_error'] = f"DB Error {sport_key}: {str(e)}"
         conn.rollback()
         
     return ids
@@ -298,7 +334,7 @@ def upsert_matches(conn, sport_key, matches, page):
 
 def run_scraper():
     while True:
-        print("\n[SUPERVISOR] Starting Scraper...")
+        log_msg("[SUPERVISOR] Starting Scraper Loop...")
         conn = None
         browser = None
         
@@ -309,16 +345,19 @@ def run_scraper():
                 continue
 
             with sync_playwright() as p:
+                # Use a more real-looking User Agent
                 browser = p.chromium.launch(
                     headless=True,
                     args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
                 )
                 context = browser.new_context(
-                    user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
                 )
                 page = context.new_page()
                 
                 cycle_count = 0
+                max_cycles = 50 # Restart browser periodically to free memory
+                
                 while True:
                     start_time = time.time()
                     
@@ -332,22 +371,26 @@ def run_scraper():
                                 upsert_matches(conn, sport, matches, page)
                             
                         except Exception as e:
-                            print(f"[ERROR] {sport}: {e}")
+                            log_msg(f"[ERROR] {sport}: {e}")
+                            SCRAPER_STATS['last_error'] = str(e)
                             if "closed" in str(e).lower() or "connection" in str(e).lower():
                                 raise e
                     
                     elapsed = time.time() - start_time
                     # 15s to 30s cycle to be polite with odds fetching
-                    time.sleep(max(10.0, 30.0 - elapsed)) 
+                    sleep_time = max(10.0, 30.0 - elapsed)
+                    time.sleep(sleep_time) 
                     
                     cycle_count += 1
-                    if cycle_count >= 20: 
-                        print("[SUPERVISOR] Scheduled Restart...")
+                    if cycle_count >= max_cycles: 
+                        log_msg(f"[SUPERVISOR] Scheduled Restart after {max_cycles} cycles...")
                         break
 
         except Exception as e:
-            print(f"[CRASH] {e}")
-            time.sleep(10)
+            log_msg(f"[CRASH] Supervisor caught exception: {e}")
+            log_msg(traceback.format_exc())
+            SCRAPER_STATS['last_error'] = str(e)
+            time.sleep(10) # Cool off before restart
         finally:
             try: 
                 if browser: browser.close()

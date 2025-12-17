@@ -8,7 +8,7 @@ def check_odds():
     cur = conn.cursor()
     
     # Check cricket for odds
-    cur.execute("SELECT match_id, home_odds, away_odds FROM live_cricket WHERE is_live=TRUE LIMIT 5")
+    cur.execute("SELECT match_id, home_odds, away_odds, last_updated FROM live_cricket WHERE is_live=TRUE LIMIT 5")
     rows = cur.fetchall()
     print("--- Cricket Odds ---")
     for r in rows:

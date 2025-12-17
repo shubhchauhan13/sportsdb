@@ -1,155 +1,122 @@
-
 # 📚 Sports Data Frontend Guide
 
+**Version**: 3.0
+**Last Updated**: Dec 17, 2025
 
-# 📚 Sports Data Frontend Guide
-
-**Version**: 2.1
-**Last Updated**: Dec 16, 2025
-
-This guide details how to consume live sports data directly from the **PostgreSQL Database**.
+This guide details how to consume live sports data from the **PostgreSQL Database** for **8 Supported Sports**.
 
 ---
 
-## 1. System Overview
+## 1. Supported Sports & Tables
 
-*   **Source**: Internal Database (Live Sync)
-*   **Update Frequency**: Real-time (~5s latency).
-*   **Data Flow**:
-    `Real-time Engine` -> `PostgreSQL (NeonDB)` -> `Frontend`
+Each sport has its own dedicated table. Query the one matching your page context.
 
-## 2. Database Tables
-
-We use **separate tables** for each sport to ensure performance and scalability.
-
-| Sport | Table Name | Status |
-| :--- | :--- | :--- |
-| 🏏 **Cricket** | `live_cricket` | **Active** |
-| ⚽ **Football** | `live_football` | **Active** |
-| 🎾 **Tennis** | `live_tennis` | **Active** |
+| Sport Icon | Sport | Table Name | Has Draw Odds? |
+| :--- | :--- | :--- | :--- |
+| 🏏 | **Cricket** | `live_cricket` | ✅ Yes (Tests) |
+| ⚽ | **Football** | `live_football` | ✅ Yes |
+| 🎾 | **Tennis** | `live_tennis` | ❌ No |
+| 🏀 | **Basketball** | `live_basketball` | ❌ No (Usually OT) |
+| 🏓 | **Table Tennis** | `live_table_tennis` | ❌ No |
+| 🏒 | **Ice Hockey** | `live_ice_hockey` | ✅ Yes (Regular Time) |
+| 🎮 | **Esports** | `live_esports` | ❌ No |
+| 🏎️ | **Motorsport** | `live_motorsport` | ❌ No |
 
 ---
 
-## 3. Table Schema
+## 2. Universal Table Schema
 
-All three tables (`live_cricket`, `live_football`, `live_tennis`) share this standard schema:
+All 8 tables share the exact same column structure for easy component reuse.
 
+### Core Columns
 | Column | Type | Description | Frontend Usage |
 | :--- | :--- | :--- | :--- |
-| `match_id` | `TEXT` | Unique Match ID. | Primary Key for routing/details. |
-| `home_team` | `TEXT` | Name of Team A. | Display Name. |
-| `away_team` | `TEXT` | Name of Team B. | Display Name. |
-| `home_score` | `TEXT` | Score of Team A. | **Primary Score Display**. (Runs/Goals/Sets) |
-| `away_score` | `TEXT` | Score of Team B. | **Primary Score Display**. |
-| `score` | `TEXT` | Formatted Score String. | Quick display (e.g. "2 - 1" or "150/3 vs ...") |
-| `status` | `TEXT` | Match Status. | **Critical**. Shows "Live", "2nd Inning", "Halftime", etc. |
-| `is_live` | `BOOL` | Is match active? | Use for specific "LIVE" badges/filtering. |
-| `batting_team`| `TEXT` | Name of Batting Team. | **Cricket Only**. Highlight this team. |
-| `match_data` | `JSONB`| Full Raw Event Data. | Use for deep details (odds, players, events). |
-| `last_updated`| `TIMESTAMP` | Sync Time. | Show "Last updated: X sec ago". |
+| `match_id` | `TEXT` | Unique ID | Primary Key / Routing. |
+| `home_team` | `TEXT` | Team A Name | Matches "1" in Odds. |
+| `away_team` | `TEXT` | Team B Name | Matches "2" in Odds. |
+| `score` | `TEXT` | Formatted Score | Display string (e.g. "2 - 1", "150/3 vs 12"). |
+| `status` | `TEXT` | Match Status | e.g. "Live", "Halftime", "Ended". |
+| `is_live` | `BOOL` | Live Flag | Show "LIVE" badge if `true`. |
+| `last_updated`| `TIMESTAMP` | Sync Time | Show "Updated Xs ago". |
 
----
+### Odds Columns (New!)
+Use these purely for display. Click logic should reference `match_id`.
 
-## 4. Integration Logic
+| Column | Type | Example | Logic |
+| :--- | :--- | :--- | :--- |
+| `home_odds` | `TEXT` | "1.50" | Returns `X.XX` or `null`. |
+| `away_odds` | `TEXT` | "2.40" | Returns `X.XX` or `null`. |
+| `draw_odds` | `TEXT` | "3.20" | **Conditional Render**: Only show "Draw" button if this is NOT null. |
 
-### A. Fetching Live Matches
-To get the live leaderboard for a specific sport:
-
-```sql
-SELECT match_id, home_team, away_team, home_score, away_score, status, is_live
-FROM live_cricket  -- Change table name based on sport
-ORDER BY is_live DESC, last_updated DESC;
-```
-
-### B. Sport-Specific Notes
-
-#### 🏏 Cricket
-*   **Score Format**: `home_score` might be "150/3 (15.2)".
-*   **Status**: We use smart logic to detect "2nd Inning" even if the API lags. Trust the `status` column.
-*   **Batting Team**: Use `batting_team` column to show a "Batting" icon next to the active team.
-
-#### ⚽ Football
-*   **Score**: Simple numbers (e.g. `2`, `1`).
-*   **Status**: typical values: `1st half`, `Halftime`, `2nd half`, `Ended`.
-
-#### 🎾 Tennis
-*   **Score**: Represents **Sets Won** (e.g. `1`, `0`).
-*   **Deep Scores**: Parse `match_data` for game-level scores if needed (e.g. "6-4, 2-3").
-
----
-
-## 5. JSON `match_data` Reference
-
-If you need more details than the columns provide, query `match_data`.
-
-**Key Usage Examples:**
-
-*   **Tournament Name**: `match_data->'tournament'->>'name'`
-*   **Round Info**: `match_data->'roundInfo'->>'round'`
-*   **Venue**: `match_data->'venue'->>'city'`
-*   **Current Period**: `match_data->'lastPeriod'` (e.g. "inning1", "period2")
-
-### Example JSON Snippet
-```json
-{
-  "tournament": { "name": "Big Bash League" },
-  "homeTeam": { "name": "Sydney Thunder" },
-  "awayTeam": { "name": "Hobart Hurricanes" },
-  "homeScore": { "display": 150, "innings": {...} },
-  "status": { "description": "2nd Inning", "type": "inprogress" }
-}
-```
-
----
-
-## 6. Access & connection
-
-*   **Database**: NeonDB
-*   **Connection String**: (Refer to Env Variables)
-      "runs": 132,
-      "wickets": 6,
-      "crr": 7.1,
-      "projected_score": 142
-  },
-  
-  // [NEW] Detailed Scores & Target
-  "team_a_score": "132/6 (20.0)",       // Score of Team A
-  "team_b_score": "50/1 (4.2)",         // Score of Team B
-  "target": "134"                       // Target score (if 2nd Innings)
-}
-
-```
-
-## 4. UI Logic Checklist
-- [ ] **Live Badge:** Only show if `is_live` is `true`.
-- [ ] **Batting Indicator:** Show a bat icon next to `batting_team_name`.
-- [ ] **State:** Use `event_state` for chips (e.g. "Drinks Break", "Innings Break").
-- [ ] **Score:** If `score` is null or empty, display "Match Starting Soon".
-
-- [ ] **Refresh:** Re-run the SQL query every 1-2 seconds (or use a WebSocket if your backend supports it, but polling DB is fine for now).
-
-## 5. UI Component Mapping (Example)
-If you are building a card component, map the data like this:
-
-| UI Element | JSON Field | Logic |
+### Sport-Specifics
+| Column | Sport | Description |
 | :--- | :--- | :--- |
-| **Card Header** | `league_name` | Fallback to `format` if empty. |
-| **Badge** | `event_state` | Red for "Live", Orange for "Break", Grey for "Finished". |
-| **Team 1** | `team_a_name` | Bold if `batting_team_name` matches. |
-| **Team 2** | `team_b_name` | Bold if `batting_team_name` matches. |
-| **Big Score** | `score` | Show `--/--` if empty. |
-| **Status Text** | `status_text` | e.g. "Need 15 runs to win". |
-| **Footer** | `current_innings` | e.g. "1st Innings". |
+| `batting_team` | 🏏 Cricket | Name of the team currently batting. Show a 🏏 icon next to this team's name in the UI. |
 
-## 6. Betting Odds (New)
-If `match_odds` is not null:
-- **Odds A:** `match_odds.team_a_odds` (e.g. 1.50)
-- **Odds B:** `match_odds.team_b_odds` (e.g. 2.50)
-- **Win Prob:** Show a progress bar using `match_odds.team_a_win_prob` %.
+---
 
-## 7. Session/Fancy (New)
-If `session` is not null (Live matches only):
-- **CRR:** `session.crr` (Current Run Rate)
-- **Projected Score:** `session.projected_score` (Estimated final score)
+## 3. Integration Examples
 
+### A. Fetching Live Matches (SQL)
+To get the live feed for Football:
+```sql
+SELECT 
+    match_id, 
+    home_team, away_team, 
+    score, status, 
+    home_odds, away_odds, draw_odds
+FROM live_football
+WHERE is_live = TRUE
+ORDER BY last_updated DESC;
+```
 
+### B. React/Frontend Component Logic
+Since `draw_odds` is nullable, use it to control your Grid layout.
+
+```jsx
+// Example Card Component Logic
+const OddsButtons = ({ match }) => {
+  return (
+    <div className="grid grid-flow-col gap-2">
+      {/* Home Button */}
+      <button className="btn-odds">
+        <span>1</span>
+        <span>{match.home_odds || '-'}</span>
+      </button>
+
+      {/* Draw Button - CONDITIONAL */}
+      {match.draw_odds && (
+        <button className="btn-odds">
+          <span>X</span>
+          <span>{match.draw_odds}</span>
+        </button>
+      )}
+
+      {/* Away Button */}
+      <button className="btn-odds">
+        <span>2</span>
+        <span>{match.away_odds || '-'}</span>
+      </button>
+    </div>
+  )
+}
+```
+
+---
+
+## 4. Cricket Specifics 🏏
+
+Cricket requires slightly more detailed handling for a premium feel.
+
+1.  **Format**: The `score` string is usually `Runs/Wickets (Overs)`.
+2.  **Batting Indicator**: Compare `batting_team` string with `home_team` and `away_team`.
+    *   If `batting_team === home_team`, highlight Home row.
+    *   If `batting_team === away_team`, highlight Away row.
+    *   If `batting_team` is null (e.g. Innings Break), no highlight.
+
+---
+
+## 5. Troubleshooting
+
+*   **No Odds?**: The scraper inserts placeholders (e.g. 1.90) or nulls if API data is missing. Handle `null` gracefully by showing "-" or disabling the button.
+*   **Stuck Data?**: Check `last_updated`. If it's > 1 minute old, the scraper might be restarting or the match is paused.
