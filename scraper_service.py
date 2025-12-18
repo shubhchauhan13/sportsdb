@@ -250,6 +250,7 @@ def fetch_aiscore_live(page, sport_slug, state_key):
             log_msg(f"[DEBUG] {sport_slug} keys: {list(sport_state.keys())}")
             
             # 2. Find Matches
+            found_matches = []
             if 'matchesData_matches' in sport_state:
                 found_matches = sport_state['matchesData_matches']
             elif 'matches' in sport_state:
