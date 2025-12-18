@@ -29,16 +29,31 @@ def inspect_page(page, label):
                  if 'matchesData' in home_new:
                      m_data = home_new['matchesData']
                      print(f"matchesData type: {type(m_data)}")
-                     if isinstance(m_data, list) and len(m_data) > 0:
-                         print(f"First item keys: {list(m_data[0].keys())}")
-                         # Check if matches are nested
-                         if 'matches' in m_data[0]:
-                             print(f"Matches in first comp: {len(m_data[0]['matches'])}")
+                     if isinstance(m_data, dict):
+                         print(f"matchesData keys (Comps): {list(m_data.keys())[:5]}")
+                         # Check first comp values
+                         for k, v in list(m_data.items())[:1]:
+                             print(f"Comp {k} type: {type(v)}")
+                             if isinstance(v, dict):
+                                 # It seems to be a dict of matches? or dict with 'matches'?
+                                 print(f"Comp {k} keys: {list(v.keys())}")
+                                 if 'matches' in v:
+                                     print(f"Matches in Comp {k}: {len(v['matches'])}")
+                         
+                         # Check competitions list
+                         if 'competitions' in m_data:
+                             comps = m_data['competitions']
+                             print(f"Competitions list len: {len(comps)}")
+                             if comps:
+                                 print(f"First Comp Keys: {list(comps[0].keys())}")
             
             # Check today-matches
             today = state.get('today-matches', {})
-            if today:
-                print(f"today-matches keys: {list(today.keys())}")
+            print(f"today-matches keys: {list(today.keys())}")
+            if 'matchesData' in today:
+                 tm_data = today['matchesData']
+                 if isinstance(tm_data, dict) and 'matches' in tm_data:
+                      print(f"today-matches matches count: {len(tm_data['matches'])}")
         else:
             print("__NUXT__ is None")
             

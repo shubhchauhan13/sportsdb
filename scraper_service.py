@@ -7,8 +7,12 @@ import threading
 from flask import Flask, jsonify
 from playwright.sync_api import sync_playwright
 import traceback
+import hashlib
 import collections
 from datetime import datetime
+
+def get_deterministic_hash(s):
+    return hashlib.md5(s.encode('utf-8')).hexdigest()
 
 # --- Global State for Diagnostics ---
 SCRAPER_STATS = {
@@ -209,6 +213,10 @@ def get_odds(match):
     """
     odds = {'home': None, 'away': None, 'draw': None}
     
+    # 0. Pre-extracted odds (e.g. from Soccer24)
+    if 'odds' in match and isinstance(match['odds'], dict):
+        return match['odds']
+    
     try:
         ext = match.get('ext', {})
         odds_data = ext.get('odds', {})
@@ -337,7 +345,12 @@ def upsert_matches(conn, sport_key, matches):
         cur = conn.cursor()
         count = 0
         
-        for m in matches:
+        for i, m in enumerate(matches):
+            if i == 0:
+                log_msg(f"[DEBUG] Match keys: {list(m.keys())}")
+                if sport_key == 'football':
+                     log_msg(f"[DEBUG] Football sample: {m}")
+
             match_id = str(m.get('id'))
             ids.append(match_id)
             
@@ -402,9 +415,9 @@ def upsert_matches(conn, sport_key, matches):
                 INSERT INTO {table_name} (
                     match_id, match_data, home_team, away_team, status, score, 
                     batting_team, is_live, home_score, away_score,
-                    home_odds, away_odds, draw_odds, last_updated
+                    home_odds, away_odds, draw_odds, sport_key, last_updated
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
                 ON CONFLICT (match_id) DO UPDATE SET
                     match_data = EXCLUDED.match_data,
                     home_team = EXCLUDED.home_team,
@@ -418,11 +431,12 @@ def upsert_matches(conn, sport_key, matches):
                     home_odds = EXCLUDED.home_odds,
                     away_odds = EXCLUDED.away_odds,
                     draw_odds = EXCLUDED.draw_odds,
+                    sport_key = EXCLUDED.sport_key,
                     last_updated = NOW();
             """, (
                 match_id, Json(m), home_team, away_team, status, score_str, 
                 batting_team, is_live, h_score, a_score,
-                odds['home'], odds['away'], odds['draw']
+                odds['home'], odds['away'], odds.get('draw'), sport_key
             ))
 
 
@@ -450,13 +464,15 @@ def cleanup_stale_matches(conn, sport_key, active_ids):
     Marks matches as 'Finished' if they are no longer in the live feed.
     This handles matches that finished and disappeared from AiScore.
     """
-    if not active_ids:
+    if not active_ids: 
+        log_msg(f"[DEBUG] cleanup {sport_key}: No active IDs.")
         return
     
     config = SPORTS_CONFIG[sport_key]
     table_name = config['table']
     
     try:
+        log_msg(f"[DEBUG] cleanup {sport_key} starting...") 
         cur = conn.cursor()
         
         # Find matches that are marked as 'Live' but not in the active set
@@ -478,12 +494,129 @@ def cleanup_stale_matches(conn, sport_key, active_ids):
         log_msg(f"[CLEANUP ERROR] {sport_key}: {e}")
         conn.rollback()
 
-# --- Supervisor ---
+# --- Soccer24 Scraper (Football Fallback) ---
+def fetch_soccer24(page):
+    log_msg("[DEBUG] fetch_soccer24: Entry")
+    url = "https://www.soccer24.com/"
+    matches = []
+    try:
+        if page.is_closed(): 
+            log_msg("[ERROR] Page is closed!")
+            return []
+        log_msg(f"[DEBUG] Navigating to {url}...")
+        page.goto(url, timeout=45000, wait_until='domcontentloaded')
+        try: page.wait_for_selector('.event__match', timeout=5000)
+        except: pass
+        
+        # Debug Logs
+        title = page.title()
+        rows = page.locator('.event__match').all()
+        log_msg(f"[DEBUG] Soccer24 Page Title: {title}")
+        log_msg(f"[DEBUG] Soccer24 Rows Found: {len(rows)}")
+        
+        for i, row in enumerate(rows):
+            try:
+                # Log progress every 10 rows to detect hangs
+                if i % 10 == 0: log_msg(f"[DEBUG] Processing row {i}/{len(rows)}")
+                
+                if i == 0:
+                    log_msg(f"[DEBUG] Row 0 HTML: {row.inner_html()[:500]}...")
 
+                # Extract text INSTANTLY using JS evaluate to avoid locator timeouts
+                # Support multiple selector variations (BEM vs legacy/new classes)
+                data = row.evaluate("""el => {
+                    const getText = (selectors) => {
+                        for (let sel of selectors) {
+                            let elFound = el.querySelector(sel);
+                            if (elFound) return elFound.innerText.replace(/\\n/g, ' ').trim();
+                        }
+                        return "";
+                    };
+                    return {
+                        home: getText(['.event__participant--home', '.event__homeParticipant']),
+                        away: getText(['.event__participant--away', '.event__awayParticipant']),
+                        s_h: getText(['.event__score--home', '.event__score--home']),
+                        s_a: getText(['.event__score--away', '.event__score--away']),
+                        status: getText(['.event__stage', '.event__stage--block']),
+                        odd_1: getText(['.event__odd--odd1', '.o_1']),
+                        odd_x: getText(['.event__odd--odd2', '.o_0']),
+                        odd_2: getText(['.event__odd--odd3', '.o_2'])
+                    }
+                }""")
+
+                home = data['home']
+                away = data['away']
+                s_h = data['s_h'] or "0"
+                s_a = data['s_a'] or "0"
+                status_text = data['status']
+                
+                # Odds
+                o1 = data['odd_1']
+                ox = data['odd_x']
+                o2 = data['odd_2']
+                
+                if not home or not away: continue
+                
+                # Check if live
+                # Status examples: "Finished", "Half Time", "30", "90+5", "After Pen."
+                is_live = False
+                
+                # Check for live indicators
+                # 1. It's a digit (current minute) e.g. "30"
+                if status_text.isdigit():
+                    is_live = True
+                # 2. Contains "+" (injury time) e.g. "90+4"
+                elif "+" in status_text:
+                    is_live = True
+                # 3. Explicit keywords
+                elif "Half Time" in status_text or "Live" in status_text or "HT" in status_text:
+                    is_live = True
+                
+                # Explicit exclusions override everything
+                if any(x in status_text for x in ["Finished", "After", "Postponed", "Abandoned", "Scheduled", "FRO"]):
+                    is_live = False
+
+                # Debug status for first few rows
+                if i < 5: log_msg(f"[DEBUG] Row {i} Status: {status_text} -> Live: {is_live}")
+                
+                # Normalize to AiScore structure
+                
+                # Normalize to AiScore structure
+
+                # Normalize to AiScore structure
+                match_id = f"s24_{get_deterministic_hash(home+away)}" 
+                
+                matches.append({
+                    'id': match_id,
+                    'matchStatus': 2 if is_live else 10, 
+                    'statusId': 2 if is_live else 10,
+                    'is_live_override': is_live,
+                    'status_text_override': status_text,
+                    'homeTeam': {'name': home},
+                    'awayTeam': {'name': away},
+                    'home_name_resolved': home,
+                    'away_name_resolved': away,
+                    'homeScore': s_h if s_h.isdigit() else 0,
+                    'awayScore': s_a if s_a.isdigit() else 0,
+                    'sportId': 1,
+                    'odds': {
+                        'home': float(o1) if o1 and o1.replace('.','',1).isdigit() else 0,
+                        'draw': float(ox) if ox and ox.replace('.','',1).isdigit() else 0,
+                        'away': float(o2) if o2 and o2.replace('.','',1).isdigit() else 0
+                    }
+                })
+            except: continue
+    except Exception as e:
+        log_msg(f"[ERROR] Soccer24 Fetch: {e}")
+        
+    log_msg(f"[DEBUG] Soccer24 Parsed Matches: {len(matches)}")
+    return matches
+
+# --- Supervisor ---
 
 def run_scraper():
     while True:
-        log_msg("[SUPERVISOR] Starting AiScore Scraper Loop...")
+        log_msg("[SUPERVISOR] Starting Scraper Loop...")
         conn = None
         browser = None
         
@@ -493,73 +626,65 @@ def run_scraper():
                 time.sleep(10)
                 continue
 
-            log_msg("[DEBUG] Launching Playwright...")
             with sync_playwright() as p:
                 browser = p.chromium.launch(
                     headless=True,
-                    args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
+                    args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--disable-blink-features=AutomationControlled']
                 )
                 
-                # 1. Desktop Context (For Basketball)
+                # 1. Desktop Context (BASKETBALL + FOOTBALL SOCCER24)
                 context_desktop = browser.new_context(
                     user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
                 )
+                context_desktop.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
                 page_desktop = context_desktop.new_page()
                 
-                # 2. Mobile Context (For Everything Else)
+                # 2. Mobile Context (OTHERS)
                 iphone = p.devices['iPhone 12']
                 context_mobile = browser.new_context(**iphone)
                 page_mobile = context_mobile.new_page()
                 
-                log_msg("[DEBUG] Pages created (Mobile + Desktop). Entering main loop.")
-                
+                log_msg("[DEBUG] Pages created. Entering main loop.")
                 cycle_count = 0
                 max_cycles = 50 
-                
+
                 while True:
                     start_time = time.time()
+                    if conn.closed: raise Exception("DB Conn Closed")
                     
                     for sport, config in SPORTS_CONFIG.items():
                         try:
-                            if conn.closed: raise Exception("DB Conn Closed")
-
-                            log_msg(f"[DEBUG] Fetching {sport}...")
-                            
-                            # Select page based on sport
-                            if sport == 'basketball' or sport == 'football':
-                                target_page = page_desktop
+                            matches = []
+                            # ROUTING
+                            if sport == 'football':
+                                log_msg("[DEBUG] Fetching football (Soccer24)...")
+                                matches = fetch_soccer24(page_desktop)
+                            elif sport == 'basketball':
+                                log_msg("[DEBUG] Fetching basketball...")
+                                matches = fetch_aiscore_live(page_desktop, config['slug'], config['state_key'])
                             else:
-                                target_page = page_mobile
-                                
-                            matches = fetch_aiscore_live(target_page, config['slug'], config['state_key'])
+                                log_msg(f"[DEBUG] Fetching {sport}...")
+                                matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
                             
                             if matches:
+                                log_msg(f"[DEBUG] calling upsert_matches for {sport} with {len(matches)} items")
                                 active_ids = upsert_matches(conn, sport, matches)
                                 cleanup_stale_matches(conn, sport, active_ids)
                             else:
-                                # No live matches, mark all as finished
                                 cleanup_stale_matches(conn, sport, [])
 
-                            
                         except Exception as e:
                             log_msg(f"[ERROR] {sport}: {e}")
-                            SCRAPER_STATS['last_error'] = str(e)
-                            if "closed" in str(e).lower() or "connection" in str(e).lower():
-                                raise e
                     
                     elapsed = time.time() - start_time
-                    sleep_time = max(10.0, 30.0 - elapsed)
-                    time.sleep(sleep_time) 
-                    
+                    time.sleep(max(10.0, 30.0 - elapsed))
                     cycle_count += 1
                     if cycle_count >= max_cycles: 
-                        log_msg(f"[SUPERVISOR] Scheduled Restart...")
-                        break
-
+                         log_msg("[SUPERVISOR] Cycling restart...")
+                         break
+        
         except Exception as e:
             log_msg(f"[CRASH] Supervisor exception: {e}")
-            log_msg(traceback.format_exc())
-            SCRAPER_STATS['last_error'] = str(e)
             time.sleep(10)
         finally:
             try: 
