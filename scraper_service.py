@@ -8,6 +8,8 @@ from flask import Flask, jsonify
 from playwright.sync_api import sync_playwright
 import traceback
 import hashlib
+import collections
+from datetime import datetime
 
 def get_deterministic_hash(s):
     return hashlib.md5(s.encode('utf-8')).hexdigest()
