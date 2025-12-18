@@ -8,8 +8,6 @@ from flask import Flask, jsonify
 from playwright.sync_api import sync_playwright
 import traceback
 import hashlib
-import collections
-from datetime import datetime
 
 def get_deterministic_hash(s):
     return hashlib.md5(s.encode('utf-8')).hexdigest()
@@ -415,9 +413,9 @@ def upsert_matches(conn, sport_key, matches):
                 INSERT INTO {table_name} (
                     match_id, match_data, home_team, away_team, status, score, 
                     batting_team, is_live, home_score, away_score,
-                    home_odds, away_odds, draw_odds, sport_key, last_updated
+                    home_odds, away_odds, draw_odds, last_updated
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
                 ON CONFLICT (match_id) DO UPDATE SET
                     match_data = EXCLUDED.match_data,
                     home_team = EXCLUDED.home_team,
@@ -431,12 +429,11 @@ def upsert_matches(conn, sport_key, matches):
                     home_odds = EXCLUDED.home_odds,
                     away_odds = EXCLUDED.away_odds,
                     draw_odds = EXCLUDED.draw_odds,
-                    sport_key = EXCLUDED.sport_key,
                     last_updated = NOW();
             """, (
                 match_id, Json(m), home_team, away_team, status, score_str, 
                 batting_team, is_live, h_score, a_score,
-                odds['home'], odds['away'], odds.get('draw'), sport_key
+                odds['home'], odds['away'], odds['draw']
             ))
 
 

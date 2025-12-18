@@ -7,7 +7,7 @@ def clear():
     try:
         conn = psycopg2.connect(DB_CONNECTION_STRING)
         cur = conn.cursor()
-        cur.execute("DELETE FROM live_football;")
+        cur.execute("DELETE FROM live_football WHERE match_id LIKE 's24_%';")
         conn.commit()
         print(f"Deleted {cur.rowcount} stale rows.")
         conn.close()
