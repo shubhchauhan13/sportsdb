@@ -207,11 +207,13 @@ def get_odds(match):
 # --- Main Scraper Logic ---
 
 def fetch_aiscore_live(page, sport_slug, state_key):
-    url = f"https://www.aiscore.com/{sport_slug}"
-    if sport_slug == 'football':
-        url += "/live"
-    
     matches = []
+    
+    # URL Selection
+    if sport_slug == 'football':
+         url = f"https://www.aiscore.com/{sport_slug}/live"
+    else:
+         url = f"https://www.aiscore.com/{sport_slug}"
     
     try:
         if page.is_closed(): return []
