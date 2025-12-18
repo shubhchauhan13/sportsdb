@@ -125,6 +125,31 @@ def format_score_aiscore(sport, match):
                 home_score = score_obj.get('home', score_obj.get('h', ''))
                 away_score = score_obj.get('away', score_obj.get('a', ''))
         
+        # SPECIAL: Basketball (Sum of Quarters)
+        if sport == 'basketball':
+             h_list = match.get('homeScores', [])
+             a_list = match.get('awayScores', [])
+             if h_list and a_list:
+                 try:
+                     # Sum strictly numeric values
+                     h_total = sum([int(x) for x in h_list if str(x).isdigit()])
+                     a_total = sum([int(x) for x in a_list if str(x).isdigit()])
+                     if h_total > 0 or a_total > 0:
+                         return f"{h_total} - {a_total}"
+                 except: pass
+
+        # SPECIAL: Tennis (Show Sets + Current Set needed?)
+        # For now, if homeScore/awayScore is 0-0, check if we have set scores
+        if sport == 'tennis' and (not home_score or str(home_score) == '0') and (not away_score or str(away_score) == '0'):
+             s_scores = match.get('homeScores', [])
+             if s_scores:
+                 # Usually these are games per set.
+                 # If we want SET score, we count sets won?
+                 # Or just return the sets string e.g. "6-4 2-1"
+                 # Let's keep it simple: If main score is 0-0, try to construct from sets?
+                 # Actually, usually homeScore IS the set count. Maybe it's 0-0 because it's first set?
+                 pass
+
         # Fallback to 'scores' array [home, away]
         if not home_score and not away_score:
             scores = match.get('scores', [])
@@ -269,8 +294,13 @@ def fetch_aiscore_live(page, sport_slug, state_key):
                         # 1. Direct key
                         if 'matches' in m_data:
                             found_matches = m_data['matches']
+                        # 2. Desktop keys (liveMatches/allMatches)
+                        elif 'liveMatches' in m_data:
+                            found_matches = m_data['liveMatches']
+                        elif 'allMatches' in m_data:
+                            found_matches = m_data['allMatches']
                         else:
-                            # 2. Nested competitions (iterate values)
+                            # 3. Nested competitions (iterate values)
                             nested_matches = []
                             for k, v in m_data.items():
                                 if isinstance(v, dict) and 'matches' in v:
@@ -496,7 +526,7 @@ def run_scraper():
                             log_msg(f"[DEBUG] Fetching {sport}...")
                             
                             # Select page based on sport
-                            if sport == 'basketball':
+                            if sport == 'basketball' or sport == 'football':
                                 target_page = page_desktop
                             else:
                                 target_page = page_mobile
