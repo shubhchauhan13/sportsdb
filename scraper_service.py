@@ -1190,6 +1190,80 @@ def fetch_oddsportal_esports(page):
         
     return matches
 
+def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
+    """Fetches odds for Generic sports (Volleyball, Handball, etc) from OddsPortal."""
+    log_msg(f"[DEBUG] fetch_oddsportal_generic: Entry for {sport_slug}")
+    matches = []
+    
+    try:
+        page.set_extra_http_headers({"User-Agent": get_random_ua()})
+        time.sleep(random.uniform(1.0, 2.0))
+        
+        url = f"https://www.oddsportal.com/{sport_slug}/live/"
+        response = page.goto(url, timeout=30000, wait_until='domcontentloaded')
+        
+        if not response or not response.ok:
+             return []
+        
+        try:
+             page.wait_for_selector('div[class*="eventRow"]', timeout=8000)
+        except: pass
+            
+        time.sleep(2)
+        
+        try:
+            rows = page.locator('div[class*="eventRow"]').all()
+            log_msg(f"[DEBUG] OddsPortal {sport_slug}: Found {len(rows)} matches")
+            
+            for i, row in enumerate(rows[:30]):
+                try:
+                    if not row.is_visible(): continue
+                    
+                    teams_el = row.locator('a[class*="participant"]').all()
+                    if len(teams_el) >= 2:
+                        home = teams_el[0].inner_text().strip()
+                        away = teams_el[1].inner_text().strip()
+                    else: continue
+                    
+                    odds_els = row.locator('div[class*="odds-value"]').all()
+                    odds_data = {'home': None, 'away': None, 'draw': None}
+                    
+                    if len(odds_els) >= 2:
+                        odds_data['home'] = odds_els[0].inner_text().strip()
+                        odds_data['away'] = odds_els[-1].inner_text().strip()
+                        if len(odds_els) >= 3:
+                            odds_data['draw'] = odds_els[1].inner_text().strip()
+                        
+                    if not odds_data['home'] and not odds_data['away']:
+                        continue
+                    
+                    match_id = f"op_{sport_slug}_{i}_{get_deterministic_hash(home+away)[:8]}"
+                    
+                    matches.append({
+                        'id': match_id,
+                        'matchStatus': 2,
+                        'statusId': 2,
+                        'is_live_override': True,
+                        'status_text_override': 'Live',
+                        'homeTeam': {'name': home},
+                        'awayTeam': {'name': away},
+                        'home_name_resolved': home,
+                        'away_name_resolved': away,
+                        'homeScore': '?',
+                        'awayScore': '?',
+                        'sportId': sport_db_id,
+                        'odds': odds_data,
+                        'match_data_extra': {'source': 'ODDSPARTAL'}
+                    })
+                except: continue
+        except: pass
+            
+    except Exception as e:
+        log_msg(f"[ERROR] OddsPortal {sport_slug} Fetch: {e}")
+        
+    return matches
+
+
 
 def run_scraper():
     while True:
@@ -1287,8 +1361,29 @@ def run_scraper():
                                                     m['odds'] = op['odds']
                                                     log_msg(f"[DEBUG] Merged Hockey odds for {m['home_name_resolved']}")
                                                     break
+                            
+                            # --- Minor Sports Routing ---
+                            elif sport == 'volleyball':
+                                log_msg("[DEBUG] Fetching volleyball (OddsPortal)...")
+                                matches = fetch_oddsportal_generic(page_desktop, 'volleyball', 13) 
+                            elif sport == 'handball':
+                                log_msg("[DEBUG] Fetching handball (OddsPortal)...")
+                                matches = fetch_oddsportal_generic(page_desktop, 'handball', 6)
+                            elif sport == 'baseball':
+                                log_msg("[DEBUG] Fetching baseball (OddsPortal)...")
+                                matches = fetch_oddsportal_generic(page_desktop, 'baseball', 3)
+                            elif sport == 'snooker':
+                                log_msg("[DEBUG] Fetching snooker (OddsPortal)...")
+                                matches = fetch_oddsportal_generic(page_desktop, 'snooker', 14)
+                            elif sport == 'rugby':
+                                log_msg("[DEBUG] Fetching rugby (OddsPortal)...")
+                                matches = fetch_oddsportal_generic(page_desktop, 'rugby-league', 12) # Try league first
+                            elif sport == 'water-polo':
+                                log_msg("[DEBUG] Fetching water-polo (OddsPortal)...")
+                                matches = fetch_oddsportal_generic(page_desktop, 'water-polo', 15)
+                             
                             else:
-                                log_msg(f"[DEBUG] Fetching {sport}...")
+                                log_msg(f"[DEBUG] Generic fetch for {sport}...")
                                 matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
                             
                             if matches:

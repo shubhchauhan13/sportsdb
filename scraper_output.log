@@ -1,4 +1,4 @@
-[2025-12-25 21:29:29] [SUPERVISOR] Starting Scraper Loop...
+[2025-12-25 21:47:17] [SUPERVISOR] Starting Scraper Loop...
  * Serving Flask app 'scraper_service'
  * Debug mode: off
 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
@@ -6,439 +6,114 @@
  * Running on http://127.0.0.1:8080
  * Running on http://192.168.68.104:8080
 [33mPress CTRL+C to quit[0m
-[2025-12-25 21:29:30] [SUCCESS] Connected to NeonDB.
-[2025-12-25 21:29:31] [DEBUG] Pages created. Entering main loop.
-[2025-12-25 21:29:31] [DEBUG] Fetching cricket...
-[2025-12-25 21:29:33] [DEBUG] cricket keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'cricketStatus', 'WebMatchData', 'cricketHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'cricketDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'ball_by_ball', 'scorecardData', 'lineupsData', 'activeMatchTab', 'favorites']
-[2025-12-25 21:29:33] [DEBUG] cricket: Found 7 matches in state.
-[2025-12-25 21:29:33] [DEBUG] calling upsert_matches for cricket with 7 items
-[2025-12-25 21:29:33] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:29:34] [SYNC] cricket: Upserted 7 matches.
-[2025-12-25 21:29:34] [DEBUG] cleanup cricket starting...
-[2025-12-25 21:29:34] [DEBUG] Fetching football (Soccer24)...
-[2025-12-25 21:29:34] [DEBUG] fetch_soccer24: Entry
-[2025-12-25 21:29:34] [DEBUG] Navigating to https://www.soccer24.com/...
-[2025-12-25 21:29:36] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
-[2025-12-25 21:29:36] [DEBUG] Soccer24 Rows Found: 35
-[2025-12-25 21:29:36] [DEBUG] Processing row 0/35
-[2025-12-25 21:29:36] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/cameroon-zk1uVG2D/gabon-YJL8W78U/?mid=Q9SPT5zf" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_Q9SPT5zf"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-ico...
-[2025-12-25 21:29:36] [DEBUG] Row 0 Status: Finished -> Live: False
-[2025-12-25 21:29:36] [DEBUG] Row 1 Status: Finished -> Live: False
-[2025-12-25 21:29:36] [DEBUG] Row 2 Status: Finished -> Live: False
-[2025-12-25 21:29:36] [DEBUG] Row 3 Status: Finished -> Live: False
-[2025-12-25 21:29:36] [DEBUG] Row 4 Status:  -> Live: False
-[2025-12-25 21:29:36] [DEBUG] Processing row 10/35
-[2025-12-25 21:29:36] [DEBUG] Processing row 20/35
-[2025-12-25 21:29:36] [DEBUG] Processing row 30/35
-[2025-12-25 21:29:36] [DEBUG] Soccer24 Parsed Matches: 35
-[2025-12-25 21:29:36] [DEBUG] calling upsert_matches for football with 35 items
-[2025-12-25 21:29:36] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
-[2025-12-25 21:29:36] [DEBUG] Football sample: {'id': 's24_8b6d807a66a239c5b52cbe0695e5d04c', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': 'Finished', 'homeTeam': {'name': 'Cameroon'}, 'awayTeam': {'name': 'Gabon'}, 'home_name_resolved': 'Cameroon', 'away_name_resolved': 'Gabon', 'homeScore': '1', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.9, 'draw': 3.1, 'away': 4.5}}
-[2025-12-25 21:29:40] [SYNC] football: Upserted 35 matches.
-[2025-12-25 21:29:40] [DEBUG] cleanup football starting...
-[2025-12-25 21:29:41] [DEBUG] Fetching tennis...
-[2025-12-25 21:29:43] [DEBUG] tennis keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'fifaData', 'rankType', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'tennisStatus', 'tennisGround', 'WebMatchData', 'ODDS_DETAIL_DATA', 'tennisHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'tennisDetailMatchData', '_tliveData', 'firstRender', 'name', 'detailStats', 'h2hMaps', 'oddsDetailData', 'leaguesData', 'hasprefetchLoad', 'detail_loading', 'matchLive', 'listske', 'leaSke', 'server_matches', 'client_matches', 'rankYear', 'tables', 'oddLoading', 'activeMatchTab', 'favorites']
-[2025-12-25 21:29:43] [DEBUG] tennis: Found 10 matches in state.
-[2025-12-25 21:29:43] [DEBUG] calling upsert_matches for tennis with 10 items
-[2025-12-25 21:29:43] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'points', 'homeScores', 'awayScores', 'matchTime', 'statusId', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:29:45] [SYNC] tennis: Upserted 10 matches.
-[2025-12-25 21:29:45] [DEBUG] cleanup tennis starting...
-[2025-12-25 21:29:45] [DEBUG] Fetching basketball...
-[2025-12-25 21:29:48] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
-[2025-12-25 21:29:48] [DEBUG] basketball: Found 37 matches in state.
-[2025-12-25 21:29:48] [DEBUG] calling upsert_matches for basketball with 37 items
-[2025-12-25 21:29:48] [DEBUG] Match keys: ['points', 'homeScores', 'awayScores', 'homeTeams', 'awayTeams', 'id', 'sportId', 'key', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'homeScore', 'awayScore', 'stage', 'matchTime', 'statusId', 'groupNum', 'roundNum', 'neutral', 'note', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'kind', 'ext', 'extra', 'tennisTimes', 'intro', 'mid', 'isCopyright', 'shareLink', 'spMatchStatus', 'tabs', 'deleted', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:29:53] [SYNC] basketball: Upserted 37 matches.
-[2025-12-25 21:29:53] [DEBUG] cleanup basketball starting...
-[2025-12-25 21:29:53] [DEBUG] Fetching table-tennis (Sofascore)...
-[2025-12-25 21:29:53] [DEBUG] fetch_sofascore_table_tennis: Entry
-[2025-12-25 21:29:54] [DEBUG] Sofascore TT: Found 13 live events.
-[2025-12-25 21:30:05] [DEBUG] Sofascore TT: Parsed 13 matches.
-[2025-12-25 21:30:05] [DEBUG] calling upsert_matches for table-tennis with 13 items
-[2025-12-25 21:30:05] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2025-12-25 21:30:07] [SYNC] table-tennis: Upserted 13 matches.
-[2025-12-25 21:30:07] [DEBUG] cleanup table-tennis starting...
-[2025-12-25 21:30:07] [CLEANUP] table-tennis: Marked 3 stale matches as Finished.
-[2025-12-25 21:30:07] [DEBUG] Fetching ice-hockey (Multi-source: FlashScore + OddsPortal + AiScore)...
-[2025-12-25 21:30:10] [DEBUG] ice-hockey keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'icehockeyStatus', 'WebMatchData', 'icehockeyHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'icehockeyDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:30:10] [DEBUG] ice-hockey: Found 26 matches in state.
-[2025-12-25 21:30:10] [DEBUG] fetch_oddsportal_hockey: Entry
-[2025-12-25 21:30:41] [ERROR] OddsPortal Hockey Fetch: Page.goto: Timeout 30000ms exceeded.
+[2025-12-25 21:47:17] [SUCCESS] Connected to NeonDB.
+[2025-12-25 21:47:18] [DEBUG] Pages created. Entering main loop.
+[2025-12-25 21:47:18] [DEBUG] Generic fetch for cricket...
+[2025-12-25 21:47:22] [DEBUG] cricket keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'cricketStatus', 'WebMatchData', 'cricketHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'cricketDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'ball_by_ball', 'scorecardData', 'lineupsData', 'activeMatchTab', 'favorites']
+[2025-12-25 21:47:22] [DEBUG] cricket: Found 7 matches in state.
+[2025-12-25 21:47:22] [DEBUG] calling upsert_matches for cricket with 7 items
+[2025-12-25 21:47:22] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
+[2025-12-25 21:47:23] [SYNC] cricket: Upserted 7 matches.
+[2025-12-25 21:47:23] [DEBUG] cleanup cricket starting...
+[2025-12-25 21:47:23] [DEBUG] Fetching football (Soccer24)...
+[2025-12-25 21:47:23] [DEBUG] fetch_soccer24: Entry
+[2025-12-25 21:47:23] [DEBUG] Navigating to https://www.soccer24.com/...
+[2025-12-25 21:47:25] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
+[2025-12-25 21:47:25] [DEBUG] Soccer24 Rows Found: 35
+[2025-12-25 21:47:25] [DEBUG] Processing row 0/35
+[2025-12-25 21:47:25] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/cameroon-zk1uVG2D/gabon-YJL8W78U/?mid=Q9SPT5zf" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_Q9SPT5zf"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-ico...
+[2025-12-25 21:47:25] [DEBUG] Row 0 Status: Finished -> Live: False
+[2025-12-25 21:47:25] [DEBUG] Row 1 Status: Finished -> Live: False
+[2025-12-25 21:47:25] [DEBUG] Row 2 Status: Finished -> Live: False
+[2025-12-25 21:47:25] [DEBUG] Row 3 Status: Finished -> Live: False
+[2025-12-25 21:47:25] [DEBUG] Row 4 Status:  -> Live: False
+[2025-12-25 21:47:25] [DEBUG] Processing row 10/35
+[2025-12-25 21:47:25] [DEBUG] Processing row 20/35
+[2025-12-25 21:47:25] [DEBUG] Processing row 30/35
+[2025-12-25 21:47:25] [DEBUG] Soccer24 Parsed Matches: 35
+[2025-12-25 21:47:25] [DEBUG] calling upsert_matches for football with 35 items
+[2025-12-25 21:47:25] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
+[2025-12-25 21:47:25] [DEBUG] Football sample: {'id': 's24_8b6d807a66a239c5b52cbe0695e5d04c', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': 'Finished', 'homeTeam': {'name': 'Cameroon'}, 'awayTeam': {'name': 'Gabon'}, 'home_name_resolved': 'Cameroon', 'away_name_resolved': 'Gabon', 'homeScore': '1', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.9, 'draw': 3.1, 'away': 4.5}}
+[2025-12-25 21:47:28] [SYNC] football: Upserted 35 matches.
+[2025-12-25 21:47:28] [DEBUG] cleanup football starting...
+[2025-12-25 21:47:28] [DEBUG] Generic fetch for tennis...
+[2025-12-25 21:47:31] [DEBUG] tennis keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'fifaData', 'rankType', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'tennisStatus', 'tennisGround', 'WebMatchData', 'ODDS_DETAIL_DATA', 'tennisHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'tennisDetailMatchData', '_tliveData', 'firstRender', 'name', 'detailStats', 'h2hMaps', 'oddsDetailData', 'leaguesData', 'hasprefetchLoad', 'detail_loading', 'matchLive', 'listske', 'leaSke', 'server_matches', 'client_matches', 'rankYear', 'tables', 'oddLoading', 'activeMatchTab', 'favorites']
+[2025-12-25 21:47:31] [DEBUG] tennis: Found 10 matches in state.
+[2025-12-25 21:47:31] [DEBUG] calling upsert_matches for tennis with 10 items
+[2025-12-25 21:47:31] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'points', 'homeScores', 'awayScores', 'matchTime', 'statusId', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
+[2025-12-25 21:47:32] [SYNC] tennis: Upserted 10 matches.
+[2025-12-25 21:47:32] [DEBUG] cleanup tennis starting...
+[2025-12-25 21:47:32] [DEBUG] Fetching basketball...
+[2025-12-25 21:47:34] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
+[2025-12-25 21:47:34] [DEBUG] basketball: Found 37 matches in state.
+[2025-12-25 21:47:34] [DEBUG] calling upsert_matches for basketball with 37 items
+[2025-12-25 21:47:34] [DEBUG] Match keys: ['points', 'homeScores', 'awayScores', 'homeTeams', 'awayTeams', 'id', 'sportId', 'key', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'homeScore', 'awayScore', 'stage', 'matchTime', 'statusId', 'groupNum', 'roundNum', 'neutral', 'note', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'kind', 'ext', 'extra', 'tennisTimes', 'intro', 'mid', 'isCopyright', 'shareLink', 'spMatchStatus', 'tabs', 'deleted', 'home_name_resolved', 'away_name_resolved']
+[2025-12-25 21:47:38] [SYNC] basketball: Upserted 37 matches.
+[2025-12-25 21:47:38] [DEBUG] cleanup basketball starting...
+[2025-12-25 21:47:38] [DEBUG] Fetching table-tennis (Sofascore)...
+[2025-12-25 21:47:38] [DEBUG] fetch_sofascore_table_tennis: Entry
+[2025-12-25 21:47:38] [DEBUG] Sofascore TT: Found 23 live events.
+[2025-12-25 21:47:54] [DEBUG] Sofascore TT: Parsed 23 matches.
+[2025-12-25 21:47:54] [DEBUG] calling upsert_matches for table-tennis with 23 items
+[2025-12-25 21:47:54] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
+[2025-12-25 21:47:56] [SYNC] table-tennis: Upserted 23 matches.
+[2025-12-25 21:47:56] [DEBUG] cleanup table-tennis starting...
+[2025-12-25 21:47:57] [CLEANUP] table-tennis: Marked 6 stale matches as Finished.
+[2025-12-25 21:47:57] [DEBUG] Fetching ice-hockey (Multi-source: FlashScore + OddsPortal + AiScore)...
+[2025-12-25 21:47:59] [DEBUG] ice-hockey keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'icehockeyStatus', 'WebMatchData', 'icehockeyHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'icehockeyDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
+[2025-12-25 21:47:59] [DEBUG] ice-hockey: Found 26 matches in state.
+[2025-12-25 21:47:59] [DEBUG] fetch_oddsportal_hockey: Entry
+[2025-12-25 21:48:30] [ERROR] OddsPortal Hockey Fetch: Page.goto: Timeout 30000ms exceeded.
 Call log:
   - navigating to "https://www.oddsportal.com/hockey/live/", waiting until "domcontentloaded"
 
-[2025-12-25 21:30:41] [DEBUG] calling upsert_matches for ice-hockey with 26 items
-[2025-12-25 21:30:41] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ihScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:30:44] [SYNC] ice-hockey: Upserted 26 matches.
-[2025-12-25 21:30:44] [DEBUG] cleanup ice-hockey starting...
-[2025-12-25 21:30:44] [DEBUG] Fetching esports (Sofascore + OddsPortal)...
-[2025-12-25 21:30:44] [DEBUG] fetch_sofascore_esports: Entry
-[2025-12-25 21:30:45] [DEBUG] Sofascore Esports: Found 2 live events.
-[2025-12-25 21:30:46] [DEBUG] fetch_oddsportal_esports: Entry
-[2025-12-25 21:31:58] [ERROR] OddsPortal Esports Fetch: Page.goto: Timeout 30000ms exceeded.
+[2025-12-25 21:48:30] [DEBUG] calling upsert_matches for ice-hockey with 26 items
+[2025-12-25 21:48:30] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ihScores', 'home_name_resolved', 'away_name_resolved']
+[2025-12-25 21:48:33] [SYNC] ice-hockey: Upserted 26 matches.
+[2025-12-25 21:48:33] [DEBUG] cleanup ice-hockey starting...
+[2025-12-25 21:48:33] [DEBUG] Fetching esports (Sofascore + OddsPortal)...
+[2025-12-25 21:48:33] [DEBUG] fetch_sofascore_esports: Entry
+[2025-12-25 21:48:33] [DEBUG] Sofascore Esports: Found 0 live events.
+[2025-12-25 21:48:33] [DEBUG] fetch_oddsportal_esports: Entry
+[2025-12-25 21:49:47] [ERROR] OddsPortal Esports Fetch: Page.goto: Timeout 30000ms exceeded.
 Call log:
   - navigating to "https://www.oddsportal.com/esports/live/", waiting until "domcontentloaded"
 
-[2025-12-25 21:31:58] [DEBUG] calling upsert_matches for esports with 2 items
-[2025-12-25 21:31:58] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2025-12-25 21:31:58] [SYNC] esports: Upserted 2 matches.
-[2025-12-25 21:31:58] [DEBUG] cleanup esports starting...
-[2025-12-25 21:31:58] [DEBUG] Fetching volleyball...
-[2025-12-25 21:32:01] [DEBUG] volleyball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'volleyballStatus', 'WebMatchData', 'volleyballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'volleyballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:32:01] [DEBUG] volleyball: Found 8 matches in state.
-[2025-12-25 21:32:01] [DEBUG] calling upsert_matches for volleyball with 8 items
-[2025-12-25 21:32:01] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'vbScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:32:02] [SYNC] volleyball: Upserted 8 matches.
-[2025-12-25 21:32:02] [DEBUG] cleanup volleyball starting...
-[2025-12-25 21:32:02] [DEBUG] Fetching baseball...
-[2025-12-25 21:32:10] [DEBUG] baseball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'baseballStatus', 'WebMatchData', 'baseballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'baseballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:32:10] [DEBUG] baseball: Found 3 matches in state.
-[2025-12-25 21:32:10] [DEBUG] calling upsert_matches for baseball with 3 items
-[2025-12-25 21:32:10] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'bsScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:32:10] [SYNC] baseball: Upserted 3 matches.
-[2025-12-25 21:32:10] [DEBUG] cleanup baseball starting...
-[2025-12-25 21:32:11] [DEBUG] Fetching badminton...
-[2025-12-25 21:32:13] [DEBUG] badminton keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'badmintonStatus', 'WebMatchData', 'badmintonHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'badmintonDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:32:13] [DEBUG] badminton: Found 24 matches in state.
-[2025-12-25 21:32:13] [DEBUG] calling upsert_matches for badminton with 24 items
-[2025-12-25 21:32:13] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'bmScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:32:16] [SYNC] badminton: Upserted 24 matches.
-[2025-12-25 21:32:16] [DEBUG] cleanup badminton starting...
-[2025-12-25 21:32:17] [DEBUG] Fetching amfootball...
-[2025-12-25 21:32:19] [DEBUG] american-football keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'amfootballStatus', 'WebMatchData', 'amfootballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'amfootballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:32:19] [DEBUG] american-football: Found 2 matches in state.
-[2025-12-25 21:32:19] [DEBUG] calling upsert_matches for amfootball with 2 items
-[2025-12-25 21:32:19] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'afScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:32:20] [SYNC] amfootball: Upserted 2 matches.
-[2025-12-25 21:32:20] [DEBUG] cleanup amfootball starting...
-[2025-12-25 21:32:20] [DEBUG] Fetching handball...
-[2025-12-25 21:32:23] [DEBUG] handball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'handballStatus', 'WebMatchData', 'handballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'handballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:32:23] [DEBUG] handball: Found 5 matches in state.
-[2025-12-25 21:32:23] [DEBUG] calling upsert_matches for handball with 5 items
-[2025-12-25 21:32:23] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:32:24] [SYNC] handball: Upserted 5 matches.
-[2025-12-25 21:32:24] [DEBUG] cleanup handball starting...
-[2025-12-25 21:32:24] [DEBUG] Fetching water-polo...
-[2025-12-25 21:32:26] [DEBUG] water-polo keys: []
-[2025-12-25 21:32:26] [DEBUG] water-polo: Found 0 matches in state.
-[2025-12-25 21:32:26] [DEBUG] cleanup water-polo: No active IDs.
-[2025-12-25 21:32:26] [DEBUG] Fetching snooker...
-[2025-12-25 21:32:28] [DEBUG] snooker keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'snookerStatus', 'WebMatchData', 'snookerHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'snookerDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'activeMatchTab', 'favorites']
-[2025-12-25 21:32:28] [DEBUG] snooker: Found 0 matches in state.
-[2025-12-25 21:32:28] [DEBUG] cleanup snooker: No active IDs.
-[2025-12-25 21:32:28] [DEBUG] Fetching rugby...
-[2025-12-25 21:32:30] [DEBUG] rugby keys: []
-[2025-12-25 21:32:30] [DEBUG] rugby: Found 0 matches in state.
-[2025-12-25 21:32:30] [DEBUG] cleanup rugby: No active IDs.
-[2025-12-25 21:32:40] [DEBUG] Fetching cricket...
-[2025-12-25 21:32:42] [DEBUG] cricket keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'cricketStatus', 'WebMatchData', 'cricketHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'cricketDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'ball_by_ball', 'scorecardData', 'lineupsData', 'activeMatchTab', 'favorites']
-[2025-12-25 21:32:42] [DEBUG] cricket: Found 7 matches in state.
-[2025-12-25 21:32:42] [DEBUG] calling upsert_matches for cricket with 7 items
-[2025-12-25 21:32:42] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:32:43] [SYNC] cricket: Upserted 7 matches.
-[2025-12-25 21:32:43] [DEBUG] cleanup cricket starting...
-[2025-12-25 21:32:44] [DEBUG] Fetching football (Soccer24)...
-[2025-12-25 21:32:44] [DEBUG] fetch_soccer24: Entry
-[2025-12-25 21:32:44] [DEBUG] Navigating to https://www.soccer24.com/...
-[2025-12-25 21:32:44] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
-[2025-12-25 21:32:44] [DEBUG] Soccer24 Rows Found: 35
-[2025-12-25 21:32:44] [DEBUG] Processing row 0/35
-[2025-12-25 21:32:44] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/cameroon-zk1uVG2D/gabon-YJL8W78U/?mid=Q9SPT5zf" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_Q9SPT5zf"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-ico...
-[2025-12-25 21:32:44] [DEBUG] Row 0 Status: Finished -> Live: False
-[2025-12-25 21:32:44] [DEBUG] Row 1 Status: Finished -> Live: False
-[2025-12-25 21:32:44] [DEBUG] Row 2 Status: Finished -> Live: False
-[2025-12-25 21:32:44] [DEBUG] Row 3 Status: Finished -> Live: False
-[2025-12-25 21:32:44] [DEBUG] Row 4 Status:  -> Live: False
-[2025-12-25 21:32:44] [DEBUG] Processing row 10/35
-[2025-12-25 21:32:44] [DEBUG] Processing row 20/35
-[2025-12-25 21:32:44] [DEBUG] Processing row 30/35
-[2025-12-25 21:32:44] [DEBUG] Soccer24 Parsed Matches: 35
-[2025-12-25 21:32:44] [DEBUG] calling upsert_matches for football with 35 items
-[2025-12-25 21:32:44] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
-[2025-12-25 21:32:44] [DEBUG] Football sample: {'id': 's24_8b6d807a66a239c5b52cbe0695e5d04c', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': 'Finished', 'homeTeam': {'name': 'Cameroon'}, 'awayTeam': {'name': 'Gabon'}, 'home_name_resolved': 'Cameroon', 'away_name_resolved': 'Gabon', 'homeScore': '1', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.9, 'draw': 3.1, 'away': 4.5}}
-[2025-12-25 21:32:49] [SYNC] football: Upserted 35 matches.
-[2025-12-25 21:32:49] [DEBUG] cleanup football starting...
-[2025-12-25 21:32:49] [DEBUG] Fetching tennis...
-[2025-12-25 21:32:51] [DEBUG] tennis keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'fifaData', 'rankType', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'tennisStatus', 'tennisGround', 'WebMatchData', 'ODDS_DETAIL_DATA', 'tennisHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'tennisDetailMatchData', '_tliveData', 'firstRender', 'name', 'detailStats', 'h2hMaps', 'oddsDetailData', 'leaguesData', 'hasprefetchLoad', 'detail_loading', 'matchLive', 'listske', 'leaSke', 'server_matches', 'client_matches', 'rankYear', 'tables', 'oddLoading', 'activeMatchTab', 'favorites']
-[2025-12-25 21:32:51] [DEBUG] tennis: Found 10 matches in state.
-[2025-12-25 21:32:51] [DEBUG] calling upsert_matches for tennis with 10 items
-[2025-12-25 21:32:51] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'points', 'homeScores', 'awayScores', 'matchTime', 'statusId', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:32:52] [SYNC] tennis: Upserted 10 matches.
-[2025-12-25 21:32:52] [DEBUG] cleanup tennis starting...
-[2025-12-25 21:32:52] [DEBUG] Fetching basketball...
-[2025-12-25 21:32:54] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
-[2025-12-25 21:32:54] [DEBUG] basketball: Found 37 matches in state.
-[2025-12-25 21:32:54] [DEBUG] calling upsert_matches for basketball with 37 items
-[2025-12-25 21:32:54] [DEBUG] Match keys: ['points', 'homeScores', 'awayScores', 'homeTeams', 'awayTeams', 'id', 'sportId', 'key', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'homeScore', 'awayScore', 'stage', 'matchTime', 'statusId', 'groupNum', 'roundNum', 'neutral', 'note', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'kind', 'ext', 'extra', 'tennisTimes', 'intro', 'mid', 'isCopyright', 'shareLink', 'spMatchStatus', 'tabs', 'deleted', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:32:58] [SYNC] basketball: Upserted 37 matches.
-[2025-12-25 21:32:58] [DEBUG] cleanup basketball starting...
-[2025-12-25 21:32:59] [DEBUG] Fetching table-tennis (Sofascore)...
-[2025-12-25 21:32:59] [DEBUG] fetch_sofascore_table_tennis: Entry
-[2025-12-25 21:32:59] [DEBUG] Sofascore TT: Found 21 live events.
-[2025-12-25 21:33:12] [DEBUG] Sofascore TT: Parsed 21 matches.
-[2025-12-25 21:33:12] [DEBUG] calling upsert_matches for table-tennis with 21 items
-[2025-12-25 21:33:12] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2025-12-25 21:33:14] [SYNC] table-tennis: Upserted 21 matches.
-[2025-12-25 21:33:14] [DEBUG] cleanup table-tennis starting...
-[2025-12-25 21:33:15] [CLEANUP] table-tennis: Marked 1 stale matches as Finished.
-[2025-12-25 21:33:15] [DEBUG] Fetching ice-hockey (Multi-source: FlashScore + OddsPortal + AiScore)...
-[2025-12-25 21:33:17] [DEBUG] ice-hockey keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'icehockeyStatus', 'WebMatchData', 'icehockeyHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'icehockeyDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:33:17] [DEBUG] ice-hockey: Found 26 matches in state.
-[2025-12-25 21:33:17] [DEBUG] fetch_oddsportal_hockey: Entry
-[2025-12-25 21:33:48] [ERROR] OddsPortal Hockey Fetch: Page.goto: Timeout 30000ms exceeded.
+[2025-12-25 21:49:47] [DEBUG] cleanup esports: No active IDs.
+[2025-12-25 21:49:47] [DEBUG] Fetching volleyball (OddsPortal)...
+[2025-12-25 21:49:47] [DEBUG] fetch_oddsportal_generic: Entry for volleyball
+[2025-12-25 21:51:04] [ERROR] OddsPortal volleyball Fetch: Page.goto: Timeout 30000ms exceeded.
 Call log:
-  - navigating to "https://www.oddsportal.com/hockey/live/", waiting until "domcontentloaded"
+  - navigating to "https://www.oddsportal.com/volleyball/live/", waiting until "domcontentloaded"
 
-[2025-12-25 21:33:48] [DEBUG] calling upsert_matches for ice-hockey with 26 items
-[2025-12-25 21:33:48] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ihScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:33:52] [SYNC] ice-hockey: Upserted 26 matches.
-[2025-12-25 21:33:52] [DEBUG] cleanup ice-hockey starting...
-[2025-12-25 21:33:52] [DEBUG] Fetching esports (Sofascore + OddsPortal)...
-[2025-12-25 21:33:52] [DEBUG] fetch_sofascore_esports: Entry
-[2025-12-25 21:33:53] [DEBUG] Sofascore Esports: Found 1 live events.
-[2025-12-25 21:33:53] [DEBUG] fetch_oddsportal_esports: Entry
-[2025-12-25 21:35:05] [ERROR] OddsPortal Esports Fetch: Page.goto: Timeout 30000ms exceeded.
+[2025-12-25 21:51:04] [DEBUG] cleanup volleyball: No active IDs.
+[2025-12-25 21:51:04] [DEBUG] Fetching baseball (OddsPortal)...
+[2025-12-25 21:51:04] [DEBUG] fetch_oddsportal_generic: Entry for baseball
+[2025-12-25 21:52:20] [ERROR] OddsPortal baseball Fetch: Page.goto: Timeout 30000ms exceeded.
 Call log:
-  - navigating to "https://www.oddsportal.com/esports/live/", waiting until "domcontentloaded"
+  - navigating to "https://www.oddsportal.com/baseball/live/", waiting until "domcontentloaded"
 
-[2025-12-25 21:35:05] [DEBUG] calling upsert_matches for esports with 1 items
-[2025-12-25 21:35:05] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2025-12-25 21:35:05] [SYNC] esports: Upserted 1 matches.
-[2025-12-25 21:35:05] [DEBUG] cleanup esports starting...
-[2025-12-25 21:35:05] [CLEANUP] esports: Marked 1 stale matches as Finished.
-[2025-12-25 21:35:06] [DEBUG] Fetching volleyball...
-[2025-12-25 21:35:08] [DEBUG] volleyball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'volleyballStatus', 'WebMatchData', 'volleyballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'volleyballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:35:08] [DEBUG] volleyball: Found 8 matches in state.
-[2025-12-25 21:35:08] [DEBUG] calling upsert_matches for volleyball with 8 items
-[2025-12-25 21:35:08] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'vbScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:35:09] [SYNC] volleyball: Upserted 8 matches.
-[2025-12-25 21:35:09] [DEBUG] cleanup volleyball starting...
-[2025-12-25 21:35:09] [DEBUG] Fetching baseball...
-[2025-12-25 21:35:11] [DEBUG] baseball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'baseballStatus', 'WebMatchData', 'baseballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'baseballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:35:11] [DEBUG] baseball: Found 3 matches in state.
-[2025-12-25 21:35:11] [DEBUG] calling upsert_matches for baseball with 3 items
-[2025-12-25 21:35:11] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'bsScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:35:12] [SYNC] baseball: Upserted 3 matches.
-[2025-12-25 21:35:12] [DEBUG] cleanup baseball starting...
-[2025-12-25 21:35:12] [DEBUG] Fetching badminton...
-[2025-12-25 21:35:15] [DEBUG] badminton keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'badmintonStatus', 'WebMatchData', 'badmintonHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'badmintonDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:35:15] [DEBUG] badminton: Found 24 matches in state.
-[2025-12-25 21:35:15] [DEBUG] calling upsert_matches for badminton with 24 items
-[2025-12-25 21:35:15] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'bmScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:35:18] [SYNC] badminton: Upserted 24 matches.
-[2025-12-25 21:35:18] [DEBUG] cleanup badminton starting...
-[2025-12-25 21:35:18] [DEBUG] Fetching amfootball...
-[2025-12-25 21:35:20] [DEBUG] american-football keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'amfootballStatus', 'WebMatchData', 'amfootballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'amfootballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:35:20] [DEBUG] american-football: Found 2 matches in state.
-[2025-12-25 21:35:20] [DEBUG] calling upsert_matches for amfootball with 2 items
-[2025-12-25 21:35:20] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'afScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:35:20] [SYNC] amfootball: Upserted 2 matches.
-[2025-12-25 21:35:20] [DEBUG] cleanup amfootball starting...
-[2025-12-25 21:35:21] [DEBUG] Fetching handball...
-[2025-12-25 21:35:23] [DEBUG] handball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'handballStatus', 'WebMatchData', 'handballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'handballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:35:23] [DEBUG] handball: Found 5 matches in state.
-[2025-12-25 21:35:23] [DEBUG] calling upsert_matches for handball with 5 items
-[2025-12-25 21:35:23] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:35:24] [SYNC] handball: Upserted 5 matches.
-[2025-12-25 21:35:24] [DEBUG] cleanup handball starting...
-[2025-12-25 21:35:24] [DEBUG] Fetching water-polo...
-[2025-12-25 21:35:26] [DEBUG] water-polo keys: []
-[2025-12-25 21:35:26] [DEBUG] water-polo: Found 0 matches in state.
-[2025-12-25 21:35:26] [DEBUG] cleanup water-polo: No active IDs.
-[2025-12-25 21:35:26] [DEBUG] Fetching snooker...
-[2025-12-25 21:35:28] [DEBUG] snooker keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'snookerStatus', 'WebMatchData', 'snookerHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'snookerDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'activeMatchTab', 'favorites']
-[2025-12-25 21:35:28] [DEBUG] snooker: Found 0 matches in state.
-[2025-12-25 21:35:28] [DEBUG] cleanup snooker: No active IDs.
-[2025-12-25 21:35:28] [DEBUG] Fetching rugby...
-[2025-12-25 21:35:29] [DEBUG] rugby keys: []
-[2025-12-25 21:35:29] [DEBUG] rugby: Found 0 matches in state.
-[2025-12-25 21:35:29] [DEBUG] cleanup rugby: No active IDs.
-[2025-12-25 21:35:39] [DEBUG] Fetching cricket...
-[2025-12-25 21:35:41] [DEBUG] cricket keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'cricketStatus', 'WebMatchData', 'cricketHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'cricketDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'ball_by_ball', 'scorecardData', 'lineupsData', 'activeMatchTab', 'favorites']
-[2025-12-25 21:35:41] [DEBUG] cricket: Found 7 matches in state.
-[2025-12-25 21:35:41] [DEBUG] calling upsert_matches for cricket with 7 items
-[2025-12-25 21:35:41] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:35:42] [SYNC] cricket: Upserted 7 matches.
-[2025-12-25 21:35:42] [DEBUG] cleanup cricket starting...
-[2025-12-25 21:35:43] [DEBUG] Fetching football (Soccer24)...
-[2025-12-25 21:35:43] [DEBUG] fetch_soccer24: Entry
-[2025-12-25 21:35:43] [DEBUG] Navigating to https://www.soccer24.com/...
-[2025-12-25 21:35:43] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
-[2025-12-25 21:35:43] [DEBUG] Soccer24 Rows Found: 35
-[2025-12-25 21:35:43] [DEBUG] Processing row 0/35
-[2025-12-25 21:35:43] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/cameroon-zk1uVG2D/gabon-YJL8W78U/?mid=Q9SPT5zf" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_Q9SPT5zf"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-ico...
-[2025-12-25 21:35:43] [DEBUG] Row 0 Status: Finished -> Live: False
-[2025-12-25 21:35:43] [DEBUG] Row 1 Status: Finished -> Live: False
-[2025-12-25 21:35:43] [DEBUG] Row 2 Status: Finished -> Live: False
-[2025-12-25 21:35:43] [DEBUG] Row 3 Status: Finished -> Live: False
-[2025-12-25 21:35:43] [DEBUG] Row 4 Status:  -> Live: False
-[2025-12-25 21:35:43] [DEBUG] Processing row 10/35
-[2025-12-25 21:35:43] [DEBUG] Processing row 20/35
-[2025-12-25 21:35:43] [DEBUG] Processing row 30/35
-[2025-12-25 21:35:43] [DEBUG] Soccer24 Parsed Matches: 35
-[2025-12-25 21:35:43] [DEBUG] calling upsert_matches for football with 35 items
-[2025-12-25 21:35:43] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
-[2025-12-25 21:35:43] [DEBUG] Football sample: {'id': 's24_8b6d807a66a239c5b52cbe0695e5d04c', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': 'Finished', 'homeTeam': {'name': 'Cameroon'}, 'awayTeam': {'name': 'Gabon'}, 'home_name_resolved': 'Cameroon', 'away_name_resolved': 'Gabon', 'homeScore': '1', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.9, 'draw': 3.1, 'away': 4.5}}
-[2025-12-25 21:35:47] [SYNC] football: Upserted 35 matches.
-[2025-12-25 21:35:47] [DEBUG] cleanup football starting...
-[2025-12-25 21:35:48] [DEBUG] Fetching tennis...
-[2025-12-25 21:35:50] [DEBUG] tennis keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'fifaData', 'rankType', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'tennisStatus', 'tennisGround', 'WebMatchData', 'ODDS_DETAIL_DATA', 'tennisHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'tennisDetailMatchData', '_tliveData', 'firstRender', 'name', 'detailStats', 'h2hMaps', 'oddsDetailData', 'leaguesData', 'hasprefetchLoad', 'detail_loading', 'matchLive', 'listske', 'leaSke', 'server_matches', 'client_matches', 'rankYear', 'tables', 'oddLoading', 'activeMatchTab', 'favorites']
-[2025-12-25 21:35:50] [DEBUG] tennis: Found 10 matches in state.
-[2025-12-25 21:35:50] [DEBUG] calling upsert_matches for tennis with 10 items
-[2025-12-25 21:35:50] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'points', 'homeScores', 'awayScores', 'matchTime', 'statusId', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:35:51] [SYNC] tennis: Upserted 10 matches.
-[2025-12-25 21:35:51] [DEBUG] cleanup tennis starting...
-[2025-12-25 21:35:51] [DEBUG] Fetching basketball...
-[2025-12-25 21:35:53] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
-[2025-12-25 21:35:53] [DEBUG] basketball: Found 37 matches in state.
-[2025-12-25 21:35:53] [DEBUG] calling upsert_matches for basketball with 37 items
-[2025-12-25 21:35:53] [DEBUG] Match keys: ['points', 'homeScores', 'awayScores', 'homeTeams', 'awayTeams', 'id', 'sportId', 'key', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'homeScore', 'awayScore', 'stage', 'matchTime', 'statusId', 'groupNum', 'roundNum', 'neutral', 'note', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'kind', 'ext', 'extra', 'tennisTimes', 'intro', 'mid', 'isCopyright', 'shareLink', 'spMatchStatus', 'tabs', 'deleted', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:35:58] [SYNC] basketball: Upserted 37 matches.
-[2025-12-25 21:35:58] [DEBUG] cleanup basketball starting...
-[2025-12-25 21:35:58] [DEBUG] Fetching table-tennis (Sofascore)...
-[2025-12-25 21:35:58] [DEBUG] fetch_sofascore_table_tennis: Entry
-[2025-12-25 21:35:59] [DEBUG] Sofascore TT: Found 20 live events.
-[2025-12-25 21:36:11] [DEBUG] Sofascore TT: Parsed 20 matches.
-[2025-12-25 21:36:11] [DEBUG] calling upsert_matches for table-tennis with 20 items
-[2025-12-25 21:36:11] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2025-12-25 21:36:13] [SYNC] table-tennis: Upserted 20 matches.
-[2025-12-25 21:36:13] [DEBUG] cleanup table-tennis starting...
-[2025-12-25 21:36:13] [CLEANUP] table-tennis: Marked 4 stale matches as Finished.
-[2025-12-25 21:36:14] [DEBUG] Fetching ice-hockey (Multi-source: FlashScore + OddsPortal + AiScore)...
-[2025-12-25 21:36:15] [DEBUG] ice-hockey keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'icehockeyStatus', 'WebMatchData', 'icehockeyHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'icehockeyDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:36:15] [DEBUG] ice-hockey: Found 26 matches in state.
-[2025-12-25 21:36:15] [DEBUG] fetch_oddsportal_hockey: Entry
-[2025-12-25 21:36:47] [ERROR] OddsPortal Hockey Fetch: Page.goto: Timeout 30000ms exceeded.
+[2025-12-25 21:52:20] [DEBUG] cleanup baseball: No active IDs.
+[2025-12-25 21:52:20] [DEBUG] Generic fetch for badminton...
+[2025-12-25 21:52:23] [DEBUG] badminton keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'badmintonStatus', 'WebMatchData', 'badmintonHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'badmintonDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
+[2025-12-25 21:52:23] [DEBUG] badminton: Found 24 matches in state.
+[2025-12-25 21:52:23] [DEBUG] calling upsert_matches for badminton with 24 items
+[2025-12-25 21:52:23] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'bmScores', 'home_name_resolved', 'away_name_resolved']
+[2025-12-25 21:52:26] [SYNC] badminton: Upserted 24 matches.
+[2025-12-25 21:52:26] [DEBUG] cleanup badminton starting...
+[2025-12-25 21:52:26] [DEBUG] Generic fetch for amfootball...
+[2025-12-25 21:52:28] [DEBUG] american-football keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'amfootballStatus', 'WebMatchData', 'amfootballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'amfootballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'tables', 'activeMatchTab', 'favorites']
+[2025-12-25 21:52:28] [DEBUG] american-football: Found 2 matches in state.
+[2025-12-25 21:52:28] [DEBUG] calling upsert_matches for amfootball with 2 items
+[2025-12-25 21:52:28] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'afScores', 'home_name_resolved', 'away_name_resolved']
+[2025-12-25 21:52:28] [SYNC] amfootball: Upserted 2 matches.
+[2025-12-25 21:52:28] [DEBUG] cleanup amfootball starting...
+[2025-12-25 21:52:29] [DEBUG] Fetching handball (OddsPortal)...
+[2025-12-25 21:52:29] [DEBUG] fetch_oddsportal_generic: Entry for handball
+[2025-12-25 21:53:36] [ERROR] OddsPortal handball Fetch: Page.goto: Timeout 30000ms exceeded.
 Call log:
-  - navigating to "https://www.oddsportal.com/hockey/live/", waiting until "domcontentloaded"
+  - navigating to "https://www.oddsportal.com/handball/live/", waiting until "domcontentloaded"
 
-[2025-12-25 21:36:47] [DEBUG] calling upsert_matches for ice-hockey with 26 items
-[2025-12-25 21:36:47] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ihScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:36:50] [SYNC] ice-hockey: Upserted 26 matches.
-[2025-12-25 21:36:50] [DEBUG] cleanup ice-hockey starting...
-[2025-12-25 21:36:50] [DEBUG] Fetching esports (Sofascore + OddsPortal)...
-[2025-12-25 21:36:50] [DEBUG] fetch_sofascore_esports: Entry
-[2025-12-25 21:36:51] [DEBUG] Sofascore Esports: Found 1 live events.
-[2025-12-25 21:36:51] [DEBUG] fetch_oddsportal_esports: Entry
-[2025-12-25 21:38:04] [ERROR] OddsPortal Esports Fetch: Page.goto: Timeout 30000ms exceeded.
-Call log:
-  - navigating to "https://www.oddsportal.com/esports/live/", waiting until "domcontentloaded"
-
-[2025-12-25 21:38:04] [DEBUG] calling upsert_matches for esports with 1 items
-[2025-12-25 21:38:04] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2025-12-25 21:38:04] [SYNC] esports: Upserted 1 matches.
-[2025-12-25 21:38:04] [DEBUG] cleanup esports starting...
-[2025-12-25 21:38:04] [DEBUG] Fetching volleyball...
-[2025-12-25 21:38:06] [DEBUG] volleyball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'volleyballStatus', 'WebMatchData', 'volleyballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'volleyballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:38:06] [DEBUG] volleyball: Found 8 matches in state.
-[2025-12-25 21:38:06] [DEBUG] calling upsert_matches for volleyball with 8 items
-[2025-12-25 21:38:06] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'vbScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:38:08] [SYNC] volleyball: Upserted 8 matches.
-[2025-12-25 21:38:08] [DEBUG] cleanup volleyball starting...
-[2025-12-25 21:38:08] [DEBUG] Fetching baseball...
-[2025-12-25 21:38:09] [DEBUG] baseball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'baseballStatus', 'WebMatchData', 'baseballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'baseballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:38:09] [DEBUG] baseball: Found 3 matches in state.
-[2025-12-25 21:38:09] [DEBUG] calling upsert_matches for baseball with 3 items
-[2025-12-25 21:38:09] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'bsScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:38:10] [SYNC] baseball: Upserted 3 matches.
-[2025-12-25 21:38:10] [DEBUG] cleanup baseball starting...
-[2025-12-25 21:38:10] [DEBUG] Fetching badminton...
-[2025-12-25 21:38:12] [DEBUG] badminton keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'badmintonStatus', 'WebMatchData', 'badmintonHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'badmintonDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:38:12] [DEBUG] badminton: Found 24 matches in state.
-[2025-12-25 21:38:12] [DEBUG] calling upsert_matches for badminton with 24 items
-[2025-12-25 21:38:12] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'bmScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:38:15] [SYNC] badminton: Upserted 24 matches.
-[2025-12-25 21:38:15] [DEBUG] cleanup badminton starting...
-[2025-12-25 21:38:15] [DEBUG] Fetching amfootball...
-[2025-12-25 21:38:17] [DEBUG] american-football keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'amfootballStatus', 'WebMatchData', 'amfootballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'amfootballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:38:17] [DEBUG] american-football: Found 2 matches in state.
-[2025-12-25 21:38:17] [DEBUG] calling upsert_matches for amfootball with 2 items
-[2025-12-25 21:38:17] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'afScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:38:18] [SYNC] amfootball: Upserted 2 matches.
-[2025-12-25 21:38:18] [DEBUG] cleanup amfootball starting...
-[2025-12-25 21:38:18] [DEBUG] Fetching handball...
-[2025-12-25 21:38:20] [DEBUG] handball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'handballStatus', 'WebMatchData', 'handballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'handballDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:38:20] [DEBUG] handball: Found 5 matches in state.
-[2025-12-25 21:38:20] [DEBUG] calling upsert_matches for handball with 5 items
-[2025-12-25 21:38:20] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'matchTime', 'statusId', 'users', 'matchStatus', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:38:21] [SYNC] handball: Upserted 5 matches.
-[2025-12-25 21:38:21] [DEBUG] cleanup handball starting...
-[2025-12-25 21:38:21] [DEBUG] Fetching water-polo...
-[2025-12-25 21:38:23] [DEBUG] water-polo keys: []
-[2025-12-25 21:38:23] [DEBUG] water-polo: Found 0 matches in state.
-[2025-12-25 21:38:23] [DEBUG] cleanup water-polo: No active IDs.
-[2025-12-25 21:38:23] [DEBUG] Fetching snooker...
-[2025-12-25 21:38:24] [DEBUG] snooker keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'snookerStatus', 'WebMatchData', 'snookerHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'snookerDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'activeMatchTab', 'favorites']
-[2025-12-25 21:38:24] [DEBUG] snooker: Found 0 matches in state.
-[2025-12-25 21:38:24] [DEBUG] cleanup snooker: No active IDs.
-[2025-12-25 21:38:24] [DEBUG] Fetching rugby...
-[2025-12-25 21:38:26] [DEBUG] rugby keys: []
-[2025-12-25 21:38:26] [DEBUG] rugby: Found 0 matches in state.
-[2025-12-25 21:38:26] [DEBUG] cleanup rugby: No active IDs.
-[2025-12-25 21:38:36] [DEBUG] Fetching cricket...
-[2025-12-25 21:38:38] [DEBUG] cricket keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'cricketStatus', 'WebMatchData', 'cricketHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'cricketDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'ball_by_ball', 'scorecardData', 'lineupsData', 'activeMatchTab', 'favorites']
-[2025-12-25 21:38:38] [DEBUG] cricket: Found 7 matches in state.
-[2025-12-25 21:38:38] [DEBUG] calling upsert_matches for cricket with 7 items
-[2025-12-25 21:38:38] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:38:39] [SYNC] cricket: Upserted 7 matches.
-[2025-12-25 21:38:39] [DEBUG] cleanup cricket starting...
-[2025-12-25 21:38:39] [DEBUG] Fetching football (Soccer24)...
-[2025-12-25 21:38:39] [DEBUG] fetch_soccer24: Entry
-[2025-12-25 21:38:39] [DEBUG] Navigating to https://www.soccer24.com/...
-[2025-12-25 21:38:40] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
-[2025-12-25 21:38:40] [DEBUG] Soccer24 Rows Found: 35
-[2025-12-25 21:38:40] [DEBUG] Processing row 0/35
-[2025-12-25 21:38:40] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/cameroon-zk1uVG2D/gabon-YJL8W78U/?mid=Q9SPT5zf" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_Q9SPT5zf"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-ico...
-[2025-12-25 21:38:40] [DEBUG] Row 0 Status: Finished -> Live: False
-[2025-12-25 21:38:40] [DEBUG] Row 1 Status: Finished -> Live: False
-[2025-12-25 21:38:40] [DEBUG] Row 2 Status: Finished -> Live: False
-[2025-12-25 21:38:40] [DEBUG] Row 3 Status: Finished -> Live: False
-[2025-12-25 21:38:40] [DEBUG] Row 4 Status:  -> Live: False
-[2025-12-25 21:38:40] [DEBUG] Processing row 10/35
-[2025-12-25 21:38:40] [DEBUG] Processing row 20/35
-[2025-12-25 21:38:40] [DEBUG] Processing row 30/35
-[2025-12-25 21:38:40] [DEBUG] Soccer24 Parsed Matches: 35
-[2025-12-25 21:38:40] [DEBUG] calling upsert_matches for football with 35 items
-[2025-12-25 21:38:40] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
-[2025-12-25 21:38:40] [DEBUG] Football sample: {'id': 's24_8b6d807a66a239c5b52cbe0695e5d04c', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': 'Finished', 'homeTeam': {'name': 'Cameroon'}, 'awayTeam': {'name': 'Gabon'}, 'home_name_resolved': 'Cameroon', 'away_name_resolved': 'Gabon', 'homeScore': '1', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 0, 'draw': 0, 'away': 0}}
-[2025-12-25 21:38:45] [SYNC] football: Upserted 35 matches.
-[2025-12-25 21:38:45] [DEBUG] cleanup football starting...
-[2025-12-25 21:38:45] [DEBUG] Fetching tennis...
-[2025-12-25 21:38:48] [DEBUG] tennis keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'fifaData', 'rankType', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'tennisStatus', 'tennisGround', 'WebMatchData', 'ODDS_DETAIL_DATA', 'tennisHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'tennisDetailMatchData', '_tliveData', 'firstRender', 'name', 'detailStats', 'h2hMaps', 'oddsDetailData', 'leaguesData', 'hasprefetchLoad', 'detail_loading', 'matchLive', 'listske', 'leaSke', 'server_matches', 'client_matches', 'rankYear', 'tables', 'oddLoading', 'activeMatchTab', 'favorites']
-[2025-12-25 21:38:48] [DEBUG] tennis: Found 10 matches in state.
-[2025-12-25 21:38:48] [DEBUG] calling upsert_matches for tennis with 10 items
-[2025-12-25 21:38:48] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'points', 'homeScores', 'awayScores', 'matchTime', 'statusId', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:38:49] [SYNC] tennis: Upserted 10 matches.
-[2025-12-25 21:38:49] [DEBUG] cleanup tennis starting...
-[2025-12-25 21:38:49] [DEBUG] Fetching basketball...
-[2025-12-25 21:38:51] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
-[2025-12-25 21:38:51] [DEBUG] basketball: Found 37 matches in state.
-[2025-12-25 21:38:51] [DEBUG] calling upsert_matches for basketball with 37 items
-[2025-12-25 21:38:51] [DEBUG] Match keys: ['points', 'homeScores', 'awayScores', 'homeTeams', 'awayTeams', 'id', 'sportId', 'key', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'homeScore', 'awayScore', 'stage', 'matchTime', 'statusId', 'groupNum', 'roundNum', 'neutral', 'note', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'kind', 'ext', 'extra', 'tennisTimes', 'intro', 'mid', 'isCopyright', 'shareLink', 'spMatchStatus', 'tabs', 'deleted', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:38:56] [SYNC] basketball: Upserted 37 matches.
-[2025-12-25 21:38:56] [DEBUG] cleanup basketball starting...
-[2025-12-25 21:38:56] [DEBUG] Fetching table-tennis (Sofascore)...
-[2025-12-25 21:38:56] [DEBUG] fetch_sofascore_table_tennis: Entry
-[2025-12-25 21:38:56] [DEBUG] Sofascore TT: Found 21 live events.
-[2025-12-25 21:39:08] [DEBUG] Sofascore TT: Parsed 21 matches.
-[2025-12-25 21:39:08] [DEBUG] calling upsert_matches for table-tennis with 21 items
-[2025-12-25 21:39:08] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2025-12-25 21:39:10] [SYNC] table-tennis: Upserted 21 matches.
-[2025-12-25 21:39:10] [DEBUG] cleanup table-tennis starting...
-[2025-12-25 21:39:10] [CLEANUP] table-tennis: Marked 2 stale matches as Finished.
-[2025-12-25 21:39:11] [DEBUG] Fetching ice-hockey (Multi-source: FlashScore + OddsPortal + AiScore)...
-[2025-12-25 21:39:12] [DEBUG] ice-hockey keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'icehockeyStatus', 'WebMatchData', 'icehockeyHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'icehockeyDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2025-12-25 21:39:12] [DEBUG] ice-hockey: Found 26 matches in state.
-[2025-12-25 21:39:12] [DEBUG] fetch_oddsportal_hockey: Entry
-[2025-12-25 21:39:44] [ERROR] OddsPortal Hockey Fetch: Page.goto: Timeout 30000ms exceeded.
-Call log:
-  - navigating to "https://www.oddsportal.com/hockey/live/", waiting until "domcontentloaded"
-
-[2025-12-25 21:39:44] [DEBUG] calling upsert_matches for ice-hockey with 26 items
-[2025-12-25 21:39:44] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ihScores', 'home_name_resolved', 'away_name_resolved']
-[2025-12-25 21:39:48] [SYNC] ice-hockey: Upserted 26 matches.
-[2025-12-25 21:39:48] [DEBUG] cleanup ice-hockey starting...
-[2025-12-25 21:39:48] [DEBUG] Fetching esports (Sofascore + OddsPortal)...
-[2025-12-25 21:39:48] [DEBUG] fetch_sofascore_esports: Entry
-[2025-12-25 21:39:48] [DEBUG] Sofascore Esports: Found 1 live events.
-[2025-12-25 21:39:49] [DEBUG] fetch_oddsportal_esports: Entry
+[2025-12-25 21:53:36] [DEBUG] cleanup handball: No active IDs.
+[2025-12-25 21:53:36] [DEBUG] Fetching water-polo (OddsPortal)...
+[2025-12-25 21:53:36] [DEBUG] fetch_oddsportal_generic: Entry for water-polo
