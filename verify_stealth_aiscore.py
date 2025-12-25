@@ -24,7 +24,8 @@ def verify_stealth_aiscore():
         
         page = context.new_page()
         
-        url = "https://www.aiscore.com/football"
+
+        url = "https://www.aiscore.com/esports"
         print(f"Navigating to {url} with stealth...")
         
         try:
@@ -34,25 +35,23 @@ def verify_stealth_aiscore():
             print(f"Title: {page.title()}")
             content = page.content()
             
-            # Check for visible text again
-            if "Shahdagh" in content or "Sabail" in content:
-                 print("[SUCCESS] Found Shahdagh/Sabail!")
-            else:
-                 print("[FAIL] Specific match text NOT found.")
-                 
-            # Check NUXT
+            # Check for NUXT
             data = page.evaluate("() => { if (window.__NUXT__) return window.__NUXT__; return null; }")
             if data:
-                 print(f"NUXT Found. Keys: {list(data.keys())}")
+                 print(f"NUXT Found.")
                  state = data.get('state', {})
-                 fb = state.get('football', {})
-                 print(f"Football Keys: {list(fb.keys())}")
-                 matches = fb.get('matchesData_matches', [])
-                 print(f"matchesData_matches: {len(matches)}")
+                 # Esports usually in 'esports' key
+                 es = state.get('esports', {})
+                 print(f"Esports Keys: {list(es.keys())}")
+                 matches = es.get('matches', []) or es.get('matchesData_matches', [])
+                 print(f"Matches found: {len(matches)}")
                  
-                 hn = fb.get('home-new', {})
-                 if 'matchesData' in hn:
-                      print(f"home-new matchesData keys: {list(hn['matchesData'].keys())}")
+                 found_with_odds = 0
+                 for m in matches[:5]:
+                     print(f"ID: {m.get('id')} | Slug: {m.get('slug')} | Odds: {m.get('odds')}")
+                     if m.get('odds'): found_with_odds += 1
+                     
+                 print(f"Sampled 5. Found with odds: {found_with_odds}")
             else:
                  print("NUXT NOT found")
 

@@ -79,8 +79,9 @@ def verify_sofascore():
 
         page.on("response", handle_response)
 
+
         # 3. Use UI Navigation to trigger requests
-        target_url = "https://www.sofascore.com/cricket/live"
+        target_url = "https://www.sofascore.com/table-tennis/live"
         print(f"[*] Navigating to UI: {target_url}")
         
         try:

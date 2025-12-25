@@ -1,0 +1,65 @@
+{
+  "id": "edq03uwpd62seqx",
+  "ext": {
+    "odds": {
+      "oddItems": [
+        {},
+        {
+          "odd": [
+            "1.2",
+            "0",
+            "4.33",
+            "0"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  "menu": 64,
+  "serve": 2,
+  "users": 384,
+  "venue": {},
+  "points": [
+    "0",
+    "0"
+  ],
+  "referee": {},
+  "sportId": 3,
+  "awayTeam": {
+    "id": "ndkzru2mogaeq3z"
+  },
+  "homeTeam": {
+    "id": "63kv3uj6jdtp7ez"
+  },
+  "statusId": 2,
+  "matchTime": 1766232000,
+  "awayScores": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "homeScores": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "commonScore": {
+    "ft": [
+      0,
+      0
+    ]
+  },
+  "competition": {
+    "id": "8vrqwjuxx9fjkn2"
+  },
+  "matchStatus": 2,
+  "away_name_resolved": "Miko Wassermann",
+  "home_name_resolved": "Deney Wassermann"
+}

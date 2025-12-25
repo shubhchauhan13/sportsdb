@@ -47,6 +47,41 @@ def health():
 def logs():
     return jsonify(list(LOG_BUFFER))
 
+# --- Architect Agent API ---
+import queue
+COMMAND_QUEUE = queue.Queue()
+
+@app.route('/api/force_refresh', methods=['POST'])
+def force_refresh():
+    try:
+        from flask import request
+        sport = request.args.get('sport')
+        if not sport: return jsonify({"error": "sport required"}), 400
+        COMMAND_QUEUE.put({'type': 'FORCE_REFRESH', 'sport': sport})
+        log_msg(f"[ARCHITECT] Received FORCE_REFRESH for {sport}")
+        return jsonify({"status": "queued", "command": "FORCE_REFRESH", "sport": sport})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/switch_source', methods=['POST'])
+def switch_source():
+    # Helper to tell scraper to prefer a source for a match/sport
+    try:
+        from flask import request
+        data = request.json or {}
+        sport = data.get('sport') # broad switch
+        source = data.get('source') # e.g. 'sofascore', 'aiscore'
+        
+        if sport and source:
+            # We can update a global config override
+            # For now, just log and queue it
+            COMMAND_QUEUE.put({'type': 'SWITCH_SOURCE', 'sport': sport, 'source': source})
+            log_msg(f"[ARCHITECT] Received SWITCH_SOURCE for {sport} -> {source}")
+            return jsonify({"status": "queued"})
+        return jsonify({"error": "sport and source required"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 def start_web_server():
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
@@ -67,6 +102,14 @@ SPORTS_CONFIG = {
     'table-tennis':  {'slug': 'table-tennis',  'table': 'live_table_tennis',  'state_key': 'tabletennis'},
     'ice-hockey':    {'slug': 'ice-hockey',    'table': 'live_ice_hockey',    'state_key': 'icehockey'},
     'esports':       {'slug': 'esports',       'table': 'live_esports',       'state_key': 'esports'},
+    'volleyball':    {'slug': 'volleyball',    'table': 'live_volleyball',    'state_key': 'volleyball'},
+    'baseball':      {'slug': 'baseball',      'table': 'live_baseball',      'state_key': 'baseball'},
+    'badminton':     {'slug': 'badminton',     'table': 'live_badminton',     'state_key': 'badminton'},
+    'amfootball':    {'slug': 'american-football', 'table': 'live_american_football', 'state_key': 'amfootball'},
+    'handball':      {'slug': 'handball',      'table': 'live_handball',      'state_key': 'handball'},
+    'water-polo':    {'slug': 'water-polo',    'table': 'live_water_polo',    'state_key': 'waterpolo'},
+    'snooker':       {'slug': 'snooker',       'table': 'live_snooker',       'state_key': 'snooker'},
+    'rugby':         {'slug': 'rugby',         'table': 'live_rugby',         'state_key': 'rugby'},
 }
 
 
@@ -218,21 +261,46 @@ def get_odds(match):
         return match['odds']
     
     try:
-        ext = match.get('ext', {})
-        odds_data = ext.get('odds', {})
-        odd_items = odds_data.get('oddItems', [])
+        ext = match.get('ext') or {}
+        odds_data = ext.get('odds') or {}
+        odd_items = odds_data.get('oddItems') or []
         
-        # oddItems[1] typically contains the main odds
-        # odd array: [home_odds, draw_odds(?), away_odds, ?]
-        if len(odd_items) > 1 and odd_items[1]:
-            odd_arr = odd_items[1].get('odd', [])
-            if len(odd_arr) >= 3:
-                odds['home'] = odd_arr[0] if odd_arr[0] and odd_arr[0] != '0' else None
-                odds['away'] = odd_arr[2] if odd_arr[2] and odd_arr[2] != '0' else None
-                # Draw odds might be at index 1 for football
-                if len(odd_arr) > 1 and odd_arr[1] and odd_arr[1] != '0':
-                    odds['draw'] = odd_arr[1]
-    except:
+        # Iterate to find the main odds
+        # Priority: Index 1 (Match winner usually), then 0 or others
+        best_odds = None
+        indices_to_check = [1, 0, 2]
+        
+        for idx in indices_to_check:
+            if idx < len(odd_items):
+                item = odd_items[idx]
+                odd_arr = item.get('odd', [])
+                if len(odd_arr) >= 2:
+                    # Filter out zero/empty to check validity
+                    valid_vals = [v for v in odd_arr if v and str(v) != '0']
+                    if len(valid_vals) >= 2:
+                        best_odds = odd_arr
+                        break
+        
+        if best_odds and len(best_odds) >= 2:
+            def clean(v):
+                return v if v and str(v) != '0' else None
+
+            # H, D, A mapping
+            odds['home'] = clean(best_odds[0])
+            
+            if len(best_odds) >= 3:
+                odds['draw'] = clean(best_odds[1])
+                odds['away'] = clean(best_odds[2])
+            elif len(best_odds) == 2:
+                # Assuming H, A
+                odds['away'] = clean(best_odds[1])
+
+            # Special case for Basketball/Tennis often D is 0 in 3-item list, so index 2 is Away
+            if not odds['away'] and len(best_odds) > 2:
+                 odds['away'] = clean(best_odds[2])
+
+    except Exception as e:
+        log_msg(f"[ERROR] get_odds: {e}")
         pass
         
     return odds
@@ -408,16 +476,26 @@ def upsert_matches(conn, sport_key, matches):
             
             # Extract Odds
             odds = get_odds(m)
-
+            other_odds_val = None
+            
+            # Football: Use standard columns
+            # Others: Use other_odds column, set standard columns to None
+            # Football: Use standard columns
+            # Others: Use standard columns AND other_odds column
+            other_odds_val = odds 
+            
+            if i == 0:
+                pass
+                # log_msg(f"[DEBUG] {sport_key} first match odds extraction: {other_odds_val}")
             
             # Upsert
             cur.execute(f"""
                 INSERT INTO {table_name} (
                     match_id, match_data, home_team, away_team, status, score, 
                     batting_team, is_live, home_score, away_score,
-                    home_odds, away_odds, draw_odds, last_updated
+                    home_odds, away_odds, draw_odds, other_odds, last_updated
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
                 ON CONFLICT (match_id) DO UPDATE SET
                     match_data = EXCLUDED.match_data,
                     home_team = EXCLUDED.home_team,
@@ -428,14 +506,19 @@ def upsert_matches(conn, sport_key, matches):
                     is_live = EXCLUDED.is_live,
                     home_score = EXCLUDED.home_score,
                     away_score = EXCLUDED.away_score,
-                    home_odds = EXCLUDED.home_odds,
-                    away_odds = EXCLUDED.away_odds,
-                    draw_odds = EXCLUDED.draw_odds,
-                    last_updated = NOW();
+                    last_updated = NOW(),
+                    home_odds = CASE WHEN EXCLUDED.home_odds IS NOT NULL THEN EXCLUDED.home_odds ELSE {table_name}.home_odds END,
+                    away_odds = CASE WHEN EXCLUDED.away_odds IS NOT NULL THEN EXCLUDED.away_odds ELSE {table_name}.away_odds END,
+                    draw_odds = CASE WHEN EXCLUDED.draw_odds IS NOT NULL THEN EXCLUDED.draw_odds ELSE {table_name}.draw_odds END,
+                    other_odds = CASE 
+                        WHEN (EXCLUDED.other_odds->>'home' IS NOT NULL AND EXCLUDED.other_odds->>'home' != 'None') 
+                        THEN EXCLUDED.other_odds 
+                        ELSE {table_name}.other_odds 
+                    END;
             """, (
                 match_id, Json(m), home_team, away_team, status, score_str, 
                 batting_team, is_live, h_score, a_score,
-                odds['home'], odds['away'], odds['draw']
+                odds['home'], odds['away'], odds['draw'], Json(odds)
             ))
 
 
@@ -611,7 +694,203 @@ def fetch_soccer24(page):
     log_msg(f"[DEBUG] Soccer24 Parsed Matches: {len(matches)}")
     return matches
 
-# --- Supervisor ---
+
+    log_msg(f"[DEBUG] Soccer24 Parsed Matches: {len(matches)}")
+    return matches
+
+# --- Sofascore Scraper (Table Tennis) ---
+def fetch_sofascore_table_tennis(page):
+    log_msg("[DEBUG] fetch_sofascore_table_tennis: Entry")
+    # 1. Fetch Live List
+    list_url = "https://www.sofascore.com/api/v1/sport/table-tennis/events/live"
+    matches = []
+    
+    try:
+        # We use goto with JSON response interception manually or just expect JSON on page
+        # Getting JSON via page.goto works if the browser renders it (which Chrome does) -> innerText
+        # BUT explicitly waiting for the response is cleaner.
+        # Let's use the direct response extraction
+        
+        response = page.goto(list_url, timeout=30000, wait_until='domcontentloaded')
+        if not response.ok:
+            log_msg(f"[ERROR] Sofascore list fetch failed: {response.status}")
+            return []
+            
+        try:
+            data = response.json()
+        except:
+             # Fallback: Extract from body text (sometimes browser wraps it in pre)
+            text = page.locator("body").inner_text()
+            data = json.loads(text)
+            
+        events = data.get('events', [])
+        log_msg(f"[DEBUG] Sofascore TT: Found {len(events)} live events.")
+        
+        for i, ev in enumerate(events):
+            try:
+                mid = str(ev.get('id'))
+                home = ev.get('homeTeam', {}).get('name', 'Unknown')
+                away = ev.get('awayTeam', {}).get('name', 'Unknown')
+                
+                # Scores
+                h_score = str(ev.get('homeScore', {}).get('current', 0))
+                a_score = str(ev.get('awayScore', {}).get('current', 0))
+                
+                # Status
+                status_desc = ev.get('status', {}).get('description', 'Live')
+                
+                # Fetch Odds (with delay to be polite)
+                # limit to first 20 to avoid timeouts if list is huge
+                if i < 20:
+                    time.sleep(0.5) 
+                    odds_url = f"https://www.sofascore.com/api/v1/event/{mid}/odds/1/all"
+                    odds_data = {'home': None, 'away': None, 'draw': None}
+                    
+                    try:
+                        o_resp = page.goto(odds_url, timeout=10000, wait_until='domcontentloaded')
+                        if o_resp.ok:
+                            o_json = o_resp.json()
+                            markets = o_json.get('markets', [])
+                            for m in markets:
+                                # Look for Winner (marketName usually 'Winner' or 'Full time')
+                                if m.get('isMain') or m.get('marketName') in ['Winner', 'Full time']:
+                                    choices = m.get('choices', [])
+                                    if len(choices) >= 2:
+                                        # Assuming 1=Home, 2=Away
+                                        # fractionalValue looks like "8/15", decimalValue needed
+                                        # Usually choice has 'fractionalValue' and we want decimal?
+                                        # Or extract from 'value' which might be missing in some views?
+                                        # Let's try to find decimal value if available, or just store string
+                                        
+                                        # Simplification: Store fractional or whatever comes
+                                        # Sofascore JSON usually has: choices: [{name: '1', fractionalValue: '...', oldOdds: ...}]
+                                        # We prefer decimal. Convert? 
+                                        # Let's check keys from our verify script. choices elements have 'fractionalValue'.
+                                        # If available, grab the cleanest.
+                                        
+                                        # Actually, just grab fractionalValue for now or convert.
+                                        def parse_frac(s):
+                                            if '/' in s:
+                                                n, d = s.split('/')
+                                                return round(1 + int(n)/int(d), 2)
+                                            return s
+
+                                        odds_data['home'] = choices[0].get('fractionalValue')
+                                        odds_data['away'] = choices[1].get('fractionalValue')
+                                        
+                                        # Try to convert to decimal for compatibility
+                                        try:
+                                             odds_data['home'] = str(parse_frac(odds_data['home']))
+                                             odds_data['away'] = str(parse_frac(odds_data['away']))
+                                        except: pass
+                                        break
+                    except Exception as oe:
+                        # log_msg(f"[WARN] Failed to fetch odds for {mid}: {oe}")
+                        pass
+                else:
+                    odds_data = None # Skip odds for overflow to save time
+
+                # Construct Match Object
+                matches.append({
+                    'id': f"sf_{mid}", # Prefix to distinguish from AiScore IDs
+                    'matchStatus': 2, # Live
+                    'statusId': 2,
+                    'is_live_override': True,
+                    'status_text_override': status_desc,
+                    'homeTeam': {'name': home},
+                    'awayTeam': {'name': away},
+                    'home_name_resolved': home,
+                    'away_name_resolved': away,
+                    'homeScore': h_score,
+                    'awayScore': a_score,
+                    'sportId': 11, # Table Tennis internal ID
+                    'odds': odds_data if odds_data else {'home': None, 'away': None, 'draw': None},
+                    'match_data_extra': ev # Store full raw sofa event
+                })
+
+            except Exception as e:
+                log_msg(f"[ERROR] Sofascore parse error match {i}: {e}")
+                continue
+
+    except Exception as e:
+        log_msg(f"[ERROR] Sofascore TT Fetch: {e}")
+        
+    log_msg(f"[DEBUG] Sofascore TT: Parsed {len(matches)} matches.")
+    return matches
+
+# --- Sofascore Scraper (Esports) ---
+def fetch_sofascore_esports(page):
+    log_msg("[DEBUG] fetch_sofascore_esports: Entry")
+    list_url = "https://www.sofascore.com/api/v1/sport/esports/events/live"
+    matches = []
+    
+    try:
+        response = page.goto(list_url, timeout=30000, wait_until='domcontentloaded')
+        if not response.ok:
+            log_msg(f"[ERROR] Sofascore Esports list fetch failed: {response.status}")
+            return []
+            
+        try:
+            data = response.json()
+        except:
+            text = page.locator("body").inner_text()
+            data = json.loads(text)
+            
+        events = data.get('events', [])
+        log_msg(f"[DEBUG] Sofascore Esports: Found {len(events)} live events.")
+        
+        for i, ev in enumerate(events):
+            try:
+                mid = str(ev.get('id'))
+                home = ev.get('homeTeam', {}).get('name', 'Unknown')
+                away = ev.get('awayTeam', {}).get('name', 'Unknown')
+                
+                h_score = str(ev.get('homeScore', {}).get('current', 0))
+                a_score = str(ev.get('awayScore', {}).get('current', 0))
+                status_desc = ev.get('status', {}).get('description', 'Live')
+                
+                # Fetch Odds
+                odds_data = {'home': None, 'away': None, 'draw': None}
+                if i < 20: 
+                    time.sleep(0.5)
+                    odds_url = f"https://www.sofascore.com/api/v1/event/{mid}/odds/1/all"
+                    try:
+                        o_resp = page.goto(odds_url, timeout=10000)
+                        if o_resp.ok:
+                            o_json = o_resp.json()
+                            markets = o_json.get('markets', [])
+                            for m in markets:
+                                if m.get('isMain') or m.get('marketName') in ['Winner', 'Full time', 'Map 1 Winner']:
+                                    choices = m.get('choices', [])
+                                    if len(choices) >= 2:
+                                        odds_data['home'] = choices[0].get('fractionalValue')
+                                        odds_data['away'] = choices[1].get('fractionalValue')
+                                        break
+                    except: pass
+                
+                matches.append({
+                    'id': f"sf_{mid}",
+                    'matchStatus': 2,
+                    'statusId': 2,
+                    'is_live_override': True,
+                    'status_text_override': status_desc,
+                    'homeTeam': {'name': home},
+                    'awayTeam': {'name': away},
+                    'home_name_resolved': home,
+                    'away_name_resolved': away,
+                    'homeScore': h_score,
+                    'awayScore': a_score,
+                    'sportId': 99,
+                    'odds': odds_data,
+                    'match_data_extra': ev
+                })
+            except: continue
+            
+    except Exception as e:
+        log_msg(f"[ERROR] Sofascore Esports Fetch: {e}")
+        
+    return matches
+
 
 def run_scraper():
     while True:
@@ -648,12 +927,22 @@ def run_scraper():
                 max_cycles = 50 
 
                 while True:
+                    # CHECK COMMANDS
+                    try:
+                        while not COMMAND_QUEUE.empty():
+                            cmd = COMMAND_QUEUE.get_nowait()
+                            log_msg(f"[ARCHITECT] Processing command: {cmd}")
+                            # Logic for FORCE_REFRESH -> Just continue the loop (it scrapes anyway)
+                            # Logic for SWITCH_SOURCE -> Update global map (TODO)
+                    except: pass
+                    
                     start_time = time.time()
                     if conn.closed: raise Exception("DB Conn Closed")
                     
                     for sport, config in SPORTS_CONFIG.items():
                         try:
                             matches = []
+
                             # ROUTING
                             if sport == 'football':
                                 log_msg("[DEBUG] Fetching football (Soccer24)...")
@@ -661,6 +950,12 @@ def run_scraper():
                             elif sport == 'basketball':
                                 log_msg("[DEBUG] Fetching basketball...")
                                 matches = fetch_aiscore_live(page_desktop, config['slug'], config['state_key'])
+                            elif sport == 'table-tennis':
+                                log_msg("[DEBUG] Fetching table-tennis (Sofascore)...")
+                                matches = fetch_sofascore_table_tennis(page_mobile)
+                            elif sport == 'esports':
+                                log_msg("[DEBUG] Fetching esports (Sofascore)...")
+                                matches = fetch_sofascore_esports(page_mobile)
                             else:
                                 log_msg(f"[DEBUG] Fetching {sport}...")
                                 matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
@@ -693,7 +988,20 @@ def run_scraper():
                 if conn: conn.close()
             except: pass
 
+
 if __name__ == "__main__":
+    # Start web server thread
     server_thread = threading.Thread(target=start_web_server, daemon=True)
     server_thread.start()
+    
+    # Start Architect Agent in background (for AI-powered odds fixing)
+    try:
+        import architect_agent
+        architect_thread = threading.Thread(target=architect_agent.run_architect, daemon=True)
+        architect_thread.start()
+        log_msg("[STARTUP] Architect Agent started in background thread.")
+    except Exception as e:
+        log_msg(f"[STARTUP] Could not start Architect Agent: {e}")
+    
+    # Run main scraper (blocking)
     run_scraper()

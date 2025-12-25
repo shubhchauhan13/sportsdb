@@ -1,0 +1,60 @@
+{
+  "id": "xvkj6h2wmm5h879",
+  "ext": {
+    "odds": {
+      "oddItems": [
+        {},
+        {
+          "odd": [
+            "1.28",
+            "0",
+            "3.75",
+            "0"
+          ]
+        },
+        {}
+      ]
+    }
+  },
+  "menu": 320,
+  "times": {},
+  "users": 4329,
+  "venue": {},
+  "season": {
+    "sid": 56231
+  },
+  "referee": {},
+  "sportId": 5,
+  "awayTeam": {
+    "id": "ezk99h92jzhwkn5"
+  },
+  "ckScores": {
+    "ft": [
+      0,
+      0
+    ],
+    "p1": [
+      0,
+      0
+    ],
+    "innings": [
+      {
+        "runs": 10,
+        "overs": 3,
+        "belong": 2,
+        "wickets": 1
+      }
+    ]
+  },
+  "homeTeam": {
+    "id": "xvkj6hjw2pux793"
+  },
+  "statusId": 533,
+  "matchTime": 1766241000,
+  "competition": {
+    "id": "jek3nh6dmvuv7o2"
+  },
+  "matchStatus": 2,
+  "away_name_resolved": "Sharjah Warriors",
+  "home_name_resolved": "Desert Vipers"
+}
