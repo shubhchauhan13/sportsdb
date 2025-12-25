@@ -60,21 +60,10 @@ HTML_TEMPLATE = """
         <a href="/cricket" class="{{ 'active' if sport == 'cricket' else '' }}">🏏 Cricket</a>
         <a href="/football" class="{{ 'active' if sport == 'football' else '' }}">⚽ Football</a>
         <a href="/tennis" class="{{ 'active' if sport == 'tennis' else '' }}">🎾 Tennis</a>
-        <a href="/logs" class="log-tab {{ 'active' if sport == 'logs' else '' }}">🤖 AI Logs</a>
     </div>
 
     {% if sport == 'logs' %}
-        <h1>🧠 Architect Agent Brain</h1>
-        <div class="terminal" id="terminal">
-            {% for line in logs %}
-                <div class="log-line {% if 'Error' in line %}log-error{% elif 'Warn' in line %}log-warn{% elif 'Diagnosing' in line %}log-info{% endif %}">{{ line|safe }}</div>
-            {% endfor %}
-        </div>
-        <script>
-            // Scroll to bottom
-            const t = document.getElementById('terminal');
-            t.scrollTop = t.scrollHeight;
-        </script>
+        <!-- Logs Removed -->
     {% else %}
         <h1>
             {{ sport.capitalize() }} Live Feed 

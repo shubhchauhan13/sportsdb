@@ -849,24 +849,60 @@ def fetch_sofascore_esports(page):
                 a_score = str(ev.get('awayScore', {}).get('current', 0))
                 status_desc = ev.get('status', {}).get('description', 'Live')
                 
-                # Fetch Odds
+                # Enhanced Odds Extraction with multiple fallbacks
                 odds_data = {'home': None, 'away': None, 'draw': None}
                 if i < 20: 
-                    time.sleep(0.5)
+                    time.sleep(0.5 + (i % 3) * 0.2)  # Randomized delay for anti-ban
                     odds_url = f"https://www.sofascore.com/api/v1/event/{mid}/odds/1/all"
                     try:
                         o_resp = page.goto(odds_url, timeout=10000)
                         if o_resp.ok:
                             o_json = o_resp.json()
                             markets = o_json.get('markets', [])
+                            
+                            log_msg(f"[DEBUG] Esports {mid}: Found {len(markets)} markets")
+                            
                             for m in markets:
-                                if m.get('isMain') or m.get('marketName') in ['Winner', 'Full time', 'Map 1 Winner']:
+                                market_name = m.get('marketName', '')
+                                is_main = m.get('isMain', False)
+                                
+                                # Check for main winner markets
+                                if is_main or market_name in ['Winner', 'Match Winner', 'Full time', 'Map 1 Winner', 'To Win Match', 'Money Line']:
                                     choices = m.get('choices', [])
                                     if len(choices) >= 2:
-                                        odds_data['home'] = choices[0].get('fractionalValue')
-                                        odds_data['away'] = choices[1].get('fractionalValue')
-                                        break
-                    except: pass
+                                        # Try multiple value keys
+                                        home_val = None
+                                        away_val = None
+                                        
+                                        for val_key in ['decimalValue', 'fractionalValue', 'initialValue', 'odds']:
+                                            if home_val is None:
+                                                home_val = choices[0].get(val_key)
+                                            if away_val is None:
+                                                away_val = choices[1].get(val_key)
+                                        
+                                        if home_val and away_val:
+                                            odds_data['home'] = home_val
+                                            odds_data['away'] = away_val
+                                            log_msg(f"[DEBUG] Esports {mid}: Found odds H={home_val} A={away_val}")
+                                            break
+                                            
+                            # Fallback: Check vote/crowdsourcing data
+                            if not odds_data['home']:
+                                vote = ev.get('vote', {})
+                                vote_home = vote.get('vote1')
+                                vote_away = vote.get('vote2')
+                                if vote_home and vote_away:
+                                    # Convert votes to implied odds
+                                    try:
+                                        total = vote_home + vote_away
+                                        if total > 0:
+                                            odds_data['home'] = round(total / vote_home, 2) if vote_home > 0 else None
+                                            odds_data['away'] = round(total / vote_away, 2) if vote_away > 0 else None
+                                            log_msg(f"[DEBUG] Esports {mid}: Derived odds from votes")
+                                    except: pass
+                                    
+                    except Exception as e:
+                        log_msg(f"[DEBUG] Esports odds fetch error {mid}: {e}")
                 
                 matches.append({
                     'id': f"sf_{mid}",
@@ -888,6 +924,269 @@ def fetch_sofascore_esports(page):
             
     except Exception as e:
         log_msg(f"[ERROR] Sofascore Esports Fetch: {e}")
+        
+    return matches
+
+# --- FlashScore Ice Hockey Scraper (Enterprise) ---
+
+# Anti-ban: User-Agent rotation pool
+USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+]
+
+import random
+
+def get_random_ua():
+    return random.choice(USER_AGENTS)
+
+def fetch_flashscore_ice_hockey(page):
+    """Fetches Ice Hockey odds from FlashScore with anti-ban measures."""
+    log_msg("[DEBUG] fetch_flashscore_ice_hockey: Entry")
+    matches = []
+    
+    try:
+        # Set random user agent
+        page.set_extra_http_headers({"User-Agent": get_random_ua()})
+        
+        # Random delay before request
+        time.sleep(random.uniform(1.0, 2.5))
+        
+        # FlashScore Ice Hockey live page
+        url = "https://www.flashscore.com/ice-hockey/"
+        response = page.goto(url, timeout=30000, wait_until='networkidle')
+        
+        if not response.ok:
+            log_msg(f"[ERROR] FlashScore Ice Hockey fetch failed: {response.status}")
+            return []
+        
+        # Wait for content to load
+        time.sleep(2)
+        
+        # Extract live matches via data attributes
+        try:
+            live_rows = page.locator('[class*="event__match--live"]').all()
+            log_msg(f"[DEBUG] FlashScore Ice Hockey: Found {len(live_rows)} live matches")
+            
+            for i, row in enumerate(live_rows[:30]):
+                try:
+                    time.sleep(random.uniform(0.1, 0.3))  # Anti-ban micro-delay
+                    
+                    match_id = row.get_attribute('id') or f"fs_{i}"
+                    match_id = match_id.replace('g_1_', 'fs_')
+                    
+                    home_el = row.locator('[class*="event__homeParticipant"]').first
+                    away_el = row.locator('[class*="event__awayParticipant"]').first
+                    
+                    home = home_el.inner_text() if home_el else "Unknown"
+                    away = away_el.inner_text() if away_el else "Unknown"
+                    
+                    home_score_el = row.locator('[class*="event__score--home"]').first
+                    away_score_el = row.locator('[class*="event__score--away"]').first
+                    
+                    h_score = home_score_el.inner_text() if home_score_el else "0"
+                    a_score = away_score_el.inner_text() if away_score_el else "0"
+                    
+                    status_el = row.locator('[class*="event__stage"]').first
+                    status = status_el.inner_text() if status_el else "Live"
+                    
+                    odds_data = {'home': None, 'away': None, 'draw': None}
+                    try:
+                        odds_els = row.locator('[class*="odds__odd"]').all()
+                        if len(odds_els) >= 2:
+                            odds_data['home'] = odds_els[0].inner_text()
+                            odds_data['away'] = odds_els[-1].inner_text()
+                            if len(odds_els) >= 3:
+                                odds_data['draw'] = odds_els[1].inner_text()
+                    except: pass
+                    
+                    matches.append({
+                        'id': match_id,
+                        'matchStatus': 2,
+                        'statusId': 2,
+                        'is_live_override': True,
+                        'status_text_override': status,
+                        'homeTeam': {'name': home},
+                        'awayTeam': {'name': away},
+                        'home_name_resolved': home,
+                        'away_name_resolved': away,
+                        'homeScore': h_score,
+                        'awayScore': a_score,
+                        'sportId': 4,
+                        'odds': odds_data,
+                        'match_data_extra': {}
+                    })
+                except Exception as e:
+                    continue
+                    
+        except Exception as e:
+            log_msg(f"[ERROR] FlashScore DOM parsing: {e}")
+            
+    except Exception as e:
+        log_msg(f"[ERROR] FlashScore Ice Hockey Fetch: {e}")
+        
+    return matches
+
+
+# --- OddsPortal Scraper (Optimized) ---
+
+def fetch_oddsportal_hockey(page):
+    """Fetches Ice Hockey odds from OddsPortal with optimized wait strategies."""
+    log_msg("[DEBUG] fetch_oddsportal_hockey: Entry")
+    matches = []
+    
+    try:
+        page.set_extra_http_headers({"User-Agent": get_random_ua()})
+        time.sleep(random.uniform(1.0, 2.0))
+        
+        # Try Live page first
+        url = "https://www.oddsportal.com/hockey/live/"
+        response = page.goto(url, timeout=30000, wait_until='domcontentloaded') # Relaxed wait
+        
+        if not response or not response.ok:
+            log_msg(f"[ERROR] OddsPortal Hockey fetch failed: {response.status if response else 'No Response'}")
+            return []
+        
+        # Wait for either row selector or specific element
+        try:
+            page.wait_for_selector('div[class*="eventRow"]', timeout=10000)
+        except:
+            log_msg("[DEBUG] OddsPortal Hockey: No event rows found immediately.")
+            
+        time.sleep(2) # Give JS time to hydrate
+        
+        try:
+            rows = page.locator('div[class*="eventRow"]').all()
+            log_msg(f"[DEBUG] OddsPortal Hockey: Found {len(rows)} matches")
+            
+            for i, row in enumerate(rows[:30]):
+                try:
+                    # Quick check if it's a live match row
+                    if not row.is_visible(): continue
+                    
+                    teams_el = row.locator('a[class*="participant"]').all()
+                    if len(teams_el) >= 2:
+                        home = teams_el[0].inner_text().strip()
+                        away = teams_el[1].inner_text().strip()
+                    else:
+                        continue
+                        
+                    # Extract Odds (Home, Draw, Away)
+                    # OddsPortal often puts them in specific column order
+                    odds_els = row.locator('div[class*="odds-value"]').all()
+                    odds_data = {'home': None, 'away': None, 'draw': None}
+                    
+                    if len(odds_els) >= 2:
+                        odds_data['home'] = odds_els[0].inner_text().strip()
+                        odds_data['away'] = odds_els[-1].inner_text().strip()
+                        if len(odds_els) >= 3:
+                            odds_data['draw'] = odds_els[1].inner_text().strip()
+                    
+                    # Skip if no odds found
+                    if not odds_data['home'] and not odds_data['away']:
+                        continue
+                        
+                    match_id = f"op_hackey_{i}_{get_deterministic_hash(home+away)[:8]}"
+                    
+                    matches.append({
+                        'id': match_id,
+                        'matchStatus': 2,
+                        'statusId': 2,
+                        'is_live_override': True,
+                        'status_text_override': 'Live',
+                        'homeTeam': {'name': home},
+                        'awayTeam': {'name': away},
+                        'home_name_resolved': home,
+                        'away_name_resolved': away,
+                        'homeScore': '?',
+                        'awayScore': '?',
+                        'sportId': 4,
+                        'odds': odds_data,
+                        'match_data_extra': {'source': 'ODDSPARTAL'}
+                    })
+                except: continue
+                
+        except Exception as e:
+             log_msg(f"[ERROR] OddsPortal row parsing: {e}")
+
+    except Exception as e:
+        log_msg(f"[ERROR] OddsPortal Hockey Fetch: {e}")
+        
+    return matches
+
+
+def fetch_oddsportal_esports(page):
+    """Fetches Esports odds from OddsPortal with optimized wait strategies."""
+    log_msg("[DEBUG] fetch_oddsportal_esports: Entry")
+    matches = []
+    
+    try:
+        page.set_extra_http_headers({"User-Agent": get_random_ua()})
+        time.sleep(random.uniform(1.0, 2.0))
+        
+        url = "https://www.oddsportal.com/esports/live/"
+        response = page.goto(url, timeout=30000, wait_until='domcontentloaded')
+        
+        if not response or not response.ok:
+             log_msg(f"[ERROR] OddsPortal Esports fetch failed: {response.status if response else 'No Resp'}")
+             return []
+        
+        try:
+             page.wait_for_selector('div[class*="eventRow"]', timeout=10000)
+        except: pass
+            
+        time.sleep(2)
+        
+        try:
+            rows = page.locator('div[class*="eventRow"]').all()
+            log_msg(f"[DEBUG] OddsPortal Esports: Found {len(rows)} matches")
+            
+            for i, row in enumerate(rows[:30]):
+                try:
+                    if not row.is_visible(): continue
+                    
+                    teams_el = row.locator('a[class*="participant"]').all()
+                    if len(teams_el) >= 2:
+                        home = teams_el[0].inner_text().strip()
+                        away = teams_el[1].inner_text().strip()
+                    else: continue
+                    
+                    odds_els = row.locator('div[class*="odds-value"]').all()
+                    odds_data = {'home': None, 'away': None, 'draw': None}
+                    
+                    if len(odds_els) >= 2:
+                        odds_data['home'] = odds_els[0].inner_text().strip()
+                        odds_data['away'] = odds_els[-1].inner_text().strip()
+                        
+                    if not odds_data['home'] and not odds_data['away']:
+                        continue
+                    
+                    match_id = f"op_esports_{i}_{get_deterministic_hash(home+away)[:8]}"
+                    
+                    matches.append({
+                        'id': match_id,
+                        'matchStatus': 2,
+                        'statusId': 2,
+                        'is_live_override': True,
+                        'status_text_override': 'Live',
+                        'homeTeam': {'name': home},
+                        'awayTeam': {'name': away},
+                        'home_name_resolved': home,
+                        'away_name_resolved': away,
+                        'homeScore': '?',
+                        'awayScore': '?',
+                        'sportId': 99,
+                        'odds': odds_data,
+                        'match_data_extra': {'source': 'ODDSPARTAL'}
+                    })
+                except: continue
+        except Exception as e:
+            log_msg(f"[ERROR] OddsPortal Esports parsing: {e}")
+            
+    except Exception as e:
+        log_msg(f"[ERROR] OddsPortal Esports Fetch: {e}")
         
     return matches
 
@@ -954,8 +1253,40 @@ def run_scraper():
                                 log_msg("[DEBUG] Fetching table-tennis (Sofascore)...")
                                 matches = fetch_sofascore_table_tennis(page_mobile)
                             elif sport == 'esports':
-                                log_msg("[DEBUG] Fetching esports (Sofascore)...")
+                                log_msg("[DEBUG] Fetching esports (Sofascore + OddsPortal)...")
+                                # Primary: Sofascore, Secondary: OddsPortal for odds
                                 matches = fetch_sofascore_esports(page_mobile)
+                                # Try OddsPortal to fill in missing odds
+                                op_matches = fetch_oddsportal_esports(page_desktop)
+                                if op_matches:
+                                    log_msg(f"[DEBUG] OddsPortal Esports: Got {len(op_matches)} matches with odds")
+                                    # Merge odds from OddsPortal into Sofascore matches  
+                                    for m in matches:
+                                        if not m.get('odds', {}).get('home'):
+                                            # Find matching OddsPortal match by team names
+                                            for op in op_matches:
+                                                if (m['home_name_resolved'].lower() in op['home_name_resolved'].lower() or 
+                                                    op['home_name_resolved'].lower() in m['home_name_resolved'].lower()):
+                                                    m['odds'] = op['odds']
+                                                    log_msg(f"[DEBUG] Merged odds for {m['home_name_resolved']}")
+                                                    break
+                            elif sport == 'ice-hockey':
+                                log_msg("[DEBUG] Fetching ice-hockey (Multi-source: FlashScore + OddsPortal + AiScore)...")
+                                # Multi-source approach for maximum coverage
+                                matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
+                                
+                                # Try OddsPortal to fill missing odds
+                                op_hockey = fetch_oddsportal_hockey(page_desktop)
+                                if op_hockey:
+                                    log_msg(f"[DEBUG] OddsPortal Hockey: Got {len(op_hockey)} matches with odds")
+                                    for m in matches:
+                                        if not m.get('odds', {}).get('home'):
+                                            for op in op_hockey:
+                                                if (m['home_name_resolved'].lower() in op['home_name_resolved'].lower() or 
+                                                    op['home_name_resolved'].lower() in m['home_name_resolved'].lower()):
+                                                    m['odds'] = op['odds']
+                                                    log_msg(f"[DEBUG] Merged Hockey odds for {m['home_name_resolved']}")
+                                                    break
                             else:
                                 log_msg(f"[DEBUG] Fetching {sport}...")
                                 matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
@@ -993,15 +1324,6 @@ if __name__ == "__main__":
     # Start web server thread
     server_thread = threading.Thread(target=start_web_server, daemon=True)
     server_thread.start()
-    
-    # Start Architect Agent in background (for AI-powered odds fixing)
-    try:
-        import architect_agent
-        architect_thread = threading.Thread(target=architect_agent.run_architect, daemon=True)
-        architect_thread.start()
-        log_msg("[STARTUP] Architect Agent started in background thread.")
-    except Exception as e:
-        log_msg(f"[STARTUP] Could not start Architect Agent: {e}")
     
     # Run main scraper (blocking)
     run_scraper()
