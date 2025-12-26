@@ -319,7 +319,7 @@ def fetch_aiscore_live(page, sport_slug, state_key):
     try:
         if page.is_closed(): return []
         
-        response = page.goto(url, timeout=30000, wait_until='domcontentloaded')
+        response = page.goto(url, timeout=10000, wait_until='domcontentloaded')
         
         # Brief wait for dynamic content (1s instead of 3s to avoid timeout issues)
         if sport_slug == 'football':
@@ -586,7 +586,7 @@ def fetch_soccer24(page):
             log_msg("[ERROR] Page is closed!")
             return []
         log_msg(f"[DEBUG] Navigating to {url}...")
-        page.goto(url, timeout=45000, wait_until='domcontentloaded')
+        page.goto(url, timeout=10000, wait_until='domcontentloaded')
         try: page.wait_for_selector('.event__match', timeout=5000)
         except: pass
         
@@ -1043,7 +1043,7 @@ def fetch_oddsportal_hockey(page):
         
         # Try Live page first
         url = "https://www.oddsportal.com/hockey/live/"
-        response = page.goto(url, timeout=30000, wait_until='domcontentloaded') # Relaxed wait
+        response = page.goto(url, timeout=10000, wait_until='domcontentloaded') # Relaxed wait
         
         if not response or not response.ok:
             log_msg(f"[ERROR] OddsPortal Hockey fetch failed: {response.status if response else 'No Response'}")
@@ -1127,7 +1127,7 @@ def fetch_oddsportal_esports(page):
         time.sleep(random.uniform(1.0, 2.0))
         
         url = "https://www.oddsportal.com/esports/live/"
-        response = page.goto(url, timeout=30000, wait_until='domcontentloaded')
+        response = page.goto(url, timeout=10000, wait_until='domcontentloaded')
         
         if not response or not response.ok:
              log_msg(f"[ERROR] OddsPortal Esports fetch failed: {response.status if response else 'No Resp'}")
@@ -1200,7 +1200,7 @@ def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
         time.sleep(random.uniform(1.0, 2.0))
         
         url = f"https://www.oddsportal.com/{sport_slug}/live/"
-        response = page.goto(url, timeout=30000, wait_until='domcontentloaded')
+        response = page.goto(url, timeout=10000, wait_until='domcontentloaded')
         
         if not response or not response.ok:
              return []

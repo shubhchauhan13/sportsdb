@@ -8,20 +8,21 @@ def check():
     try:
         print("Connecting to NeonDB...")
 
-        conn = psycopg2.connect(DB_CONNECTION_STRING)
+        conn = psycopg2.connect(DB_CONNECTION_STRING, connect_timeout=10)
         cur = conn.cursor()
         
 
 
 
         print("\n[INFO] Live Cricket Sample (Detailed):")
-        cur.execute("SELECT match_id, home_team, away_team, score, status, match_data FROM live_cricket ORDER BY last_updated DESC LIMIT 5;")
+        cur.execute("SELECT match_id, home_team, away_team, score, status, match_data, last_updated FROM live_cricket ORDER BY last_updated DESC LIMIT 5;")
         rows = cur.fetchall()
         for row in rows:
             print(f"ID: {row[0]}")
             print(f"  Teams: {row[1]} vs {row[2]}")
             print(f"  Score: {row[3]}")
             print(f"  Status: {row[4]}")
+            print(f"  Last Updated: {row[6]}")
             # match_data is a dictionary (JSONB)
             # print(f"  Raw Data Sample: {str(row[5])[:100]}...")
 
