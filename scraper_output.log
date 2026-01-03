@@ -330,3 +330,80 @@ LINE 2:             UPDATE live_ice_hockey
 [2026-01-03 16:46:50] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
 [2026-01-03 16:46:50] [T3-Minor] Fetching volleyball (OddsPortal)...
 [2026-01-03 16:46:50] [DEBUG] fetch_oddsportal_generic: Entry for volleyball
+[2026-01-03 16:46:50] [DB ERROR] cricket: relation "live_cricket" does not exist
+LINE 2:                 INSERT INTO live_cricket (
+                                    ^
+
+[2026-01-03 16:46:50] [DEBUG] cleanup cricket starting...
+[2026-01-03 16:46:51] [CLEANUP ERROR] cricket: relation "live_cricket" does not exist
+LINE 2:             UPDATE live_cricket
+                           ^
+
+[2026-01-03 16:46:56] [T1-Main] Fetching football...
+[2026-01-03 16:46:56] [DEBUG] fetch_soccer24: Entry
+[2026-01-03 16:46:56] [DEBUG] Navigating to https://www.soccer24.com/...
+[2026-01-03 16:46:58] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
+[2026-01-03 16:46:58] [DEBUG] Soccer24 Rows Found: 314
+[2026-01-03 16:46:58] [DEBUG] Processing row 0/314
+[2026-01-03 16:46:58] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/senegal-hOIsJLJr/sudan-OGhP26xH/?mid=UoNS6WpC" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_UoNS6WpC"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-icon...
+[2026-01-03 16:46:59] [DEBUG] Row 0 Status:  -> Live: False
+[2026-01-03 16:46:59] [DEBUG] Row 1 Status:  -> Live: False
+[2026-01-03 16:46:59] [DEBUG] Row 2 Status:  -> Live: False
+[2026-01-03 16:46:59] [DEBUG] Row 3 Status:  -> Live: False
+[2026-01-03 16:46:59] [DEBUG] Row 4 Status:  -> Live: False
+[2026-01-03 16:46:59] [DEBUG] Processing row 10/314
+[2026-01-03 16:46:59] [DEBUG] Processing row 20/314
+[2026-01-03 16:46:59] [DEBUG] Processing row 30/314
+[2026-01-03 16:46:59] [DEBUG] Processing row 40/314
+[2026-01-03 16:46:59] [DEBUG] Processing row 50/314
+[2026-01-03 16:46:59] [DEBUG] Processing row 60/314
+[2026-01-03 16:46:59] [DEBUG] Processing row 70/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 80/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 90/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 100/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 110/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 120/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 130/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 140/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 150/314
+[2026-01-03 16:47:00] [DEBUG] Processing row 160/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 170/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 180/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 190/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 200/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 210/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 220/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 230/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 240/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 250/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 260/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 270/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 280/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 290/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 300/314
+[2026-01-03 16:47:01] [DEBUG] Processing row 310/314
+[2026-01-03 16:47:01] [DEBUG] Soccer24 Parsed Matches: 314
+[2026-01-03 16:47:01] [T1-Main] Upserting 314 for football
+[2026-01-03 16:47:02] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
+[2026-01-03 16:47:02] [DEBUG] Football sample: {'id': 's24_6f738af872be207a337aa77439e5d98e', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': '', 'homeTeam': {'name': 'Senegal'}, 'awayTeam': {'name': 'Sudan'}, 'home_name_resolved': 'Senegal', 'away_name_resolved': 'Sudan', 'homeScore': '0', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.17, 'draw': 7.5, 'away': 19.0}}
+[2026-01-03 16:47:02] [DB ERROR] football: relation "live_football" does not exist
+LINE 2:                 INSERT INTO live_football (
+                                    ^
+
+[2026-01-03 16:47:02] [DEBUG] cleanup football starting...
+[2026-01-03 16:47:03] [CLEANUP ERROR] football: relation "live_football" does not exist
+LINE 2:             UPDATE live_football
+                           ^
+
+[2026-01-03 16:47:03] [ERROR] OddsPortal Esports Fetch: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://www.oddsportal.com/esports/live/", waiting until "domcontentloaded"
+
+[2026-01-03 16:47:03] [T2-Sofa] Upserting 3 for esports
+[2026-01-03 16:47:03] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
+[2026-01-03 16:47:03] [T1-Main] Fetching basketball...
+[2026-01-03 16:47:03] [DB ERROR] esports: relation "live_esports" does not exist
+LINE 2:                 INSERT INTO live_esports (
+                                    ^
+
+[2026-01-03 16:47:04] [DEBUG] cleanup esports starting...
