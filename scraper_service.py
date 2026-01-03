@@ -319,7 +319,7 @@ def fetch_aiscore_live(page, sport_slug, state_key):
     try:
         if page.is_closed(): return []
         
-        response = page.goto(url, timeout=10000, wait_until='domcontentloaded')
+        response = page.goto(url, timeout=60000, wait_until='domcontentloaded')
         
         # Brief wait for dynamic content (1s instead of 3s to avoid timeout issues)
         if sport_slug == 'football':
@@ -586,7 +586,7 @@ def fetch_soccer24(page):
             log_msg("[ERROR] Page is closed!")
             return []
         log_msg(f"[DEBUG] Navigating to {url}...")
-        page.goto(url, timeout=10000, wait_until='domcontentloaded')
+        page.goto(url, timeout=60000, wait_until='domcontentloaded')
         try: page.wait_for_selector('.event__match', timeout=5000)
         except: pass
         
@@ -711,7 +711,7 @@ def fetch_sofascore_table_tennis(page):
         # BUT explicitly waiting for the response is cleaner.
         # Let's use the direct response extraction
         
-        response = page.goto(list_url, timeout=30000, wait_until='domcontentloaded')
+        response = page.goto(list_url, timeout=60000, wait_until='domcontentloaded')
         if not response.ok:
             log_msg(f"[ERROR] Sofascore list fetch failed: {response.status}")
             return []
@@ -747,7 +747,7 @@ def fetch_sofascore_table_tennis(page):
                     odds_data = {'home': None, 'away': None, 'draw': None}
                     
                     try:
-                        o_resp = page.goto(odds_url, timeout=10000, wait_until='domcontentloaded')
+                        o_resp = page.goto(odds_url, timeout=60000, wait_until='domcontentloaded')
                         if o_resp.ok:
                             o_json = o_resp.json()
                             markets = o_json.get('markets', [])
@@ -825,7 +825,7 @@ def fetch_sofascore_esports(page):
     matches = []
     
     try:
-        response = page.goto(list_url, timeout=30000, wait_until='domcontentloaded')
+        response = page.goto(list_url, timeout=60000, wait_until='domcontentloaded')
         if not response.ok:
             log_msg(f"[ERROR] Sofascore Esports list fetch failed: {response.status}")
             return []
@@ -855,7 +855,7 @@ def fetch_sofascore_esports(page):
                     time.sleep(0.5 + (i % 3) * 0.2)  # Randomized delay for anti-ban
                     odds_url = f"https://www.sofascore.com/api/v1/event/{mid}/odds/1/all"
                     try:
-                        o_resp = page.goto(odds_url, timeout=10000)
+                        o_resp = page.goto(odds_url, timeout=60000)
                         if o_resp.ok:
                             o_json = o_resp.json()
                             markets = o_json.get('markets', [])
@@ -956,7 +956,7 @@ def fetch_flashscore_ice_hockey(page):
         
         # FlashScore Ice Hockey live page
         url = "https://www.flashscore.com/ice-hockey/"
-        response = page.goto(url, timeout=30000, wait_until='networkidle')
+        response = page.goto(url, timeout=60000, wait_until='networkidle')
         
         if not response.ok:
             log_msg(f"[ERROR] FlashScore Ice Hockey fetch failed: {response.status}")
@@ -1043,7 +1043,7 @@ def fetch_oddsportal_hockey(page):
         
         # Try Live page first
         url = "https://www.oddsportal.com/hockey/live/"
-        response = page.goto(url, timeout=10000, wait_until='domcontentloaded') # Relaxed wait
+        response = page.goto(url, timeout=60000, wait_until='domcontentloaded') # Relaxed wait
         
         if not response or not response.ok:
             log_msg(f"[ERROR] OddsPortal Hockey fetch failed: {response.status if response else 'No Response'}")
@@ -1127,7 +1127,7 @@ def fetch_oddsportal_esports(page):
         time.sleep(random.uniform(1.0, 2.0))
         
         url = "https://www.oddsportal.com/esports/live/"
-        response = page.goto(url, timeout=10000, wait_until='domcontentloaded')
+        response = page.goto(url, timeout=60000, wait_until='domcontentloaded')
         
         if not response or not response.ok:
              log_msg(f"[ERROR] OddsPortal Esports fetch failed: {response.status if response else 'No Resp'}")
@@ -1200,7 +1200,7 @@ def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
         time.sleep(random.uniform(1.0, 2.0))
         
         url = f"https://www.oddsportal.com/{sport_slug}/live/"
-        response = page.goto(url, timeout=10000, wait_until='domcontentloaded')
+        response = page.goto(url, timeout=60000, wait_until='domcontentloaded')
         
         if not response or not response.ok:
              return []
@@ -1265,154 +1265,183 @@ def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
 
 
 
-def run_scraper():
+def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
+    log_msg(f"[{worker_name}] Starting Worker Loop...")
+    conn = None
+    browser = None
+    
     while True:
-        log_msg("[SUPERVISOR] Starting Scraper Loop...")
-        conn = None
-        browser = None
-        
         try:
-            conn = initialize_db()
-            if not conn:
-                time.sleep(10)
-                continue
-
-            with sync_playwright() as p:
+            # 1. Initialize Resources per Thread
+            if not conn or conn.closed:
+                conn = initialize_db()
+                if not conn:
+                    log_msg(f"[{worker_name}] DB Connection failed. Retrying in 10s...")
+                    time.sleep(10)
+                    continue
+            
+            if not browser:
+                # Create a new Playwright instance for this thread
+                # We cannot use 'with sync_playwright()' easily across the loop unless we recreate it every time
+                # or we keep it open. Keeping it open is better.
+                # However, sync_playwright context manager handles start/stop.
+                # Let's wrap the inner loop with sync_playwright if possible, or start it manually.
+                # Start manually:
+                from playwright.sync_api import sync_playwright
+                p = sync_playwright().start()
                 browser = p.chromium.launch(
                     headless=True,
                     args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--disable-blink-features=AutomationControlled']
                 )
-                
-                # 1. Desktop Context (BASKETBALL + FOOTBALL SOCCER24)
-                context_desktop = browser.new_context(
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                )
-                context_desktop.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-                page_desktop = context_desktop.new_page()
-                
-                # 2. Mobile Context (OTHERS)
-                iphone = p.devices['iPhone 12']
-                context_mobile = browser.new_context(**iphone)
-                page_mobile = context_mobile.new_page()
-                
-                log_msg("[DEBUG] Pages created. Entering main loop.")
-                cycle_count = 0
-                max_cycles = 50 
+            
+            # Contexts
+            context_desktop = browser.new_context(
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            )
+            context_desktop.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            page_desktop = context_desktop.new_page()
+            
+            iphone = p.devices['iPhone 12']
+            context_mobile = browser.new_context(**iphone)
+            page_mobile = context_mobile.new_page()
 
-                while True:
-                    # CHECK COMMANDS
+            log_msg(f"[{worker_name}] Browser Ready. Processing: {assigned_sports}")
+            
+            # Inner Loop for Stability (re-use browser)
+            cycle_count = 0
+            max_cycles = 20 # Restart browser every 20 cycles to prevent leaks
+            
+            while cycle_count < max_cycles:
+                start_time = time.time()
+                
+                # Check Commands (Only Main Thread - optional, or shared?)
+                # For simplicity, Thread 1 handles commands if assigned_sports has football
+                if 'football' in assigned_sports:
                     try:
                         while not COMMAND_QUEUE.empty():
                             cmd = COMMAND_QUEUE.get_nowait()
-                            log_msg(f"[ARCHITECT] Processing command: {cmd}")
-                            # Logic for FORCE_REFRESH -> Just continue the loop (it scrapes anyway)
-                            # Logic for SWITCH_SOURCE -> Update global map (TODO)
+                            log_msg(f"[{worker_name}] Processing command: {cmd}")
+                            # FORCE_REFRESH logic could go here
                     except: pass
-                    
-                    start_time = time.time()
-                    if conn.closed: raise Exception("DB Conn Closed")
-                    
-                    for sport, config in SPORTS_CONFIG.items():
-                        try:
-                            matches = []
 
-                            # ROUTING
-                            if sport == 'football':
-                                log_msg("[DEBUG] Fetching football (Soccer24)...")
-                                matches = fetch_soccer24(page_desktop)
-                            elif sport == 'basketball':
-                                log_msg("[DEBUG] Fetching basketball...")
-                                matches = fetch_aiscore_live(page_desktop, config['slug'], config['state_key'])
-                            elif sport == 'table-tennis':
-                                log_msg("[DEBUG] Fetching table-tennis (Sofascore)...")
-                                matches = fetch_sofascore_table_tennis(page_mobile)
-                            elif sport == 'esports':
-                                log_msg("[DEBUG] Fetching esports (Sofascore + OddsPortal)...")
-                                # Primary: Sofascore, Secondary: OddsPortal for odds
-                                matches = fetch_sofascore_esports(page_mobile)
-                                # Try OddsPortal to fill in missing odds
-                                op_matches = fetch_oddsportal_esports(page_desktop)
-                                if op_matches:
-                                    log_msg(f"[DEBUG] OddsPortal Esports: Got {len(op_matches)} matches with odds")
-                                    # Merge odds from OddsPortal into Sofascore matches  
-                                    for m in matches:
-                                        if not m.get('odds', {}).get('home'):
-                                            # Find matching OddsPortal match by team names
-                                            for op in op_matches:
-                                                if (m['home_name_resolved'].lower() in op['home_name_resolved'].lower() or 
-                                                    op['home_name_resolved'].lower() in m['home_name_resolved'].lower()):
-                                                    m['odds'] = op['odds']
-                                                    log_msg(f"[DEBUG] Merged odds for {m['home_name_resolved']}")
-                                                    break
-                            elif sport == 'ice-hockey':
-                                log_msg("[DEBUG] Fetching ice-hockey (Multi-source: FlashScore + OddsPortal + AiScore)...")
-                                # Multi-source approach for maximum coverage
-                                matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
-                                
-                                # Try OddsPortal to fill missing odds
-                                op_hockey = fetch_oddsportal_hockey(page_desktop)
-                                if op_hockey:
-                                    log_msg(f"[DEBUG] OddsPortal Hockey: Got {len(op_hockey)} matches with odds")
-                                    for m in matches:
-                                        if not m.get('odds', {}).get('home'):
-                                            for op in op_hockey:
-                                                if (m['home_name_resolved'].lower() in op['home_name_resolved'].lower() or 
-                                                    op['home_name_resolved'].lower() in m['home_name_resolved'].lower()):
-                                                    m['odds'] = op['odds']
-                                                    log_msg(f"[DEBUG] Merged Hockey odds for {m['home_name_resolved']}")
-                                                    break
-                            
-                            # --- Minor Sports Routing ---
-                            elif sport == 'volleyball':
-                                log_msg("[DEBUG] Fetching volleyball (OddsPortal)...")
-                                matches = fetch_oddsportal_generic(page_desktop, 'volleyball', 13) 
-                            elif sport == 'handball':
-                                log_msg("[DEBUG] Fetching handball (OddsPortal)...")
-                                matches = fetch_oddsportal_generic(page_desktop, 'handball', 6)
-                            elif sport == 'baseball':
-                                log_msg("[DEBUG] Fetching baseball (OddsPortal)...")
-                                matches = fetch_oddsportal_generic(page_desktop, 'baseball', 3)
-                            elif sport == 'snooker':
-                                log_msg("[DEBUG] Fetching snooker (OddsPortal)...")
-                                matches = fetch_oddsportal_generic(page_desktop, 'snooker', 14)
-                            elif sport == 'rugby':
-                                log_msg("[DEBUG] Fetching rugby (OddsPortal)...")
-                                matches = fetch_oddsportal_generic(page_desktop, 'rugby-league', 12) # Try league first
-                            elif sport == 'water-polo':
-                                log_msg("[DEBUG] Fetching water-polo (OddsPortal)...")
-                                matches = fetch_oddsportal_generic(page_desktop, 'water-polo', 15)
+                if conn.closed: raise Exception("DB Conn Closed")
+
+                for sport in assigned_sports:
+                    if sport not in SPORTS_CONFIG: continue
+                    config = SPORTS_CONFIG[sport]
+                    
+                    try:
+                        matches = []
+                        # Routing 
+                        if sport == 'football':
+                            log_msg(f"[{worker_name}] Fetching football...")
+                            matches = fetch_soccer24(page_desktop)
+                        elif sport == 'basketball':
+                            log_msg(f"[{worker_name}] Fetching basketball...")
+                            matches = fetch_aiscore_live(page_desktop, config['slug'], config['state_key'])
+                        elif sport == 'table-tennis':
+                            log_msg(f"[{worker_name}] Fetching table-tennis...")
+                            matches = fetch_sofascore_table_tennis(page_mobile)
+                        elif sport == 'esports':
+                            log_msg(f"[{worker_name}] Fetching esports...")
+                            matches = fetch_sofascore_esports(page_mobile)
+                            # OddsPortal backup
+                            op_matches = fetch_oddsportal_esports(page_desktop)
+                            if op_matches:
+                                for m in matches:
+                                    if not m.get('odds', {}).get('home'):
+                                        for op in op_matches:
+                                            if (m['home_name_resolved'].lower() in op['home_name_resolved'].lower() or 
+                                                op['home_name_resolved'].lower() in m['home_name_resolved'].lower()):
+                                                m['odds'] = op['odds']
+                                                break
+                        elif sport == 'ice-hockey':
+                            log_msg(f"[{worker_name}] Fetching ice-hockey...")
+                            matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
+                            op_hockey = fetch_oddsportal_hockey(page_desktop)
+                            if op_hockey:
+                                for m in matches:
+                                    if not m.get('odds', {}).get('home'):
+                                        for op in op_hockey:
+                                            if (m['home_name_resolved'].lower() in op['home_name_resolved'].lower() or 
+                                                op['home_name_resolved'].lower() in m['home_name_resolved'].lower()):
+                                                m['odds'] = op['odds']
+                                                break
+                        
+                        # Minor Sports (OddsPortal)
+                        elif sport in ['volleyball', 'handball', 'baseball', 'snooker', 'rugby', 'water-polo']:
+                             log_msg(f"[{worker_name}] Fetching {sport} (OddsPortal)...")
+                             # Map sport to ID/Slug manually or use generic
+                             slugs = {
+                                 'volleyball': 'volleyball', 'handball': 'handball', 'baseball': 'baseball',
+                                 'snooker': 'snooker', 'rugby': 'rugby-league', 'water-polo': 'water-polo'
+                             }
+                             ids = {
+                                 'volleyball': 13, 'handball': 6, 'baseball': 3,
+                                 'snooker': 14, 'rugby': 12, 'water-polo': 15
+                             }
+                             matches = fetch_oddsportal_generic(page_desktop, slugs.get(sport, sport), ids.get(sport, 1))
                              
-                            else:
-                                log_msg(f"[DEBUG] Generic fetch for {sport}...")
-                                matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
-                            
-                            if matches:
-                                log_msg(f"[DEBUG] calling upsert_matches for {sport} with {len(matches)} items")
-                                active_ids = upsert_matches(conn, sport, matches)
-                                cleanup_stale_matches(conn, sport, active_ids)
-                            else:
-                                cleanup_stale_matches(conn, sport, [])
+                        else:
+                            # Generic AiScore (Cricket, Badminton, AmFootball)
+                            log_msg(f"[{worker_name}] Fetching {sport} (AiScore)...")
+                            matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
 
-                        except Exception as e:
-                            log_msg(f"[ERROR] {sport}: {e}")
-                    
-                    elapsed = time.time() - start_time
-                    time.sleep(max(10.0, 30.0 - elapsed))
-                    cycle_count += 1
-                    if cycle_count >= max_cycles: 
-                         log_msg("[SUPERVISOR] Cycling restart...")
-                         break
-        
+                        if matches:
+                            log_msg(f"[{worker_name}] Upserting {len(matches)} for {sport}")
+                            active_ids = upsert_matches(conn, sport, matches)
+                            cleanup_stale_matches(conn, sport, active_ids)
+                        else:
+                            cleanup_stale_matches(conn, sport, [])
+                            
+                    except Exception as e:
+                        log_msg(f"[{worker_name}] [ERROR] {sport}: {e}")
+                        # Don't break loop, continue to next sport
+                
+                elapsed = time.time() - start_time
+                wait = max(5.0, cycle_sleep - elapsed)
+                time.sleep(wait)
+                cycle_count += 1
+            
+            # End of Cycle - Refresh Browser
+            log_msg(f"[{worker_name}] Cycling Browser Refresh...")
+            browser.close()
+            p.stop()
+            browser = None
+            
         except Exception as e:
-            log_msg(f"[CRASH] Supervisor exception: {e}")
+            log_msg(f"[{worker_name}] [CRASH]: {e}")
             time.sleep(10)
-        finally:
-            try: 
+            try:
                 if browser: browser.close()
+                if p: p.stop()
             except: pass
-            try: 
-                if conn: conn.close()
-            except: pass
+            browser = None
+
+def run_scraper():
+    log_msg("[SUPERVISOR] Starting Multi-Threaded Scraper...")
+    
+    # Group 1: High Priority / High Volume (Fast)
+    # Cricket is also high priority in India
+    g1 = ['football', 'basketball', 'tennis', 'cricket']
+    
+    # Group 2: Mid Priority (SofaScore)
+    g2 = ['table-tennis', 'esports']
+    
+    # Group 3: Low Priority / Slow / OddsPortal (Likely to timeout)
+    g3 = ['ice-hockey', 'volleyball', 'handball', 'baseball', 'snooker', 'rugby', 'water-polo', 'badminton', 'amfootball']
+    
+    t1 = threading.Thread(target=worker_loop, args=("T1-Main", g1, 15)) # 15s cycle
+    t2 = threading.Thread(target=worker_loop, args=("T2-Sofa", g2, 20)) # 20s cycle
+    t3 = threading.Thread(target=worker_loop, args=("T3-Minor", g3, 60)) # 60s cycle (slower)
+    
+    t1.start()
+    t2.start()
+    t3.start()
+    
+    t1.join()
+    t2.join()
+    t3.join()
 
 
 if __name__ == "__main__":
