@@ -1,7 +1,7 @@
-[2026-01-03 16:45:36] [SUPERVISOR] Starting Multi-Threaded Scraper...
-[2026-01-03 16:45:36] [T1-Main] Starting Worker Loop...
-[2026-01-03 16:45:36] [T2-Sofa] Starting Worker Loop...
-[2026-01-03 16:45:36] [T3-Minor] Starting Worker Loop...
+[2026-01-03 18:01:36] [SUPERVISOR] Starting Multi-Threaded Scraper...
+[2026-01-03 18:01:36] [T1-Main] Starting Worker Loop...
+[2026-01-03 18:01:36] [T2-Sofa] Starting Worker Loop...
+[2026-01-03 18:01:36] [T3-Minor] Starting Worker Loop...
  * Serving Flask app 'scraper_service'
  * Debug mode: off
 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
@@ -9,401 +9,124 @@
  * Running on http://127.0.0.1:8080
  * Running on http://192.168.68.105:8080
 [33mPress CTRL+C to quit[0m
-[2026-01-03 16:45:38] [SUCCESS] Connected to NeonDB.
-[2026-01-03 16:45:39] [SUCCESS] Connected to NeonDB.
-[2026-01-03 16:45:39] [SUCCESS] Connected to NeonDB.
-[2026-01-03 16:45:42] [T2-Sofa] Browser Ready. Processing: ['table-tennis', 'esports'][2026-01-03 16:45:42] [T3-Minor] Browser Ready. Processing: ['ice-hockey', 'volleyball', 'handball', 'baseball', 'snooker', 'rugby', 'water-polo', 'badminton', 'amfootball'][2026-01-03 16:45:42] [T1-Main] Browser Ready. Processing: ['football', 'basketball', 'tennis', 'cricket']
-[2026-01-03 16:45:42] [T1-Main] Fetching football...
+[2026-01-03 18:01:38] [SUCCESS] Connected to NeonDB.
+[2026-01-03 18:01:38] [SUCCESS] Connected to NeonDB.[2026-01-03 18:01:38] [SUCCESS] Connected to NeonDB.
 
-
-[2026-01-03 16:45:42] [T2-Sofa] Fetching table-tennis...
-[2026-01-03 16:45:42] [DEBUG] fetch_sofascore_table_tennis: Entry[2026-01-03 16:45:42] [T3-Minor] Fetching ice-hockey...
-[2026-01-03 16:45:42] [DEBUG] fetch_soccer24: Entry
-[2026-01-03 16:45:42] [DEBUG] Navigating to https://www.soccer24.com/...
-
-[2026-01-03 16:45:44] [DEBUG] Sofascore TT: Found 21 live events.
-[2026-01-03 16:45:46] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
-[2026-01-03 16:45:46] [DEBUG] Soccer24 Rows Found: 314
-[2026-01-03 16:45:46] [DEBUG] Processing row 0/314
-[2026-01-03 16:45:46] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/senegal-hOIsJLJr/sudan-OGhP26xH/?mid=UoNS6WpC" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_UoNS6WpC"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-icon...
-[2026-01-03 16:45:46] [DEBUG] Row 0 Status:  -> Live: False
-[2026-01-03 16:45:47] [DEBUG] Row 1 Status:  -> Live: False
-[2026-01-03 16:45:47] [DEBUG] Row 2 Status:  -> Live: False
-[2026-01-03 16:45:47] [DEBUG] Row 3 Status:  -> Live: False
-[2026-01-03 16:45:47] [DEBUG] ice-hockey keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'icehockeyStatus', 'WebMatchData', 'icehockeyHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'icehockeyDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
-[2026-01-03 16:45:47] [DEBUG] ice-hockey: Found 5 matches in state.
-[2026-01-03 16:45:47] [DEBUG] fetch_oddsportal_hockey: Entry
-[2026-01-03 16:45:47] [DEBUG] Row 4 Status:  -> Live: False
-[2026-01-03 16:45:47] [DEBUG] Processing row 10/314
-[2026-01-03 16:45:47] [DEBUG] Processing row 20/314
-[2026-01-03 16:45:47] [DEBUG] Processing row 30/314
-[2026-01-03 16:45:47] [DEBUG] Processing row 40/314
-[2026-01-03 16:45:47] [DEBUG] Processing row 50/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 60/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 70/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 80/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 90/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 100/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 110/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 120/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 130/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 140/314
-[2026-01-03 16:45:48] [DEBUG] Processing row 150/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 160/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 170/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 180/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 190/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 200/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 210/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 220/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 230/314
-[2026-01-03 16:45:49] [DEBUG] Processing row 240/314
-[2026-01-03 16:45:50] [DEBUG] Processing row 250/314
-[2026-01-03 16:45:50] [DEBUG] Processing row 260/314
-[2026-01-03 16:45:50] [DEBUG] Processing row 270/314
-[2026-01-03 16:45:50] [DEBUG] Processing row 280/314
-[2026-01-03 16:45:50] [DEBUG] Processing row 290/314
-[2026-01-03 16:45:50] [DEBUG] Processing row 300/314
-[2026-01-03 16:45:50] [DEBUG] Processing row 310/314
-[2026-01-03 16:45:50] [DEBUG] Soccer24 Parsed Matches: 314
-[2026-01-03 16:45:50] [T1-Main] Upserting 314 for football
-[2026-01-03 16:45:50] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
-[2026-01-03 16:45:50] [DEBUG] Football sample: {'id': 's24_6f738af872be207a337aa77439e5d98e', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': '', 'homeTeam': {'name': 'Senegal'}, 'awayTeam': {'name': 'Sudan'}, 'home_name_resolved': 'Senegal', 'away_name_resolved': 'Sudan', 'homeScore': '0', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 0, 'draw': 0, 'away': 0}}
-[2026-01-03 16:45:51] [DB ERROR] football: relation "live_football" does not exist
-LINE 2:                 INSERT INTO live_football (
-                                    ^
-
-[2026-01-03 16:45:51] [DEBUG] cleanup football starting...
-[2026-01-03 16:45:52] [CLEANUP ERROR] football: relation "live_football" does not exist
-LINE 2:             UPDATE live_football
-                           ^
-
-[2026-01-03 16:45:52] [T1-Main] Fetching basketball...
-[2026-01-03 16:45:55] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
-[2026-01-03 16:45:55] [DEBUG] basketball: Found 0 matches in state.
-[2026-01-03 16:45:55] [DEBUG] cleanup basketball: No active IDs.
-[2026-01-03 16:45:55] [T1-Main] Fetching tennis (AiScore)...
-[2026-01-03 16:45:57] [DEBUG] Sofascore TT: Parsed 21 matches.
-[2026-01-03 16:45:57] [T2-Sofa] Upserting 21 for table-tennis
-[2026-01-03 16:45:57] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2026-01-03 16:45:57] [DB ERROR] table-tennis: relation "live_table_tennis" does not exist
-LINE 2:                 INSERT INTO live_table_tennis (
-                                    ^
-
-[2026-01-03 16:45:58] [DEBUG] tennis keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'fifaData', 'rankType', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'tennisStatus', 'tennisGround', 'WebMatchData', 'ODDS_DETAIL_DATA', 'tennisHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'tennisDetailMatchData', '_tliveData', 'firstRender', 'name', 'detailStats', 'h2hMaps', 'oddsDetailData', 'leaguesData', 'hasprefetchLoad', 'detail_loading', 'matchLive', 'listske', 'leaSke', 'server_matches', 'client_matches', 'rankYear', 'tables', 'oddLoading', 'activeMatchTab', 'favorites']
-[2026-01-03 16:45:58] [DEBUG] tennis: Found 79 matches in state.
-[2026-01-03 16:45:58] [T1-Main] Upserting 79 for tennis
-[2026-01-03 16:45:58] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'points', 'homeScores', 'awayScores', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:45:58] [DEBUG] cleanup table-tennis starting...
-[2026-01-03 16:45:58] [DB ERROR] tennis: relation "live_tennis" does not exist
-LINE 2:                 INSERT INTO live_tennis (
-                                    ^
-
-[2026-01-03 16:45:58] [CLEANUP ERROR] table-tennis: relation "live_table_tennis" does not exist
-LINE 2:             UPDATE live_table_tennis
-                           ^
-
-[2026-01-03 16:45:58] [DEBUG] cleanup tennis starting...
-[2026-01-03 16:45:58] [T2-Sofa] Fetching esports...
-[2026-01-03 16:45:58] [DEBUG] fetch_sofascore_esports: Entry
-[2026-01-03 16:45:59] [DEBUG] Sofascore Esports: Found 3 live events.
-[2026-01-03 16:45:59] [CLEANUP ERROR] tennis: relation "live_tennis" does not exist
-LINE 2:             UPDATE live_tennis
-                           ^
-
-[2026-01-03 16:45:59] [T1-Main] Fetching cricket (AiScore)...
-[2026-01-03 16:46:01] [DEBUG] cricket keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'cricketStatus', 'WebMatchData', 'cricketHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'cricketDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'ball_by_ball', 'scorecardData', 'lineupsData', 'activeMatchTab', 'favorites']
-[2026-01-03 16:46:01] [DEBUG] cricket: Found 28 matches in state.
-[2026-01-03 16:46:01] [T1-Main] Upserting 28 for cricket
-[2026-01-03 16:46:01] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:46:01] [DEBUG] fetch_oddsportal_esports: Entry
-[2026-01-03 16:46:01] [DB ERROR] cricket: relation "live_cricket" does not exist
-LINE 2:                 INSERT INTO live_cricket (
-                                    ^
-
-[2026-01-03 16:46:01] [DEBUG] cleanup cricket starting...
-[2026-01-03 16:46:02] [CLEANUP ERROR] cricket: relation "live_cricket" does not exist
-LINE 2:             UPDATE live_cricket
-                           ^
-
-[2026-01-03 16:46:07] [T1-Main] Fetching football...
-[2026-01-03 16:46:07] [DEBUG] fetch_soccer24: Entry
-[2026-01-03 16:46:07] [DEBUG] Navigating to https://www.soccer24.com/...
-[2026-01-03 16:46:09] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
-[2026-01-03 16:46:09] [DEBUG] Soccer24 Rows Found: 314
-[2026-01-03 16:46:09] [DEBUG] Processing row 0/314
-[2026-01-03 16:46:09] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/senegal-hOIsJLJr/sudan-OGhP26xH/?mid=UoNS6WpC" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_UoNS6WpC"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-icon...
-[2026-01-03 16:46:09] [DEBUG] Row 0 Status:  -> Live: False
-[2026-01-03 16:46:09] [DEBUG] Row 1 Status:  -> Live: False
-[2026-01-03 16:46:09] [DEBUG] Row 2 Status:  -> Live: False
-[2026-01-03 16:46:09] [DEBUG] Row 3 Status:  -> Live: False
-[2026-01-03 16:46:09] [DEBUG] Row 4 Status:  -> Live: False
-[2026-01-03 16:46:09] [DEBUG] Processing row 10/314
-[2026-01-03 16:46:09] [DEBUG] Processing row 20/314
-[2026-01-03 16:46:09] [DEBUG] Processing row 30/314
-[2026-01-03 16:46:09] [DEBUG] Processing row 40/314
-[2026-01-03 16:46:09] [DEBUG] Processing row 50/314
-[2026-01-03 16:46:09] [DEBUG] Processing row 60/314
-[2026-01-03 16:46:09] [DEBUG] Processing row 70/314
-[2026-01-03 16:46:09] [DEBUG] Processing row 80/314
-[2026-01-03 16:46:09] [DEBUG] Processing row 90/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 100/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 110/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 120/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 130/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 140/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 150/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 160/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 170/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 180/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 190/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 200/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 210/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 220/314
-[2026-01-03 16:46:10] [DEBUG] Processing row 230/314
-[2026-01-03 16:46:11] [DEBUG] Processing row 240/314
-[2026-01-03 16:46:11] [DEBUG] Processing row 250/314
-[2026-01-03 16:46:11] [DEBUG] Processing row 260/314
-[2026-01-03 16:46:11] [DEBUG] Processing row 270/314
-[2026-01-03 16:46:11] [DEBUG] Processing row 280/314
-[2026-01-03 16:46:11] [DEBUG] Processing row 290/314
-[2026-01-03 16:46:11] [DEBUG] Processing row 300/314
-[2026-01-03 16:46:11] [DEBUG] Processing row 310/314
-[2026-01-03 16:46:11] [DEBUG] Soccer24 Parsed Matches: 314
-[2026-01-03 16:46:11] [T1-Main] Upserting 314 for football
-[2026-01-03 16:46:11] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
-[2026-01-03 16:46:11] [DEBUG] Football sample: {'id': 's24_6f738af872be207a337aa77439e5d98e', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': '', 'homeTeam': {'name': 'Senegal'}, 'awayTeam': {'name': 'Sudan'}, 'home_name_resolved': 'Senegal', 'away_name_resolved': 'Sudan', 'homeScore': '0', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.17, 'draw': 7.5, 'away': 19.0}}
-[2026-01-03 16:46:12] [DB ERROR] football: relation "live_football" does not exist
-LINE 2:                 INSERT INTO live_football (
-                                    ^
-
-[2026-01-03 16:46:12] [DEBUG] cleanup football starting...
-[2026-01-03 16:46:12] [CLEANUP ERROR] football: relation "live_football" does not exist
-LINE 2:             UPDATE live_football
-                           ^
-
-[2026-01-03 16:46:13] [T1-Main] Fetching basketball...
-[2026-01-03 16:46:15] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
-[2026-01-03 16:46:15] [DEBUG] basketball: Found 317 matches in state.
-[2026-01-03 16:46:15] [T1-Main] Upserting 317 for basketball
-[2026-01-03 16:46:15] [DEBUG] Match keys: ['points', 'homeScores', 'awayScores', 'homeTeams', 'awayTeams', 'id', 'sportId', 'key', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'homeScore', 'awayScore', 'stage', 'matchTime', 'statusId', 'groupNum', 'roundNum', 'neutral', 'note', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'kind', 'ext', 'extra', 'tennisTimes', 'intro', 'mid', 'isCopyright', 'shareLink', 'spMatchStatus', 'tabs', 'deleted', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:46:16] [DB ERROR] basketball: relation "live_basketball" does not exist
-LINE 2:                 INSERT INTO live_basketball (
-                                    ^
-
-[2026-01-03 16:46:16] [DEBUG] cleanup basketball starting...
-[2026-01-03 16:46:17] [CLEANUP ERROR] basketball: relation "live_basketball" does not exist
-LINE 2:             UPDATE live_basketball
-                           ^
-
-[2026-01-03 16:46:17] [T1-Main] Fetching tennis (AiScore)...
-[2026-01-03 16:46:18] [DEBUG] tennis keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'fifaData', 'rankType', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'tennisStatus', 'tennisGround', 'WebMatchData', 'ODDS_DETAIL_DATA', 'tennisHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'tennisDetailMatchData', '_tliveData', 'firstRender', 'name', 'detailStats', 'h2hMaps', 'oddsDetailData', 'leaguesData', 'hasprefetchLoad', 'detail_loading', 'matchLive', 'listske', 'leaSke', 'server_matches', 'client_matches', 'rankYear', 'tables', 'oddLoading', 'activeMatchTab', 'favorites']
-[2026-01-03 16:46:18] [DEBUG] tennis: Found 79 matches in state.
-[2026-01-03 16:46:18] [T1-Main] Upserting 79 for tennis
-[2026-01-03 16:46:18] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'points', 'homeScores', 'awayScores', 'matchTime', 'statusId', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:46:19] [DB ERROR] tennis: relation "live_tennis" does not exist
-LINE 2:                 INSERT INTO live_tennis (
-                                    ^
-
-[2026-01-03 16:46:19] [DEBUG] cleanup tennis starting...
-[2026-01-03 16:46:20] [CLEANUP ERROR] tennis: relation "live_tennis" does not exist
-LINE 2:             UPDATE live_tennis
-                           ^
-
-[2026-01-03 16:46:20] [T1-Main] Fetching cricket (AiScore)...
-[2026-01-03 16:46:21] [DEBUG] cricket keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'cricketStatus', 'WebMatchData', 'cricketHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'cricketDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'ball_by_ball', 'scorecardData', 'lineupsData', 'activeMatchTab', 'favorites']
-[2026-01-03 16:46:21] [DEBUG] cricket: Found 28 matches in state.
-[2026-01-03 16:46:21] [T1-Main] Upserting 28 for cricket
-[2026-01-03 16:46:21] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:46:22] [DB ERROR] cricket: relation "live_cricket" does not exist
-LINE 2:                 INSERT INTO live_cricket (
-                                    ^
-
-[2026-01-03 16:46:22] [DEBUG] cleanup cricket starting...
-[2026-01-03 16:46:22] [CLEANUP ERROR] cricket: relation "live_cricket" does not exist
-LINE 2:             UPDATE live_cricket
-                           ^
-
-[2026-01-03 16:46:28] [T1-Main] Fetching football...
-[2026-01-03 16:46:28] [DEBUG] fetch_soccer24: Entry
-[2026-01-03 16:46:28] [DEBUG] Navigating to https://www.soccer24.com/...
-[2026-01-03 16:46:29] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
-[2026-01-03 16:46:29] [DEBUG] Soccer24 Rows Found: 314
-[2026-01-03 16:46:29] [DEBUG] Processing row 0/314
-[2026-01-03 16:46:29] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/senegal-hOIsJLJr/sudan-OGhP26xH/?mid=UoNS6WpC" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_UoNS6WpC"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-icon...
-[2026-01-03 16:46:29] [DEBUG] Row 0 Status:  -> Live: False
-[2026-01-03 16:46:29] [DEBUG] Row 1 Status:  -> Live: False
-[2026-01-03 16:46:29] [DEBUG] Row 2 Status:  -> Live: False
-[2026-01-03 16:46:29] [DEBUG] Row 3 Status:  -> Live: False
-[2026-01-03 16:46:29] [DEBUG] Row 4 Status:  -> Live: False
-[2026-01-03 16:46:29] [DEBUG] Processing row 10/314
-[2026-01-03 16:46:29] [DEBUG] Processing row 20/314
-[2026-01-03 16:46:29] [DEBUG] Processing row 30/314
-[2026-01-03 16:46:29] [DEBUG] Processing row 40/314
-[2026-01-03 16:46:29] [DEBUG] Processing row 50/314
-[2026-01-03 16:46:29] [DEBUG] Processing row 60/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 70/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 80/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 90/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 100/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 110/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 120/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 130/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 140/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 150/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 160/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 170/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 180/314
-[2026-01-03 16:46:30] [DEBUG] Processing row 190/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 200/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 210/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 220/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 230/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 240/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 250/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 260/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 270/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 280/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 290/314
-[2026-01-03 16:46:31] [DEBUG] Processing row 300/314
-[2026-01-03 16:46:32] [DEBUG] Processing row 310/314
-[2026-01-03 16:46:32] [DEBUG] Soccer24 Parsed Matches: 314
-[2026-01-03 16:46:32] [T1-Main] Upserting 314 for football
-[2026-01-03 16:46:32] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
-[2026-01-03 16:46:32] [DEBUG] Football sample: {'id': 's24_6f738af872be207a337aa77439e5d98e', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': '', 'homeTeam': {'name': 'Senegal'}, 'awayTeam': {'name': 'Sudan'}, 'home_name_resolved': 'Senegal', 'away_name_resolved': 'Sudan', 'homeScore': '0', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.17, 'draw': 7.5, 'away': 19.0}}
-[2026-01-03 16:46:32] [DB ERROR] football: relation "live_football" does not exist
-LINE 2:                 INSERT INTO live_football (
-                                    ^
-
-[2026-01-03 16:46:32] [DEBUG] cleanup football starting...
-[2026-01-03 16:46:34] [CLEANUP ERROR] football: relation "live_football" does not exist
-LINE 2:             UPDATE live_football
-                           ^
-
-[2026-01-03 16:46:35] [T1-Main] Fetching basketball...
-[2026-01-03 16:46:42] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
-[2026-01-03 16:46:42] [DEBUG] basketball: Found 317 matches in state.
-[2026-01-03 16:46:42] [T1-Main] Upserting 317 for basketball
-[2026-01-03 16:46:42] [DEBUG] Match keys: ['points', 'homeScores', 'awayScores', 'homeTeams', 'awayTeams', 'id', 'sportId', 'key', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'homeScore', 'awayScore', 'stage', 'matchTime', 'statusId', 'groupNum', 'roundNum', 'neutral', 'note', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'kind', 'ext', 'extra', 'tennisTimes', 'intro', 'mid', 'isCopyright', 'shareLink', 'spMatchStatus', 'tabs', 'deleted', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:46:43] [DB ERROR] basketball: relation "live_basketball" does not exist
-LINE 2:                 INSERT INTO live_basketball (
-                                    ^
-
-[2026-01-03 16:46:43] [DEBUG] cleanup basketball starting...
-[2026-01-03 16:46:44] [CLEANUP ERROR] basketball: relation "live_basketball" does not exist
-LINE 2:             UPDATE live_basketball
-                           ^
-
-[2026-01-03 16:46:44] [T1-Main] Fetching tennis (AiScore)...
-[2026-01-03 16:46:46] [DEBUG] tennis keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'fifaData', 'rankType', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'tennisStatus', 'tennisGround', 'WebMatchData', 'ODDS_DETAIL_DATA', 'tennisHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'tennisDetailMatchData', '_tliveData', 'firstRender', 'name', 'detailStats', 'h2hMaps', 'oddsDetailData', 'leaguesData', 'hasprefetchLoad', 'detail_loading', 'matchLive', 'listske', 'leaSke', 'server_matches', 'client_matches', 'rankYear', 'tables', 'oddLoading', 'activeMatchTab', 'favorites']
-[2026-01-03 16:46:46] [DEBUG] tennis: Found 4 matches in state.
-[2026-01-03 16:46:46] [T1-Main] Upserting 4 for tennis
-[2026-01-03 16:46:46] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'homeTeam', 'awayTeam', 'points', 'homeScores', 'awayScores', 'matchTime', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'ext', 'commonScore', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:46:47] [DB ERROR] tennis: relation "live_tennis" does not exist
-LINE 2:                 INSERT INTO live_tennis (
-                                    ^
-
-[2026-01-03 16:46:47] [DEBUG] cleanup tennis starting...
-[2026-01-03 16:46:47] [CLEANUP ERROR] tennis: relation "live_tennis" does not exist
-LINE 2:             UPDATE live_tennis
-                           ^
-
-[2026-01-03 16:46:48] [T1-Main] Fetching cricket (AiScore)...
-[2026-01-03 16:46:48] [ERROR] OddsPortal Hockey Fetch: Page.goto: Timeout 60000ms exceeded.
+[2026-01-03 18:01:39] [T3-Minor] Browser Ready. Processing: ['ice-hockey', 'handball', 'baseball', 'snooker', 'rugby', 'water-polo', 'badminton', 'amfootball']
+[2026-01-03 18:01:39] [T3-Minor] Fetching ice-hockey...
+[2026-01-03 18:01:39] [T1-Main] Browser Ready. Processing: ['football', 'basketball', 'tennis', 'cricket']
+[2026-01-03 18:01:39] [T1-Main] Fetching football...
+[2026-01-03 18:01:39] [DEBUG] fetch_soccer24: Entry
+[2026-01-03 18:01:39] [DEBUG] Navigating to https://www.soccer24.com/...
+[2026-01-03 18:01:39] [T2-Sofa] Browser Ready. Processing: ['table-tennis', 'esports', 'volleyball', 'motorsport']
+[2026-01-03 18:01:39] [T2-Sofa] Fetching table-tennis...
+[2026-01-03 18:01:39] [DEBUG] fetch_sofascore_table_tennis: Entry
+[2026-01-03 18:01:39] [DEBUG] Sofascore TT: Found 13 live events.
+[2026-01-03 18:01:41] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
+[2026-01-03 18:01:41] [DEBUG] Soccer24 Rows Found: 314
+[2026-01-03 18:01:41] [DEBUG] Processing row 0/314
+[2026-01-03 18:01:41] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/senegal-hOIsJLJr/sudan-OGhP26xH/?mid=UoNS6WpC" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_UoNS6WpC"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-icon...
+[2026-01-03 18:01:41] [DEBUG] Row 0 Status:  -> Live: False
+[2026-01-03 18:01:41] [DEBUG] Row 1 Status: 2 -> Live: True
+[2026-01-03 18:01:41] [DEBUG] Row 2 Status:  -> Live: False
+[2026-01-03 18:01:41] [DEBUG] Row 3 Status:  -> Live: False
+[2026-01-03 18:01:41] [DEBUG] Row 4 Status:  -> Live: False
+[2026-01-03 18:01:41] [DEBUG] Processing row 10/314
+[2026-01-03 18:01:41] [DEBUG] Processing row 20/314
+[2026-01-03 18:01:41] [DEBUG] Processing row 30/314
+[2026-01-03 18:01:41] [DEBUG] Processing row 40/314
+[2026-01-03 18:01:41] [DEBUG] Processing row 50/314
+[2026-01-03 18:01:42] [DEBUG] ice-hockey keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'icehockeyStatus', 'WebMatchData', 'icehockeyHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'icehockeyDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddLoading', 'oddsDetailData', 'tables', 'activeMatchTab', 'favorites']
+[2026-01-03 18:01:42] [DEBUG] ice-hockey: Found 235 matches in state.
+[2026-01-03 18:01:42] [DEBUG] fetch_oddsportal_hockey: Entry
+[2026-01-03 18:01:42] [DEBUG] Processing row 60/314
+[2026-01-03 18:01:42] [DEBUG] Processing row 70/314
+[2026-01-03 18:01:42] [DEBUG] Processing row 80/314
+[2026-01-03 18:01:42] [DEBUG] Processing row 90/314
+[2026-01-03 18:01:42] [DEBUG] Processing row 100/314
+[2026-01-03 18:01:42] [DEBUG] Processing row 110/314
+[2026-01-03 18:01:42] [DEBUG] Processing row 120/314
+[2026-01-03 18:01:42] [DEBUG] Processing row 130/314
+[2026-01-03 18:01:42] [DEBUG] Processing row 140/314
+[2026-01-03 18:01:43] [DEBUG] Processing row 150/314
+[2026-01-03 18:01:43] [DEBUG] Processing row 160/314
+[2026-01-03 18:01:43] [DEBUG] Processing row 170/314
+[2026-01-03 18:01:43] [DEBUG] Processing row 180/314
+[2026-01-03 18:01:43] [DEBUG] Processing row 190/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 200/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 210/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 220/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 230/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 240/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 250/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 260/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 270/314
+[2026-01-03 18:01:44] [DEBUG] Processing row 280/314
+[2026-01-03 18:01:45] [DEBUG] Processing row 290/314
+[2026-01-03 18:01:45] [DEBUG] Processing row 300/314
+[2026-01-03 18:01:45] [DEBUG] Processing row 310/314
+[2026-01-03 18:01:45] [DEBUG] Soccer24 Parsed Matches: 314
+[2026-01-03 18:01:45] [T1-Main] Upserting 314 for football
+[2026-01-03 18:01:45] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
+[2026-01-03 18:01:45] [DEBUG] Football sample: {'id': 's24_6f738af872be207a337aa77439e5d98e', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': '', 'homeTeam': {'name': 'Senegal'}, 'awayTeam': {'name': 'Sudan'}, 'home_name_resolved': 'Senegal', 'away_name_resolved': 'Sudan', 'homeScore': '0', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.17, 'draw': 7.5, 'away': 19.0}}
+[2026-01-03 18:01:48] [DEBUG] Sofascore TT: Parsed 13 matches.
+[2026-01-03 18:01:48] [T2-Sofa] Upserting 13 for table-tennis
+[2026-01-03 18:01:48] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
+[2026-01-03 18:01:52] [SYNC] table-tennis: Upserted 13 matches.
+[2026-01-03 18:01:52] [DEBUG] cleanup table-tennis starting...
+[2026-01-03 18:01:53] [T2-Sofa] Fetching esports...
+[2026-01-03 18:01:53] [DEBUG] fetch_sofascore_esports: Entry
+[2026-01-03 18:01:53] [DEBUG] Sofascore Esports: Found 1 live events.
+[2026-01-03 18:01:54] [DEBUG] fetch_oddsportal_esports: Entry
+[2026-01-03 18:02:43] [ERROR] OddsPortal Hockey Fetch: Page.goto: Timeout 60000ms exceeded.
 Call log:
   - navigating to "https://www.oddsportal.com/hockey/live/", waiting until "domcontentloaded"
 
-[2026-01-03 16:46:48] [T3-Minor] Upserting 5 for ice-hockey
-[2026-01-03 16:46:48] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'tabs', 'ihScores', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:46:49] [DB ERROR] ice-hockey: relation "live_ice_hockey" does not exist
-LINE 2:                 INSERT INTO live_ice_hockey (
-                                    ^
-
-[2026-01-03 16:46:49] [DEBUG] cleanup ice-hockey starting...
-[2026-01-03 16:46:49] [CLEANUP ERROR] ice-hockey: relation "live_ice_hockey" does not exist
-LINE 2:             UPDATE live_ice_hockey
-                           ^
-
-[2026-01-03 16:46:50] [DEBUG] cricket keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'serverTime', 'liveLength', 'favoritesLength', 'leftData_categoriesClone', 'htmlfontSize', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'stages', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectComp', 'collectLock', 'markLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'markedIds_comp', 'hotCompIdArr', 'scheduledData', 'listSSR', 'league_loading', 'matchLive', 'listske', 'leaSke', 'cricketStatus', 'WebMatchData', 'cricketHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'cricketDetailMatchData', 'firstRender', 'name', 'h2hMaps', 'leaguesData', 'teamTotal', 'detail_loading', 'hasprefetchLoad', 'incidents', 'oddsDetailData', 'oddLoading', 'tables', 'ball_by_ball', 'scorecardData', 'lineupsData', 'activeMatchTab', 'favorites']
-[2026-01-03 16:46:50] [DEBUG] cricket: Found 28 matches in state.
-[2026-01-03 16:46:50] [T1-Main] Upserting 28 for cricket
-[2026-01-03 16:46:50] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'ckScores', 'home_name_resolved', 'away_name_resolved']
-[2026-01-03 16:46:50] [T3-Minor] Fetching volleyball (OddsPortal)...
-[2026-01-03 16:46:50] [DEBUG] fetch_oddsportal_generic: Entry for volleyball
-[2026-01-03 16:46:50] [DB ERROR] cricket: relation "live_cricket" does not exist
-LINE 2:                 INSERT INTO live_cricket (
-                                    ^
-
-[2026-01-03 16:46:50] [DEBUG] cleanup cricket starting...
-[2026-01-03 16:46:51] [CLEANUP ERROR] cricket: relation "live_cricket" does not exist
-LINE 2:             UPDATE live_cricket
-                           ^
-
-[2026-01-03 16:46:56] [T1-Main] Fetching football...
-[2026-01-03 16:46:56] [DEBUG] fetch_soccer24: Entry
-[2026-01-03 16:46:56] [DEBUG] Navigating to https://www.soccer24.com/...
-[2026-01-03 16:46:58] [DEBUG] Soccer24 Page Title: Live Soccer Scores, Results, Betting Odds | Soccer24.com
-[2026-01-03 16:46:58] [DEBUG] Soccer24 Rows Found: 314
-[2026-01-03 16:46:58] [DEBUG] Processing row 0/314
-[2026-01-03 16:46:58] [DEBUG] Row 0 HTML: <a href="https://www.soccer24.com/match/senegal-hOIsJLJr/sudan-OGhP26xH/?mid=UoNS6WpC" target="_self" title="Click for match detail!" class="eventRowLink" aria-describedby="g_1_UoNS6WpC"></a><button data-state="closed" class="wcl-favorite_ggUc2 wcl-favoriteL_XlIW4 wcl-favoriteGray_LZl1A eventSubscriber__star--event" aria-label="Add this match to Selected!" data-testid="wcl-favorite-inactive"><svg fill="currentColor" viewBox="0 0 20 20" data-testid="wcl-icon-action-state-favorite" class="wcl-icon...
-[2026-01-03 16:46:59] [DEBUG] Row 0 Status:  -> Live: False
-[2026-01-03 16:46:59] [DEBUG] Row 1 Status:  -> Live: False
-[2026-01-03 16:46:59] [DEBUG] Row 2 Status:  -> Live: False
-[2026-01-03 16:46:59] [DEBUG] Row 3 Status:  -> Live: False
-[2026-01-03 16:46:59] [DEBUG] Row 4 Status:  -> Live: False
-[2026-01-03 16:46:59] [DEBUG] Processing row 10/314
-[2026-01-03 16:46:59] [DEBUG] Processing row 20/314
-[2026-01-03 16:46:59] [DEBUG] Processing row 30/314
-[2026-01-03 16:46:59] [DEBUG] Processing row 40/314
-[2026-01-03 16:46:59] [DEBUG] Processing row 50/314
-[2026-01-03 16:46:59] [DEBUG] Processing row 60/314
-[2026-01-03 16:46:59] [DEBUG] Processing row 70/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 80/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 90/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 100/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 110/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 120/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 130/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 140/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 150/314
-[2026-01-03 16:47:00] [DEBUG] Processing row 160/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 170/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 180/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 190/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 200/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 210/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 220/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 230/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 240/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 250/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 260/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 270/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 280/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 290/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 300/314
-[2026-01-03 16:47:01] [DEBUG] Processing row 310/314
-[2026-01-03 16:47:01] [DEBUG] Soccer24 Parsed Matches: 314
-[2026-01-03 16:47:01] [T1-Main] Upserting 314 for football
-[2026-01-03 16:47:02] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds']
-[2026-01-03 16:47:02] [DEBUG] Football sample: {'id': 's24_6f738af872be207a337aa77439e5d98e', 'matchStatus': 10, 'statusId': 10, 'is_live_override': False, 'status_text_override': '', 'homeTeam': {'name': 'Senegal'}, 'awayTeam': {'name': 'Sudan'}, 'home_name_resolved': 'Senegal', 'away_name_resolved': 'Sudan', 'homeScore': '0', 'awayScore': '0', 'sportId': 1, 'odds': {'home': 1.17, 'draw': 7.5, 'away': 19.0}}
-[2026-01-03 16:47:02] [DB ERROR] football: relation "live_football" does not exist
-LINE 2:                 INSERT INTO live_football (
-                                    ^
-
-[2026-01-03 16:47:02] [DEBUG] cleanup football starting...
-[2026-01-03 16:47:03] [CLEANUP ERROR] football: relation "live_football" does not exist
-LINE 2:             UPDATE live_football
-                           ^
-
-[2026-01-03 16:47:03] [ERROR] OddsPortal Esports Fetch: Page.goto: Timeout 60000ms exceeded.
+[2026-01-03 18:02:43] [T3-Minor] Upserting 235 for ice-hockey
+[2026-01-03 18:02:43] [DEBUG] Match keys: ['id', 'sportId', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'matchTime', 'statusId', 'menu', 'users', 'matchStatus', 'venue', 'referee', 'ext', 'home_name_resolved', 'away_name_resolved']
+[2026-01-03 18:02:55] [ERROR] OddsPortal Esports Fetch: Page.goto: Timeout 60000ms exceeded.
 Call log:
   - navigating to "https://www.oddsportal.com/esports/live/", waiting until "domcontentloaded"
 
-[2026-01-03 16:47:03] [T2-Sofa] Upserting 3 for esports
-[2026-01-03 16:47:03] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
-[2026-01-03 16:47:03] [T1-Main] Fetching basketball...
-[2026-01-03 16:47:03] [DB ERROR] esports: relation "live_esports" does not exist
-LINE 2:                 INSERT INTO live_esports (
-                                    ^
-
-[2026-01-03 16:47:04] [DEBUG] cleanup esports starting...
+[2026-01-03 18:02:55] [T2-Sofa] Upserting 1 for esports
+[2026-01-03 18:02:55] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
+[2026-01-03 18:02:56] [SYNC] esports: Upserted 1 matches.
+[2026-01-03 18:02:56] [DEBUG] cleanup esports starting...
+[2026-01-03 18:02:57] [T2-Sofa] Fetching volleyball (SofaScore)...
+[2026-01-03 18:02:57] [DEBUG] fetch_sofascore_volleyball: Entry
+[2026-01-03 18:02:57] [DEBUG] Sofascore Volleyball: Found 6 live events.
+[2026-01-03 18:03:01] [DEBUG] Sofascore Volleyball: Parsed 6 matches.
+[2026-01-03 18:03:01] [T2-Sofa] Upserting 6 for volleyball
+[2026-01-03 18:03:01] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
+[2026-01-03 18:03:03] [SYNC] volleyball: Upserted 6 matches.
+[2026-01-03 18:03:03] [DEBUG] cleanup volleyball starting...
+[2026-01-03 18:03:04] [SYNC] football: Upserted 314 matches.
+[2026-01-03 18:03:04] [DEBUG] cleanup football starting...
+[2026-01-03 18:03:04] [T2-Sofa] Fetching motorsport (SofaScore)...
+[2026-01-03 18:03:04] [DEBUG] fetch_sofascore_motorsport: Entry
+[2026-01-03 18:03:04] [T1-Main] Fetching basketball...
+[2026-01-03 18:03:04] [DEBUG] Sofascore Motorsport (live): Found 0 events.
+[2026-01-03 18:03:04] [WARN] Sofascore Motorsport upcoming fetch failed: 404
+[2026-01-03 18:03:04] [DEBUG] Sofascore Motorsport: Parsed 0 total events.
+[2026-01-03 18:03:04] [DEBUG] cleanup motorsport: No active IDs.
+[2026-01-03 18:03:10] [T2-Sofa] Fetching table-tennis...
+[2026-01-03 18:03:10] [DEBUG] fetch_sofascore_table_tennis: Entry
+[2026-01-03 18:03:10] [DEBUG] basketball keys: ['tab', 'hideFinished', 'currentDate', 'sortBy', 'customizeView', 'serverTime', 'cid', 'favoritesLength', 'leftData_categoriesClone', 'loading', 'empty', 'noData', 'matchToCompMap', 'matchesData_competitions', 'matchesData_matches', 'matchesData_seasons', 'matchesData_teams', 'matchesDataMap', 'matchesCompMap', 'matchesTeamMap', 'matchTimeMap', 'leftData_hotComps', 'leftData_categories', 'categoriesMap', 'collectLock', 'matchesRenderFilter', 'FavoriteIds_comp', 'FavoriteIds_match', 'FavoriteIds_teams', 'WebMatchData', 'ODDS_DETAIL_DATA', 'basketballHistroyData', 'detailTab', 'detailMatchId', 'HistroyDataList', 'h2hCheckedList', 'h2hCheckboxes', 'basketballDetailMatchData', '_boxscoreData', '_oddsData', '_h2hData', '_standingsData', '_live_tliveData', '_live_mliveData', 'theme_c', 'theme_w', 'theme_range', 'ss_hotComp', 'tennisScores', 'ball_by_ball', 'scorecardData', 'basketballStatus', 'tennisStatus', 'icehockeyStatus', 'volleyballStatus', 'tabletennisStatus', 'baseballStatus', 'badmintonStatus', 'amfootballStatus', 'handballStatus', 'waterpoloStatus', 'snookerStatus', 'cricketStatus', 'esportsStatus', 'esportsMatchStatus', 'esportsDetailStats', 'stages', 'favoritesList', 'bottomData', 'tour_tab', 'tour_id', 'season_id', 'tourData', 'tour_teamMap', 'tour_playerMap', 'tour_teamData', 'team_tab', 'team_teamMap', 'team_playerMap', 'teamData', 'team_seasons', 'player_tab', 'playerData', 'player_teamMap', 'player_compMap', 'player_seasonsMap', 'states', 'tournament', 'team', 'player']
+[2026-01-03 18:03:10] [DEBUG] basketball: Found 317 matches in state.
+[2026-01-03 18:03:10] [T1-Main] Upserting 317 for basketball
+[2026-01-03 18:03:10] [DEBUG] Match keys: ['points', 'homeScores', 'awayScores', 'homeTeams', 'awayTeams', 'id', 'sportId', 'key', 'competition', 'season', 'homeTeam', 'awayTeam', 'times', 'homeScore', 'awayScore', 'stage', 'matchTime', 'statusId', 'groupNum', 'roundNum', 'neutral', 'note', 'menu', 'users', 'serve', 'matchStatus', 'venue', 'referee', 'kind', 'ext', 'extra', 'tennisTimes', 'intro', 'mid', 'isCopyright', 'shareLink', 'spMatchStatus', 'tabs', 'deleted', 'home_name_resolved', 'away_name_resolved']
+[2026-01-03 18:03:10] [DEBUG] Sofascore TT: Found 16 live events.
+[2026-01-03 18:03:20] [DEBUG] Sofascore TT: Parsed 16 matches.
+[2026-01-03 18:03:20] [T2-Sofa] Upserting 16 for table-tennis
+[2026-01-03 18:03:20] [DEBUG] Match keys: ['id', 'matchStatus', 'statusId', 'is_live_override', 'status_text_override', 'homeTeam', 'awayTeam', 'home_name_resolved', 'away_name_resolved', 'homeScore', 'awayScore', 'sportId', 'odds', 'match_data_extra']
+[2026-01-03 18:03:24] [SYNC] table-tennis: Upserted 16 matches.
+[2026-01-03 18:03:24] [DEBUG] cleanup table-tennis starting...
+[2026-01-03 18:03:25] [CLEANUP] table-tennis: Marked 2 stale matches as Finished.
+[2026-01-03 18:03:25] [T2-Sofa] Fetching esports...
+[2026-01-03 18:03:25] [DEBUG] fetch_sofascore_esports: Entry
+[2026-01-03 18:03:25] [DEBUG] Sofascore Esports: Found 1 live events.
+[2026-01-03 18:03:26] [DEBUG] fetch_oddsportal_esports: Entry
+[2026-01-03 18:03:44] [SYNC] ice-hockey: Upserted 235 matches.
+[2026-01-03 18:03:44] [DEBUG] cleanup ice-hockey starting...
+[2026-01-03 18:03:45] [T3-Minor] Fetching handball (OddsPortal)...
+[2026-01-03 18:03:45] [DEBUG] fetch_oddsportal_generic: Entry for handball

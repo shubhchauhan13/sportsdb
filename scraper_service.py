@@ -110,6 +110,7 @@ SPORTS_CONFIG = {
     'water-polo':    {'slug': 'water-polo',    'table': 'live_water_polo',    'state_key': 'waterpolo'},
     'snooker':       {'slug': 'snooker',       'table': 'live_snooker',       'state_key': 'snooker'},
     'rugby':         {'slug': 'rugby',         'table': 'live_rugby',         'state_key': 'rugby'},
+    'motorsport':    {'slug': 'motorsport',    'table': 'live_motorsport',    'state_key': 'motorsport'},
 }
 
 
@@ -668,11 +669,20 @@ def fetch_soccer24(page):
                 # Normalize to AiScore structure
                 match_id = f"s24_{get_deterministic_hash(home+away)}" 
                 
+                # Parse odds
+                home_odds = float(o1) if o1 and o1.replace('.','',1).isdigit() else 0
+                draw_odds = float(ox) if ox and ox.replace('.','',1).isdigit() else 0
+                away_odds = float(o2) if o2 and o2.replace('.','',1).isdigit() else 0
+                
+                # Only mark as live if we have valid odds (at least home and away)
+                has_valid_odds = home_odds > 0 and away_odds > 0
+                effective_is_live = is_live and has_valid_odds
+                
                 matches.append({
                     'id': match_id,
-                    'matchStatus': 2 if is_live else 10, 
-                    'statusId': 2 if is_live else 10,
-                    'is_live_override': is_live,
+                    'matchStatus': 2 if effective_is_live else 10, 
+                    'statusId': 2 if effective_is_live else 10,
+                    'is_live_override': effective_is_live,
                     'status_text_override': status_text,
                     'homeTeam': {'name': home},
                     'awayTeam': {'name': away},
@@ -682,9 +692,9 @@ def fetch_soccer24(page):
                     'awayScore': s_a if s_a.isdigit() else 0,
                     'sportId': 1,
                     'odds': {
-                        'home': float(o1) if o1 and o1.replace('.','',1).isdigit() else 0,
-                        'draw': float(ox) if ox and ox.replace('.','',1).isdigit() else 0,
-                        'away': float(o2) if o2 and o2.replace('.','',1).isdigit() else 0
+                        'home': home_odds,
+                        'draw': draw_odds,
+                        'away': away_odds
                     }
                 })
             except: continue
@@ -925,6 +935,215 @@ def fetch_sofascore_esports(page):
     except Exception as e:
         log_msg(f"[ERROR] Sofascore Esports Fetch: {e}")
         
+    return matches
+
+# --- Sofascore Scraper (Volleyball) ---
+def fetch_sofascore_volleyball(page):
+    log_msg("[DEBUG] fetch_sofascore_volleyball: Entry")
+    list_url = "https://www.sofascore.com/api/v1/sport/volleyball/events/live"
+    matches = []
+    
+    try:
+        response = page.goto(list_url, timeout=60000, wait_until='domcontentloaded')
+        if not response.ok:
+            log_msg(f"[ERROR] Sofascore Volleyball list fetch failed: {response.status}")
+            return []
+            
+        try:
+            data = response.json()
+        except:
+            text = page.locator("body").inner_text()
+            data = json.loads(text)
+            
+        events = data.get('events', [])
+        log_msg(f"[DEBUG] Sofascore Volleyball: Found {len(events)} live events.")
+        
+        for i, ev in enumerate(events):
+            try:
+                mid = str(ev.get('id'))
+                home = ev.get('homeTeam', {}).get('name', 'Unknown')
+                away = ev.get('awayTeam', {}).get('name', 'Unknown')
+                
+                h_score = str(ev.get('homeScore', {}).get('current', 0))
+                a_score = str(ev.get('awayScore', {}).get('current', 0))
+                status_desc = ev.get('status', {}).get('description', 'Live')
+                
+                odds_data = {'home': None, 'away': None, 'draw': None}
+                if i < 15:
+                    time.sleep(0.5)
+                    odds_url = f"https://www.sofascore.com/api/v1/event/{mid}/odds/1/all"
+                    try:
+                        o_resp = page.goto(odds_url, timeout=60000)
+                        if o_resp.ok:
+                            o_json = o_resp.json()
+                            markets = o_json.get('markets', [])
+                            for m in markets:
+                                if m.get('isMain') or m.get('marketName') in ['Winner', 'Match Winner', 'Full time']:
+                                    choices = m.get('choices', [])
+                                    if len(choices) >= 2:
+                                        def parse_frac(s):
+                                            if '/' in str(s):
+                                                n, d = str(s).split('/')
+                                                return round(1 + int(n)/int(d), 2)
+                                            return s
+                                        odds_data['home'] = str(parse_frac(choices[0].get('fractionalValue', choices[0].get('decimalValue'))))
+                                        odds_data['away'] = str(parse_frac(choices[1].get('fractionalValue', choices[1].get('decimalValue'))))
+                                        break
+                    except:
+                        pass
+                
+                matches.append({
+                    'id': f"sfv_{mid}",
+                    'matchStatus': 2,
+                    'statusId': 2,
+                    'is_live_override': True,
+                    'status_text_override': status_desc,
+                    'homeTeam': {'name': home},
+                    'awayTeam': {'name': away},
+                    'home_name_resolved': home,
+                    'away_name_resolved': away,
+                    'homeScore': h_score,
+                    'awayScore': a_score,
+                    'sportId': 13,
+                    'odds': odds_data,
+                    'match_data_extra': ev
+                })
+            except:
+                continue
+                
+    except Exception as e:
+        log_msg(f"[ERROR] Sofascore Volleyball Fetch: {e}")
+        
+    log_msg(f"[DEBUG] Sofascore Volleyball: Parsed {len(matches)} matches.")
+    return matches
+
+# --- Sofascore Scraper (Motorsport - F1, MotoGP, NASCAR, etc.) ---
+def fetch_sofascore_motorsport(page):
+    """
+    Fetches motorsport events from SofaScore including:
+    - Formula 1 (F1)
+    - MotoGP
+    - NASCAR
+    - Formula E
+    - IndyCar
+    - WRC (World Rally Championship)
+    
+    Fetches both live AND upcoming events for season coverage.
+    """
+    log_msg("[DEBUG] fetch_sofascore_motorsport: Entry")
+    matches = []
+    
+    # Motorsport categories to fetch
+    motorsport_urls = [
+        ("https://www.sofascore.com/api/v1/sport/motorsport/events/live", "live"),
+        ("https://www.sofascore.com/api/v1/sport/motorsport/scheduled-events/next", "upcoming"),
+    ]
+    
+    for url, event_type in motorsport_urls:
+        try:
+            response = page.goto(url, timeout=60000, wait_until='domcontentloaded')
+            if not response.ok:
+                log_msg(f"[WARN] Sofascore Motorsport {event_type} fetch failed: {response.status}")
+                continue
+                
+            try:
+                data = response.json()
+            except:
+                text = page.locator("body").inner_text()
+                data = json.loads(text)
+                
+            events = data.get('events', [])
+            log_msg(f"[DEBUG] Sofascore Motorsport ({event_type}): Found {len(events)} events.")
+            
+            for i, ev in enumerate(events):
+                try:
+                    mid = str(ev.get('id'))
+                    
+                    # For motorsport, home/away represent different things
+                    # Usually it's the event name or driver/team
+                    home_team = ev.get('homeTeam', {})
+                    away_team = ev.get('awayTeam', {})
+                    
+                    # Get tournament/series info (F1, MotoGP, etc.)
+                    tournament = ev.get('tournament', {})
+                    series_name = tournament.get('name', 'Motorsport')
+                    category = tournament.get('category', {}).get('name', '')
+                    
+                    # Event name construction
+                    if home_team.get('name') and away_team.get('name'):
+                        event_name = f"{home_team.get('name')} vs {away_team.get('name')}"
+                        home = home_team.get('name', 'Unknown')
+                        away = away_team.get('name', series_name)
+                    else:
+                        # Single event format (races, etc.)
+                        event_name = ev.get('slug', '').replace('-', ' ').title()
+                        home = series_name
+                        away = category or event_name
+                    
+                    # Scores/Results
+                    h_score = str(ev.get('homeScore', {}).get('current', 0))
+                    a_score = str(ev.get('awayScore', {}).get('current', 0))
+                    
+                    # Status
+                    status_obj = ev.get('status', {})
+                    status_desc = status_obj.get('description', 'Scheduled')
+                    status_type = status_obj.get('type', 'notstarted')
+                    
+                    is_live = status_type in ['inprogress', 'live']
+                    
+                    # Start time for upcoming events
+                    start_timestamp = ev.get('startTimestamp', 0)
+                    
+                    # Odds (motorsport odds are rare but try to fetch)
+                    odds_data = {'home': None, 'away': None, 'draw': None}
+                    if i < 10 and event_type == 'live':
+                        time.sleep(0.3)
+                        try:
+                            odds_url = f"https://www.sofascore.com/api/v1/event/{mid}/odds/1/all"
+                            o_resp = page.goto(odds_url, timeout=30000)
+                            if o_resp and o_resp.ok:
+                                o_json = o_resp.json()
+                                markets = o_json.get('markets', [])
+                                for m in markets:
+                                    if m.get('isMain') or 'winner' in m.get('marketName', '').lower():
+                                        choices = m.get('choices', [])
+                                        if len(choices) >= 2:
+                                            odds_data['home'] = choices[0].get('decimalValue') or choices[0].get('fractionalValue')
+                                            odds_data['away'] = choices[1].get('decimalValue') or choices[1].get('fractionalValue')
+                                            break
+                        except:
+                            pass
+                    
+                    matches.append({
+                        'id': f"sfm_{mid}",
+                        'matchStatus': 2 if is_live else 1,
+                        'statusId': 2 if is_live else 1,
+                        'is_live_override': is_live,
+                        'status_text_override': status_desc,
+                        'homeTeam': {'name': home},
+                        'awayTeam': {'name': away},
+                        'home_name_resolved': home,
+                        'away_name_resolved': away,
+                        'homeScore': h_score,
+                        'awayScore': a_score,
+                        'sportId': 99,  # Motorsport ID
+                        'odds': odds_data,
+                        'match_data_extra': {
+                            'series': series_name,
+                            'category': category,
+                            'event_type': event_type,
+                            'start_timestamp': start_timestamp,
+                            'full_event': ev
+                        }
+                    })
+                except Exception as e:
+                    log_msg(f"[WARN] Motorsport parse error: {e}")
+                    continue
+                    
+        except Exception as e:
+            log_msg(f"[ERROR] Sofascore Motorsport ({event_type}) Fetch: {e}")
+    
+    log_msg(f"[DEBUG] Sofascore Motorsport: Parsed {len(matches)} total events.")
     return matches
 
 # --- FlashScore Ice Hockey Scraper (Enterprise) ---
@@ -1369,15 +1588,21 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                                                 break
                         
                         # Minor Sports (OddsPortal)
-                        elif sport in ['volleyball', 'handball', 'baseball', 'snooker', 'rugby', 'water-polo']:
+                        elif sport == 'volleyball':
+                             log_msg(f"[{worker_name}] Fetching volleyball (SofaScore)...")
+                             matches = fetch_sofascore_volleyball(page_mobile)
+                        elif sport == 'motorsport':
+                             log_msg(f"[{worker_name}] Fetching motorsport (SofaScore)...")
+                             matches = fetch_sofascore_motorsport(page_mobile)
+                        elif sport in ['handball', 'baseball', 'snooker', 'rugby', 'water-polo']:
                              log_msg(f"[{worker_name}] Fetching {sport} (OddsPortal)...")
                              # Map sport to ID/Slug manually or use generic
                              slugs = {
-                                 'volleyball': 'volleyball', 'handball': 'handball', 'baseball': 'baseball',
+                                 'handball': 'handball', 'baseball': 'baseball',
                                  'snooker': 'snooker', 'rugby': 'rugby-league', 'water-polo': 'water-polo'
                              }
                              ids = {
-                                 'volleyball': 13, 'handball': 6, 'baseball': 3,
+                                 'handball': 6, 'baseball': 3,
                                  'snooker': 14, 'rugby': 12, 'water-polo': 15
                              }
                              matches = fetch_oddsportal_generic(page_desktop, slugs.get(sport, sport), ids.get(sport, 1))
@@ -1426,10 +1651,10 @@ def run_scraper():
     g1 = ['football', 'basketball', 'tennis', 'cricket']
     
     # Group 2: Mid Priority (SofaScore)
-    g2 = ['table-tennis', 'esports']
+    g2 = ['table-tennis', 'esports', 'volleyball', 'motorsport']
     
     # Group 3: Low Priority / Slow / OddsPortal (Likely to timeout)
-    g3 = ['ice-hockey', 'volleyball', 'handball', 'baseball', 'snooker', 'rugby', 'water-polo', 'badminton', 'amfootball']
+    g3 = ['ice-hockey', 'handball', 'baseball', 'snooker', 'rugby', 'water-polo', 'badminton', 'amfootball']
     
     t1 = threading.Thread(target=worker_loop, args=("T1-Main", g1, 15)) # 15s cycle
     t2 = threading.Thread(target=worker_loop, args=("T2-Sofa", g2, 20)) # 20s cycle
