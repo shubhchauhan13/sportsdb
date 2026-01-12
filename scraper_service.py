@@ -711,6 +711,7 @@ def fetch_soccer24(page):
 # --- Sofascore Scraper (Table Tennis) ---
 def fetch_sofascore_table_tennis(page):
     log_msg("[DEBUG] fetch_sofascore_table_tennis: Entry")
+    if page.is_closed(): return []
     # 1. Fetch Live List
     list_url = "https://www.sofascore.com/api/v1/sport/table-tennis/events/live"
     matches = []
@@ -831,6 +832,7 @@ def fetch_sofascore_table_tennis(page):
 # --- Sofascore Scraper (Esports) ---
 def fetch_sofascore_esports(page):
     log_msg("[DEBUG] fetch_sofascore_esports: Entry")
+    if page.is_closed(): return []
     list_url = "https://www.sofascore.com/api/v1/sport/esports/events/live"
     matches = []
     
@@ -861,26 +863,36 @@ def fetch_sofascore_esports(page):
                 
                 # Enhanced Odds Extraction with multiple fallbacks
                 odds_data = {'home': None, 'away': None, 'draw': None}
-                if i < 20: 
-                    time.sleep(0.5 + (i % 3) * 0.2)  # Randomized delay for anti-ban
+                
+                # ALWAYS try vote-based odds first (most reliable for esports since Sofascore API returns 404)
+                vote = ev.get('vote', {})
+                vote_home = vote.get('vote1', 0)
+                vote_away = vote.get('vote2', 0)
+                if vote_home > 0 and vote_away > 0:
+                    try:
+                        total = vote_home + vote_away
+                        odds_data['home'] = round(total / vote_home, 2)
+                        odds_data['away'] = round(total / vote_away, 2)
+                        log_msg(f"[DEBUG] Esports {mid}: Derived odds from votes H={odds_data['home']} A={odds_data['away']}")
+                    except: pass
+                
+                # If no vote data, try the odds API (usually returns 404 for esports, but worth trying)
+                if not odds_data['home'] and i < 10:  # Reduced from 20 to 10 to save time
+                    time.sleep(0.3)  # Shorter delay
                     odds_url = f"https://www.sofascore.com/api/v1/event/{mid}/odds/1/all"
                     try:
-                        o_resp = page.goto(odds_url, timeout=60000)
-                        if o_resp.ok:
+                        o_resp = page.goto(odds_url, timeout=15000)  # Reduced timeout
+                        if o_resp and o_resp.ok:
                             o_json = o_resp.json()
                             markets = o_json.get('markets', [])
-                            
-                            log_msg(f"[DEBUG] Esports {mid}: Found {len(markets)} markets")
                             
                             for m in markets:
                                 market_name = m.get('marketName', '')
                                 is_main = m.get('isMain', False)
                                 
-                                # Check for main winner markets
                                 if is_main or market_name in ['Winner', 'Match Winner', 'Full time', 'Map 1 Winner', 'To Win Match', 'Money Line']:
                                     choices = m.get('choices', [])
                                     if len(choices) >= 2:
-                                        # Try multiple value keys
                                         home_val = None
                                         away_val = None
                                         
@@ -893,26 +905,10 @@ def fetch_sofascore_esports(page):
                                         if home_val and away_val:
                                             odds_data['home'] = home_val
                                             odds_data['away'] = away_val
-                                            log_msg(f"[DEBUG] Esports {mid}: Found odds H={home_val} A={away_val}")
+                                            log_msg(f"[DEBUG] Esports {mid}: Found API odds H={home_val} A={away_val}")
                                             break
-                                            
-                            # Fallback: Check vote/crowdsourcing data
-                            if not odds_data['home']:
-                                vote = ev.get('vote', {})
-                                vote_home = vote.get('vote1')
-                                vote_away = vote.get('vote2')
-                                if vote_home and vote_away:
-                                    # Convert votes to implied odds
-                                    try:
-                                        total = vote_home + vote_away
-                                        if total > 0:
-                                            odds_data['home'] = round(total / vote_home, 2) if vote_home > 0 else None
-                                            odds_data['away'] = round(total / vote_away, 2) if vote_away > 0 else None
-                                            log_msg(f"[DEBUG] Esports {mid}: Derived odds from votes")
-                                    except: pass
-                                    
                     except Exception as e:
-                        log_msg(f"[DEBUG] Esports odds fetch error {mid}: {e}")
+                        pass  # Expected for esports - API returns 404
                 
                 matches.append({
                     'id': f"sf_{mid}",
@@ -940,6 +936,7 @@ def fetch_sofascore_esports(page):
 # --- Sofascore Scraper (Volleyball) ---
 def fetch_sofascore_volleyball(page):
     log_msg("[DEBUG] fetch_sofascore_volleyball: Entry")
+    if page.is_closed(): return []
     list_url = "https://www.sofascore.com/api/v1/sport/volleyball/events/live"
     matches = []
     
@@ -969,12 +966,25 @@ def fetch_sofascore_volleyball(page):
                 status_desc = ev.get('status', {}).get('description', 'Live')
                 
                 odds_data = {'home': None, 'away': None, 'draw': None}
-                if i < 15:
-                    time.sleep(0.5)
+                
+                # Try vote-based odds first (fallback for sparse odds data)
+                vote = ev.get('vote', {})
+                vote_home = vote.get('vote1', 0)
+                vote_away = vote.get('vote2', 0)
+                if vote_home > 0 and vote_away > 0:
+                    try:
+                        total = vote_home + vote_away
+                        odds_data['home'] = round(total / vote_home, 2)
+                        odds_data['away'] = round(total / vote_away, 2)
+                    except: pass
+                
+                # Try API if no vote data
+                if not odds_data['home'] and i < 15:
+                    time.sleep(0.3)
                     odds_url = f"https://www.sofascore.com/api/v1/event/{mid}/odds/1/all"
                     try:
-                        o_resp = page.goto(odds_url, timeout=60000)
-                        if o_resp.ok:
+                        o_resp = page.goto(odds_url, timeout=15000)
+                        if o_resp and o_resp.ok:
                             o_json = o_resp.json()
                             markets = o_json.get('markets', [])
                             for m in markets:
@@ -1031,6 +1041,7 @@ def fetch_sofascore_motorsport(page):
     Fetches both live AND upcoming events for season coverage.
     """
     log_msg("[DEBUG] fetch_sofascore_motorsport: Entry")
+    if page.is_closed(): return []
     matches = []
     
     # Motorsport categories to fetch
@@ -1164,6 +1175,7 @@ def get_random_ua():
 def fetch_flashscore_ice_hockey(page):
     """Fetches Ice Hockey odds from FlashScore with anti-ban measures."""
     log_msg("[DEBUG] fetch_flashscore_ice_hockey: Entry")
+    if page.is_closed(): return []
     matches = []
     
     try:
@@ -1254,6 +1266,7 @@ def fetch_flashscore_ice_hockey(page):
 def fetch_oddsportal_hockey(page):
     """Fetches Ice Hockey odds from OddsPortal with optimized wait strategies."""
     log_msg("[DEBUG] fetch_oddsportal_hockey: Entry")
+    if page.is_closed(): return []
     matches = []
     
     try:
@@ -1339,6 +1352,7 @@ def fetch_oddsportal_hockey(page):
 def fetch_oddsportal_esports(page):
     """Fetches Esports odds from OddsPortal with optimized wait strategies."""
     log_msg("[DEBUG] fetch_oddsportal_esports: Entry")
+    if page.is_closed(): return []
     matches = []
     
     try:
@@ -1412,6 +1426,7 @@ def fetch_oddsportal_esports(page):
 def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
     """Fetches odds for Generic sports (Volleyball, Handball, etc) from OddsPortal."""
     log_msg(f"[DEBUG] fetch_oddsportal_generic: Entry for {sport_slug}")
+    if page.is_closed(): return []
     matches = []
     
     try:
@@ -1621,7 +1636,15 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                             
                     except Exception as e:
                         log_msg(f"[{worker_name}] [ERROR] {sport}: {e}")
-                        # Don't break loop, continue to next sport
+                    except Exception as e:
+                        log_msg(f"[{worker_name}] [ERROR] {sport}: {e}")
+                        # CRITICAL FIX: Detect browser closed error and force restart
+                        err_str = str(e).lower()
+                        if "target page, context or browser has been closed" in err_str or "browser has been closed" in err_str:
+                             log_msg(f"[{worker_name}] [CRITICAL] Browser died. Forcing restart...")
+                             cycle_count = max_cycles + 5 # Force exit inner loop
+                             break
+                        # Don't break loop for minor errors, continue to next sport
                 
                 elapsed = time.time() - start_time
                 wait = max(5.0, cycle_sleep - elapsed)
@@ -1646,9 +1669,11 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
 def run_scraper():
     log_msg("[SUPERVISOR] Starting Multi-Threaded Scraper...")
     
+    # Group 0: Critical (Cricket)
+    g0 = ['cricket']
+
     # Group 1: High Priority / High Volume (Fast)
-    # Cricket is also high priority in India
-    g1 = ['football', 'basketball', 'tennis', 'cricket']
+    g1 = ['football', 'basketball', 'tennis']
     
     # Group 2: Mid Priority (SofaScore)
     g2 = ['table-tennis', 'esports', 'volleyball', 'motorsport']
@@ -1656,14 +1681,17 @@ def run_scraper():
     # Group 3: Low Priority / Slow / OddsPortal (Likely to timeout)
     g3 = ['ice-hockey', 'handball', 'baseball', 'snooker', 'rugby', 'water-polo', 'badminton', 'amfootball']
     
+    t0 = threading.Thread(target=worker_loop, args=("T0-Cricket", g0, 10)) # 10s cycle
     t1 = threading.Thread(target=worker_loop, args=("T1-Main", g1, 15)) # 15s cycle
     t2 = threading.Thread(target=worker_loop, args=("T2-Sofa", g2, 20)) # 20s cycle
     t3 = threading.Thread(target=worker_loop, args=("T3-Minor", g3, 60)) # 60s cycle (slower)
     
+    t0.start()
     t1.start()
     t2.start()
     t3.start()
     
+    t0.join()
     t1.join()
     t2.join()
     t3.join()
