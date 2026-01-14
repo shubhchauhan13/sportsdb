@@ -1,6 +1,8 @@
 import time
 import json
 import os
+import signal
+import sys
 import psycopg2
 from psycopg2.extras import Json
 import threading
@@ -10,6 +12,17 @@ import traceback
 import hashlib
 import collections
 from datetime import datetime
+
+# Graceful shutdown flag
+SHUTDOWN_FLAG = False
+
+def signal_handler(signum, frame):
+    global SHUTDOWN_FLAG
+    print(f"[SIGNAL] Received signal {signum}. Initiating graceful shutdown...")
+    SHUTDOWN_FLAG = True
+
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
 
 def get_deterministic_hash(s):
     return hashlib.md5(s.encode('utf-8')).hexdigest()
@@ -1500,11 +1513,13 @@ def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
 
 
 def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
+    global SHUTDOWN_FLAG
     log_msg(f"[{worker_name}] Starting Worker Loop...")
     conn = None
     browser = None
+    p = None
     
-    while True:
+    while not SHUTDOWN_FLAG:
         try:
             # 1. Initialize Resources per Thread
             if not conn or conn.closed:
@@ -1545,7 +1560,7 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
             cycle_count = 0
             max_cycles = 20 # Restart browser every 20 cycles to prevent leaks
             
-            while cycle_count < max_cycles:
+            while cycle_count < max_cycles and not SHUTDOWN_FLAG:
                 start_time = time.time()
                 
                 # Check Commands (Only Main Thread - optional, or shared?)
@@ -1636,15 +1651,17 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                             
                     except Exception as e:
                         log_msg(f"[{worker_name}] [ERROR] {sport}: {e}")
-                    except Exception as e:
-                        log_msg(f"[{worker_name}] [ERROR] {sport}: {e}")
-                        # CRITICAL FIX: Detect browser closed error and force restart
+                        # CRITICAL: Detect browser closed error and force restart
                         err_str = str(e).lower()
-                        if "target page, context or browser has been closed" in err_str or "browser has been closed" in err_str:
-                             log_msg(f"[{worker_name}] [CRITICAL] Browser died. Forcing restart...")
-                             cycle_count = max_cycles + 5 # Force exit inner loop
+                        if "target page, context or browser has been closed" in err_str or "browser has been closed" in err_str or "page.goto" in err_str:
+                             log_msg(f"[{worker_name}] [CRITICAL] Browser died. Forcing immediate restart...")
+                             cycle_count = max_cycles + 5  # Force exit inner loop
                              break
                         # Don't break loop for minor errors, continue to next sport
+                
+                # Heartbeat log for monitoring
+                if cycle_count % 5 == 0:
+                    log_msg(f"[{worker_name}] [HEARTBEAT] Alive - Cycle {cycle_count}/{max_cycles}")
                 
                 elapsed = time.time() - start_time
                 wait = max(5.0, cycle_sleep - elapsed)
