@@ -12,6 +12,7 @@ import traceback
 import hashlib
 import collections
 from datetime import datetime
+from fake_useragent import UserAgent
 
 # Graceful shutdown flag
 SHUTDOWN_FLAG = False
@@ -339,7 +340,7 @@ def fetch_aiscore_live(page, sport_slug, state_key):
          url = f"https://www.aiscore.com/{sport_slug}"
     
     try:
-        if page.is_closed(): return []
+        if page.is_closed(): raise Exception("Target page, context or browser has been closed")
         
         response = page.goto(url, timeout=60000, wait_until='domcontentloaded')
         
@@ -416,10 +417,14 @@ def fetch_aiscore_live(page, sport_slug, state_key):
                 
         else:
             log_msg(f"[WARN] __NUXT__ not found for {sport_slug}")
+            return None # Failed to parse state
             
     except Exception as e:
         log_msg(f"[WARN] Fetch {sport_slug} failed: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
         SCRAPER_STATS['last_error'] = f"Fetch {sport_slug}: {str(e)}"
+        return None
         
     return matches
 
@@ -568,29 +573,39 @@ def cleanup_stale_matches(conn, sport_key, active_ids):
     Marks matches as 'Finished' if they are no longer in the live feed.
     This handles matches that finished and disappeared from AiScore.
     """
-    if not active_ids: 
-        log_msg(f"[DEBUG] cleanup {sport_key}: No active IDs.")
-        return
-    
     config = SPORTS_CONFIG[sport_key]
     table_name = config['table']
     
     try:
-        log_msg(f"[DEBUG] cleanup {sport_key} starting...") 
         cur = conn.cursor()
         
-        # Find matches that are marked as 'Live' but not in the active set
-        placeholders = ','.join(['%s'] * len(active_ids))
-        cur.execute(f"""
-            UPDATE {table_name}
-            SET status = 'Finished', is_live = FALSE, last_updated = NOW()
-            WHERE is_live = TRUE 
-            AND match_id NOT IN ({placeholders});
-        """, active_ids)
-        
-        updated = cur.rowcount
-        if updated > 0:
-            log_msg(f"[CLEANUP] {sport_key}: Marked {updated} stale matches as Finished.")
+        if active_ids:
+            # Normal cleanup: Mark anything NOT in active_ids as Finished
+            placeholders = ','.join(['%s'] * len(active_ids))
+            cur.execute(f"""
+                UPDATE {table_name}
+                SET status = 'Finished', is_live = FALSE, last_updated = NOW()
+                WHERE is_live = TRUE 
+                AND match_id NOT IN ({placeholders});
+            """, active_ids)
+            
+            updated = cur.rowcount
+            if updated > 0:
+                log_msg(f"[CLEANUP] {sport_key}: Marked {updated} stale matches as Finished.")
+                
+        else:
+            # CRITICAL FIX: If active_ids is empty (and we reached here), it means
+            # the source confirmed there are NO live matches.
+            # So, mark ALL currently live matches as Finished.
+            log_msg(f"[CLEANUP] {sport_key}: Source returned 0 matches. Marking ALL live as Finished.")
+            cur.execute(f"""
+                UPDATE {table_name}
+                SET status = 'Finished', is_live = FALSE, last_updated = NOW()
+                WHERE is_live = TRUE;
+            """)
+            updated = cur.rowcount
+            if updated > 0:
+                log_msg(f"[CLEANUP] {sport_key}: Cleared {updated} matches.")
         
         conn.commit()
         
@@ -606,7 +621,7 @@ def fetch_soccer24(page):
     try:
         if page.is_closed(): 
             log_msg("[ERROR] Page is closed!")
-            return []
+            raise Exception("Target page, context or browser has been closed")
         log_msg(f"[DEBUG] Navigating to {url}...")
         page.goto(url, timeout=60000, wait_until='domcontentloaded')
         try: page.wait_for_selector('.event__match', timeout=5000)
@@ -721,6 +736,9 @@ def fetch_soccer24(page):
             except: continue
     except Exception as e:
         log_msg(f"[ERROR] Soccer24 Fetch: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
+        return None
         
     log_msg(f"[DEBUG] Soccer24 Parsed Matches: {len(matches)}")
     return matches
@@ -732,7 +750,7 @@ def fetch_soccer24(page):
 # --- Sofascore Scraper (Table Tennis) ---
 def fetch_sofascore_table_tennis(page):
     log_msg("[DEBUG] fetch_sofascore_table_tennis: Entry")
-    if page.is_closed(): return []
+    if page.is_closed(): raise Exception("Target page, context or browser has been closed")
     # 1. Fetch Live List
     list_url = "https://www.sofascore.com/api/v1/sport/table-tennis/events/live"
     matches = []
@@ -746,7 +764,7 @@ def fetch_sofascore_table_tennis(page):
         response = page.goto(list_url, timeout=60000, wait_until='domcontentloaded')
         if not response.ok:
             log_msg(f"[ERROR] Sofascore list fetch failed: {response.status}")
-            return []
+            return None
             
         try:
             data = response.json()
@@ -846,6 +864,9 @@ def fetch_sofascore_table_tennis(page):
 
     except Exception as e:
         log_msg(f"[ERROR] Sofascore TT Fetch: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
+        return None
         
     log_msg(f"[DEBUG] Sofascore TT: Parsed {len(matches)} matches.")
     return matches
@@ -853,7 +874,7 @@ def fetch_sofascore_table_tennis(page):
 # --- Sofascore Scraper (Esports) ---
 def fetch_sofascore_esports(page):
     log_msg("[DEBUG] fetch_sofascore_esports: Entry")
-    if page.is_closed(): return []
+    if page.is_closed(): raise Exception("Target page, context or browser has been closed")
     list_url = "https://www.sofascore.com/api/v1/sport/esports/events/live"
     matches = []
     
@@ -861,7 +882,7 @@ def fetch_sofascore_esports(page):
         response = page.goto(list_url, timeout=60000, wait_until='domcontentloaded')
         if not response.ok:
             log_msg(f"[ERROR] Sofascore Esports list fetch failed: {response.status}")
-            return []
+            return None
             
         try:
             data = response.json()
@@ -951,13 +972,16 @@ def fetch_sofascore_esports(page):
             
     except Exception as e:
         log_msg(f"[ERROR] Sofascore Esports Fetch: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
+        return None
         
     return matches
 
 # --- Sofascore Scraper (Volleyball) ---
 def fetch_sofascore_volleyball(page):
     log_msg("[DEBUG] fetch_sofascore_volleyball: Entry")
-    if page.is_closed(): return []
+    if page.is_closed(): raise Exception("Target page, context or browser has been closed")
     list_url = "https://www.sofascore.com/api/v1/sport/volleyball/events/live"
     matches = []
     
@@ -965,7 +989,7 @@ def fetch_sofascore_volleyball(page):
         response = page.goto(list_url, timeout=60000, wait_until='domcontentloaded')
         if not response.ok:
             log_msg(f"[ERROR] Sofascore Volleyball list fetch failed: {response.status}")
-            return []
+            return None
             
         try:
             data = response.json()
@@ -1044,6 +1068,9 @@ def fetch_sofascore_volleyball(page):
                 
     except Exception as e:
         log_msg(f"[ERROR] Sofascore Volleyball Fetch: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
+        return None
         
     log_msg(f"[DEBUG] Sofascore Volleyball: Parsed {len(matches)} matches.")
     return matches
@@ -1062,7 +1089,7 @@ def fetch_sofascore_motorsport(page):
     Fetches both live AND upcoming events for season coverage.
     """
     log_msg("[DEBUG] fetch_sofascore_motorsport: Entry")
-    if page.is_closed(): return []
+    if page.is_closed(): raise Exception("Target page, context or browser has been closed")
     matches = []
     
     # Motorsport categories to fetch
@@ -1174,6 +1201,8 @@ def fetch_sofascore_motorsport(page):
                     
         except Exception as e:
             log_msg(f"[ERROR] Sofascore Motorsport ({event_type}) Fetch: {e}")
+            if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+                raise e
     
     log_msg(f"[DEBUG] Sofascore Motorsport: Parsed {len(matches)} total events.")
     return matches
@@ -1196,7 +1225,7 @@ def get_random_ua():
 def fetch_flashscore_ice_hockey(page):
     """Fetches Ice Hockey odds from FlashScore with anti-ban measures."""
     log_msg("[DEBUG] fetch_flashscore_ice_hockey: Entry")
-    if page.is_closed(): return []
+    if page.is_closed(): raise Exception("Target page, context or browser has been closed")
     matches = []
     
     try:
@@ -1212,7 +1241,7 @@ def fetch_flashscore_ice_hockey(page):
         
         if not response.ok:
             log_msg(f"[ERROR] FlashScore Ice Hockey fetch failed: {response.status}")
-            return []
+            return None
         
         # Wait for content to load
         time.sleep(2)
@@ -1278,6 +1307,9 @@ def fetch_flashscore_ice_hockey(page):
             
     except Exception as e:
         log_msg(f"[ERROR] FlashScore Ice Hockey Fetch: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
+        return None
         
     return matches
 
@@ -1287,7 +1319,7 @@ def fetch_flashscore_ice_hockey(page):
 def fetch_oddsportal_hockey(page):
     """Fetches Ice Hockey odds from OddsPortal with optimized wait strategies."""
     log_msg("[DEBUG] fetch_oddsportal_hockey: Entry")
-    if page.is_closed(): return []
+    if page.is_closed(): raise Exception("Target page, context or browser has been closed")
     matches = []
     
     try:
@@ -1300,7 +1332,7 @@ def fetch_oddsportal_hockey(page):
         
         if not response or not response.ok:
             log_msg(f"[ERROR] OddsPortal Hockey fetch failed: {response.status if response else 'No Response'}")
-            return []
+            return None
         
         # Wait for either row selector or specific element
         try:
@@ -1366,6 +1398,9 @@ def fetch_oddsportal_hockey(page):
 
     except Exception as e:
         log_msg(f"[ERROR] OddsPortal Hockey Fetch: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
+        return None
         
     return matches
 
@@ -1373,7 +1408,7 @@ def fetch_oddsportal_hockey(page):
 def fetch_oddsportal_esports(page):
     """Fetches Esports odds from OddsPortal with optimized wait strategies."""
     log_msg("[DEBUG] fetch_oddsportal_esports: Entry")
-    if page.is_closed(): return []
+    if page.is_closed(): raise Exception("Target page, context or browser has been closed")
     matches = []
     
     try:
@@ -1385,7 +1420,7 @@ def fetch_oddsportal_esports(page):
         
         if not response or not response.ok:
              log_msg(f"[ERROR] OddsPortal Esports fetch failed: {response.status if response else 'No Resp'}")
-             return []
+             return None
         
         try:
              page.wait_for_selector('div[class*="eventRow"]', timeout=10000)
@@ -1441,13 +1476,16 @@ def fetch_oddsportal_esports(page):
             
     except Exception as e:
         log_msg(f"[ERROR] OddsPortal Esports Fetch: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
+        return None
         
     return matches
 
 def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
     """Fetches odds for Generic sports (Volleyball, Handball, etc) from OddsPortal."""
     log_msg(f"[DEBUG] fetch_oddsportal_generic: Entry for {sport_slug}")
-    if page.is_closed(): return []
+    if page.is_closed(): raise Exception("Target page, context or browser has been closed")
     matches = []
     
     try:
@@ -1458,7 +1496,7 @@ def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
         response = page.goto(url, timeout=60000, wait_until='domcontentloaded')
         
         if not response or not response.ok:
-             return []
+             return None
         
         try:
              page.wait_for_selector('div[class*="eventRow"]', timeout=8000)
@@ -1515,6 +1553,9 @@ def fetch_oddsportal_generic(page, sport_slug, sport_db_id):
             
     except Exception as e:
         log_msg(f"[ERROR] OddsPortal {sport_slug} Fetch: {e}")
+        if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+            raise e
+        return None
         
     return matches
 
@@ -1543,7 +1584,17 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                 p = sync_playwright().start()
                 
                 # Browser launch args
-                launch_args = ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--disable-blink-features=AutomationControlled']
+                launch_args = [
+                    '--no-sandbox', 
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu', 
+                    '--disable-blink-features=AutomationControlled',
+                    '--disable-infobars',
+                    '--exclude-switches=enable-automation',
+                    '--use-fake-ui-for-media-stream',
+                    '--disable-notifications',
+                    '--disable-extensions'
+                ]
                 
                 # Configure proxy if enabled
                 proxy_settings = None
@@ -1561,9 +1612,16 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                     proxy=proxy_settings
                 )
             
+            # Generate Random UA
+            ua = UserAgent(browsers=['chrome', 'edge'])
+            random_ua = ua.random
+            
             # Contexts with proxy authentication
             context_options_desktop = {
-                'user_agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                'user_agent': random_ua,
+                'viewport': {'width': 1920, 'height': 1080},
+                'locale': 'en-US',
+                'timezone_id': 'America/New_York'
             }
             if USE_PROXY:
                 context_options_desktop['proxy'] = {
@@ -1573,12 +1631,18 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                 }
             
             context_desktop = browser.new_context(**context_options_desktop)
-            context_desktop.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            context_desktop.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+            """)
             page_desktop = context_desktop.new_page()
             
             # Mobile context with proxy
             iphone = p.devices['iPhone 12']
             context_options_mobile = {**iphone}
+            # Mobile UA acts differently, let's keep default device UA but add stealth scripts
+            
             if USE_PROXY:
                 context_options_mobile['proxy'] = {
                     'server': PROXY_CONFIG['server'],
@@ -1586,6 +1650,9 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                     'password': PROXY_CONFIG['password']
                 }
             context_mobile = browser.new_context(**context_options_mobile)
+            context_mobile.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+            """)
             page_mobile = context_mobile.new_page()
 
             log_msg(f"[{worker_name}] Browser Ready (Proxy: {USE_PROXY}). Processing: {assigned_sports}")
@@ -1676,11 +1743,17 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                             log_msg(f"[{worker_name}] Fetching {sport} (AiScore)...")
                             matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
 
+                        if matches is None:
+                            log_msg(f"[{worker_name}] Skipping sync for {sport} due to fetch failure.")
+                            continue
+
                         if matches:
                             log_msg(f"[{worker_name}] Upserting {len(matches)} for {sport}")
                             active_ids = upsert_matches(conn, sport, matches)
                             cleanup_stale_matches(conn, sport, active_ids)
                         else:
+                            # Empty list = successful fetch, but 0 matches
+                            log_msg(f"[{worker_name}] No live matches found for {sport}. Running cleanup.")
                             cleanup_stale_matches(conn, sport, [])
                             
                     except Exception as e:
