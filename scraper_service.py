@@ -105,6 +105,14 @@ DB_CONNECTION_STRING = os.environ.get(
     "postgresql://neondb_owner:npg_B3YTEO0DxrMV@ep-old-voice-ahlg0kao-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 ).strip("'").strip('"')
 
+# Proxy Configuration (DataImpulse Rotating Residential)
+PROXY_CONFIG = {
+    'server': os.environ.get('PROXY_SERVER', 'http://gw.dataimpulse.com:823'),
+    'username': os.environ.get('PROXY_USERNAME', '448ee9fc87025dfdc8ab'),
+    'password': os.environ.get('PROXY_PASSWORD', 'f8fd876b005c06f1'),
+}
+USE_PROXY = os.environ.get('USE_PROXY', 'true').lower() == 'true'
+
 # Sport Configuration
 # Slug maps to AiScore URL path segments or state keys
 SPORTS_CONFIG = {
@@ -1531,30 +1539,56 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
             
             if not browser:
                 # Create a new Playwright instance for this thread
-                # We cannot use 'with sync_playwright()' easily across the loop unless we recreate it every time
-                # or we keep it open. Keeping it open is better.
-                # However, sync_playwright context manager handles start/stop.
-                # Let's wrap the inner loop with sync_playwright if possible, or start it manually.
-                # Start manually:
                 from playwright.sync_api import sync_playwright
                 p = sync_playwright().start()
+                
+                # Browser launch args
+                launch_args = ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--disable-blink-features=AutomationControlled']
+                
+                # Configure proxy if enabled
+                proxy_settings = None
+                if USE_PROXY:
+                    proxy_settings = {
+                        'server': PROXY_CONFIG['server'],
+                        'username': PROXY_CONFIG['username'],
+                        'password': PROXY_CONFIG['password']
+                    }
+                    log_msg(f"[{worker_name}] Using DataImpulse rotating proxy: {PROXY_CONFIG['server']}")
+                
                 browser = p.chromium.launch(
                     headless=True,
-                    args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--disable-blink-features=AutomationControlled']
+                    args=launch_args,
+                    proxy=proxy_settings
                 )
             
-            # Contexts
-            context_desktop = browser.new_context(
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            )
+            # Contexts with proxy authentication
+            context_options_desktop = {
+                'user_agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+            if USE_PROXY:
+                context_options_desktop['proxy'] = {
+                    'server': PROXY_CONFIG['server'],
+                    'username': PROXY_CONFIG['username'],
+                    'password': PROXY_CONFIG['password']
+                }
+            
+            context_desktop = browser.new_context(**context_options_desktop)
             context_desktop.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
             page_desktop = context_desktop.new_page()
             
+            # Mobile context with proxy
             iphone = p.devices['iPhone 12']
-            context_mobile = browser.new_context(**iphone)
+            context_options_mobile = {**iphone}
+            if USE_PROXY:
+                context_options_mobile['proxy'] = {
+                    'server': PROXY_CONFIG['server'],
+                    'username': PROXY_CONFIG['username'],
+                    'password': PROXY_CONFIG['password']
+                }
+            context_mobile = browser.new_context(**context_options_mobile)
             page_mobile = context_mobile.new_page()
 
-            log_msg(f"[{worker_name}] Browser Ready. Processing: {assigned_sports}")
+            log_msg(f"[{worker_name}] Browser Ready (Proxy: {USE_PROXY}). Processing: {assigned_sports}")
             
             # Inner Loop for Stability (re-use browser)
             cycle_count = 0
