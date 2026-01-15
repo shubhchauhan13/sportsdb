@@ -51,6 +51,16 @@ app = Flask(__name__)
 def home():
     return f"AiScore Scraper Running... Last Error: {SCRAPER_STATS.get('last_error')}"
 
+def check_cloudflare(page):
+    try:
+        title = page.title()
+        if "Just a moment" in title or "Attention Required" in title or "Security Check" in title:
+            log_msg(f"[CRITICAL] Cloudflare Challenge Detected (Title: {title})")
+            return True
+        return False
+    except:
+        return False
+
 @app.route('/health')
 def health():
     # 1. Check Worker Heartbeats
@@ -404,6 +414,9 @@ def fetch_aiscore_live(page, sport_slug, state_key):
             page.wait_for_timeout(4000)
         else:
             page.wait_for_timeout(1000)
+            
+        if check_cloudflare(page):
+            raise Exception("Cloudflare Blocked")
         
         # Extract __NUXT__
         data = page.evaluate("""() => {
@@ -684,6 +697,11 @@ def fetch_soccer24(page):
         
         # Debug Logs
         title = page.title()
+        
+        # Cloudflare Check
+        if check_cloudflare(page):
+            raise Exception("Cloudflare Blocked")
+            
         rows = page.locator('.event__match').all()
         log_msg(f"[DEBUG] Soccer24 Page Title: {title}")
         log_msg(f"[DEBUG] Soccer24 Rows Found: {len(rows)}")
@@ -1825,9 +1843,14 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                         # CRITICAL: Detect browser closed error and force restart
                         err_str = str(e).lower()
                         if "target page, context or browser has been closed" in err_str or "browser has been closed" in err_str or "page.goto" in err_str:
-                             log_msg(f"[{worker_name}] [CRITICAL] Browser died. Forcing immediate restart...")
-                             cycle_count = max_cycles + 5  # Force exit inner loop
-                             break
+                            log_msg(f"[{worker_name}] [CRITICAL] Browser died. Forcing immediate restart...")
+                            cycle_count = max_cycles + 5  # Force exit inner loop
+                            break
+                             
+                        if "cloudflare blocked" in err_str:
+                            log_msg(f"[{worker_name}] [CRITICAL] Cloudflare Block Detected. Forcing immediate restart...")
+                            cycle_count = max_cycles + 5
+                            break
                         # Don't break loop for minor errors, continue to next sport
                 
                 # Heartbeat log for monitoring
