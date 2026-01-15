@@ -13,6 +13,7 @@ import hashlib
 import collections
 from datetime import datetime
 from fake_useragent import UserAgent
+from playwright_stealth.stealth import Stealth
 
 # Graceful shutdown flag
 SHUTDOWN_FLAG = False
@@ -32,6 +33,7 @@ def get_deterministic_hash(s):
 SCRAPER_STATS = {
     'started_at': str(datetime.now()),
     'sports': {},
+    'workers': {},
     'last_error': None
 }
 LOG_BUFFER = collections.deque(maxlen=100)
@@ -51,6 +53,59 @@ def home():
 
 @app.route('/health')
 def health():
+    # 1. Check Worker Heartbeats
+    now = datetime.now()
+    workers = SCRAPER_STATS.get('workers', {})
+    
+    # Allow a grace period at startup (e.g., 2 mins) where we don't fail health
+    # However, railway healthcheck starts after 60s (start-period), so mostly fine.
+    
+    stale_workers = []
+    for w_name, last_beat in workers.items():
+        if isinstance(last_beat, str):
+            try: last_beat = datetime.strptime(last_beat, "%Y-%m-%d %H:%M:%S")
+            except: continue
+            
+        delta = (now - last_beat).total_seconds()
+        # Threshold: 300 seconds (5 minutes) for HTTP health check failure
+        if delta > 300:
+            stale_workers.append(f"{w_name} ({int(delta)}s ago)")
+            
+    # 2. Check Data Staleness (Last Sync)
+    sports_stats = SCRAPER_STATS.get('sports', {})
+    critical_sports = ['football', 'cricket', 'basketball', 'tennis']
+    
+    for sport in critical_sports:
+        # Check if we have stats for this sport
+        s_stat = sports_stats.get(sport)
+        if not s_stat: continue # Maybe not initialized yet
+        
+        last_sync = s_stat.get('last_sync')
+        if not last_sync: continue
+        
+        try:
+            ls_dt = datetime.strptime(last_sync, "%Y-%m-%d %H:%M:%S.%f")
+        except:
+            try: ls_dt = datetime.strptime(last_sync, "%Y-%m-%d %H:%M:%S")
+            except: continue
+            
+        delta_sync = (now - ls_dt).total_seconds()
+        
+        # If a critical sport hasn't synced in 15 mins, something is wrong with the loop/logic
+        # (even if the thread heartbeat is fine)
+        if delta_sync > 900: # 15 mins
+            stale_workers.append(f"DATA_STALE: {sport} ({int(delta_sync)}s)")
+
+    if stale_workers:
+        err_msg = f"Unhealthy State: {', '.join(stale_workers)}"
+        log_msg(f"[HEALTH] FAILED: {err_msg}")
+        return jsonify({
+            "status": "unhealthy",
+            "error": err_msg,
+            "stats": SCRAPER_STATS,
+            "logs_tail": list(LOG_BUFFER)[-5:]
+        }), 500
+
     return jsonify({
         "status": "running",
         "stats": SCRAPER_STATS,
@@ -112,7 +167,7 @@ PROXY_CONFIG = {
     'username': os.environ.get('PROXY_USERNAME', '448ee9fc87025dfdc8ab'),
     'password': os.environ.get('PROXY_PASSWORD', 'f8fd876b005c06f1'),
 }
-USE_PROXY = os.environ.get('USE_PROXY', 'true').lower() == 'true'
+USE_PROXY = os.environ.get('USE_PROXY', 'false').lower() == 'true'
 
 # Sport Configuration
 # Slug maps to AiScore URL path segments or state keys
@@ -1569,6 +1624,9 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
     p = None
     
     while not SHUTDOWN_FLAG:
+        # Update Heartbeat
+        SCRAPER_STATS['workers'][worker_name] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         try:
             # 1. Initialize Resources per Thread
             if not conn or conn.closed:
@@ -1631,12 +1689,9 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                 }
             
             context_desktop = browser.new_context(**context_options_desktop)
-            context_desktop.add_init_script("""
-                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-                Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
-                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
-            """)
+            # Use Playwright Stealth instead of manual scripts
             page_desktop = context_desktop.new_page()
+            Stealth().apply_stealth_sync(page_desktop)
             
             # Mobile context with proxy
             iphone = p.devices['iPhone 12']
@@ -1650,10 +1705,9 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                     'password': PROXY_CONFIG['password']
                 }
             context_mobile = browser.new_context(**context_options_mobile)
-            context_mobile.add_init_script("""
-                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-            """)
+            # Use Playwright Stealth
             page_mobile = context_mobile.new_page()
+            Stealth().apply_stealth_sync(page_mobile)
 
             log_msg(f"[{worker_name}] Browser Ready (Proxy: {USE_PROXY}). Processing: {assigned_sports}")
             
@@ -1662,6 +1716,9 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
             max_cycles = 20 # Restart browser every 20 cycles to prevent leaks
             
             while cycle_count < max_cycles and not SHUTDOWN_FLAG:
+                # Update Heartbeat (Inner Loop)
+                SCRAPER_STATS['workers'][worker_name] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
                 start_time = time.time()
                 
                 # Check Commands (Only Main Thread - optional, or shared?)
@@ -1756,6 +1813,13 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                             log_msg(f"[{worker_name}] No live matches found for {sport}. Running cleanup.")
                             cleanup_stale_matches(conn, sport, [])
                             
+                            # CRITICAL FIX: Update last_sync even if 0 matches found, 
+                            # because the fetch was successful (just empty).
+                            if sport not in SCRAPER_STATS['sports']:
+                                SCRAPER_STATS['sports'][sport] = {}
+                            SCRAPER_STATS['sports'][sport]['last_sync'] = str(datetime.now())
+                            SCRAPER_STATS['sports'][sport]['matches'] = 0
+                            
                     except Exception as e:
                         log_msg(f"[{worker_name}] [ERROR] {sport}: {e}")
                         # CRITICAL: Detect browser closed error and force restart
@@ -1790,8 +1854,47 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
             except: pass
             browser = None
 
+def watchdog_loop():
+    """
+    Monitors worker threads. If any thread hasn't updated its heartbeat 
+    in > 600 seconds (10 mins), kill the process to force a restart.
+    """
+    log_msg("[WATCHDOG] Started. Monitoring workers...")
+    time.sleep(60) # Startup grace period
+    
+    while not SHUTDOWN_FLAG:
+        try:
+            now = datetime.now()
+            workers = SCRAPER_STATS.get('workers', {})
+            
+            for w_name, last_beat in workers.items():
+                # Parse timestamp if string
+                if isinstance(last_beat, str):
+                    try: dt = datetime.strptime(last_beat, "%Y-%m-%d %H:%M:%S")
+                    except: continue
+                else:
+                    dt = last_beat
+                
+                delta = (now - dt).total_seconds()
+                
+                # Check for critical staleness (10 minutes)
+                if delta > 600:
+                    log_msg(f"[WATCHDOG] CRITICAL: Worker '{w_name}' blocked for {int(delta)}s. Forcing restart!")
+                    # Force exit - Docker/Railway will restart us
+                    os._exit(1)
+            
+            time.sleep(30) # Check every 30s
+            
+        except Exception as e:
+            log_msg(f"[WATCHDOG] Error: {e}")
+            time.sleep(30)
+
 def run_scraper():
     log_msg("[SUPERVISOR] Starting Multi-Threaded Scraper...")
+
+    # Start Watchdog
+    t_watch = threading.Thread(target=watchdog_loop, daemon=True)
+    t_watch.start()
     
     # Group 0: Critical (Cricket)
     g0 = ['cricket']
