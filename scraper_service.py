@@ -38,6 +38,46 @@ SCRAPER_STATS = {
 }
 LOG_BUFFER = collections.deque(maxlen=100)
 
+# --- Blocking Detection Tracker ---
+BLOCKING_TRACKER = {
+    'aiscore': {'consecutive_failures': 0, 'last_success': None, 'last_failure': None, 'last_error': None},
+    'soccer24': {'consecutive_failures': 0, 'last_success': None, 'last_failure': None, 'last_error': None},
+    'sofascore': {'consecutive_failures': 0, 'last_success': None, 'last_failure': None, 'last_error': None},
+    'oddsportal': {'consecutive_failures': 0, 'last_success': None, 'last_failure': None, 'last_error': None},
+}
+BLOCKING_THRESHOLD = 3  # Mark as blocked after 3 consecutive failures
+
+def record_source_success(source_name):
+    """Record a successful fetch from a source, resetting failure count."""
+    if source_name in BLOCKING_TRACKER:
+        BLOCKING_TRACKER[source_name]['consecutive_failures'] = 0
+        BLOCKING_TRACKER[source_name]['last_success'] = str(datetime.now())
+        BLOCKING_TRACKER[source_name]['last_error'] = None
+
+def record_source_failure(source_name, error_msg):
+    """Record a failed fetch from a source."""
+    if source_name in BLOCKING_TRACKER:
+        BLOCKING_TRACKER[source_name]['consecutive_failures'] += 1
+        BLOCKING_TRACKER[source_name]['last_failure'] = str(datetime.now())
+        BLOCKING_TRACKER[source_name]['last_error'] = str(error_msg)[:200]  # Truncate long errors
+        
+        count = BLOCKING_TRACKER[source_name]['consecutive_failures']
+        if count >= BLOCKING_THRESHOLD:
+            log_msg(f"[BLOCKING] Source '{source_name}' appears BLOCKED ({count} consecutive failures)")
+
+def get_blocked_sources():
+    """Returns list of sources that appear to be blocked."""
+    blocked = []
+    for source, tracker in BLOCKING_TRACKER.items():
+        if tracker['consecutive_failures'] >= BLOCKING_THRESHOLD:
+            blocked.append({
+                'source': source,
+                'failures': tracker['consecutive_failures'],
+                'last_error': tracker['last_error'],
+                'since': tracker['last_failure']
+            })
+    return blocked
+
 def log_msg(msg):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     entry = f"[{timestamp}] {msg}"
@@ -67,16 +107,25 @@ def health():
     now = datetime.now()
     workers = SCRAPER_STATS.get('workers', {})
     
-    # Allow a grace period at startup (e.g., 2 mins) where we don't fail health
-    # However, railway healthcheck starts after 60s (start-period), so mostly fine.
-    
     stale_workers = []
+    worker_status = {}
+    
     for w_name, last_beat in workers.items():
         if isinstance(last_beat, str):
-            try: last_beat = datetime.strptime(last_beat, "%Y-%m-%d %H:%M:%S")
-            except: continue
+            try: last_beat_dt = datetime.strptime(last_beat, "%Y-%m-%d %H:%M:%S")
+            except: 
+                worker_status[w_name] = {'status': 'unknown', 'last_beat': last_beat}
+                continue
+        else:
+            last_beat_dt = last_beat
             
-        delta = (now - last_beat).total_seconds()
+        delta = (now - last_beat_dt).total_seconds()
+        worker_status[w_name] = {
+            'status': 'healthy' if delta < 300 else 'stale',
+            'last_beat': str(last_beat),
+            'seconds_ago': int(delta)
+        }
+        
         # Threshold: 300 seconds (5 minutes) for HTTP health check failure
         if delta > 300:
             stale_workers.append(f"{w_name} ({int(delta)}s ago)")
@@ -86,9 +135,8 @@ def health():
     critical_sports = ['football', 'cricket', 'basketball', 'tennis']
     
     for sport in critical_sports:
-        # Check if we have stats for this sport
         s_stat = sports_stats.get(sport)
-        if not s_stat: continue # Maybe not initialized yet
+        if not s_stat: continue
         
         last_sync = s_stat.get('last_sync')
         if not last_sync: continue
@@ -101,30 +149,117 @@ def health():
             
         delta_sync = (now - ls_dt).total_seconds()
         
-        # If a critical sport hasn't synced in 15 mins, something is wrong with the loop/logic
-        # (even if the thread heartbeat is fine)
-        if delta_sync > 900: # 15 mins
+        # If a critical sport hasn't synced in 15 mins, something is wrong
+        if delta_sync > 900:  # 15 mins
             stale_workers.append(f"DATA_STALE: {sport} ({int(delta_sync)}s)")
+
+    # 3. Check for blocked sources
+    blocked_sources = get_blocked_sources()
+    
+    # Build response
+    response_data = {
+        "status": "running",
+        "uptime_since": SCRAPER_STATS.get('started_at'),
+        "workers": worker_status,
+        "blocked_sources": blocked_sources,
+        "blocking_tracker": BLOCKING_TRACKER,
+        "sports_summary": {k: {'matches': v.get('matches', 0), 'last_sync': v.get('last_sync')} 
+                          for k, v in sports_stats.items()},
+        "logs_tail": list(LOG_BUFFER)[-5:]
+    }
 
     if stale_workers:
         err_msg = f"Unhealthy State: {', '.join(stale_workers)}"
         log_msg(f"[HEALTH] FAILED: {err_msg}")
-        return jsonify({
-            "status": "unhealthy",
-            "error": err_msg,
-            "stats": SCRAPER_STATS,
-            "logs_tail": list(LOG_BUFFER)[-5:]
-        }), 500
+        response_data["status"] = "unhealthy"
+        response_data["error"] = err_msg
+        return jsonify(response_data), 500
+    
+    if blocked_sources:
+        response_data["status"] = "degraded"
+        response_data["warning"] = f"{len(blocked_sources)} source(s) appear blocked"
 
-    return jsonify({
-        "status": "running",
-        "stats": SCRAPER_STATS,
-        "logs_tail": list(LOG_BUFFER)[-5:]
-    })
+    return jsonify(response_data)
 
 @app.route('/logs')
 def logs():
     return jsonify(list(LOG_BUFFER))
+
+@app.route('/diagnostics')
+def diagnostics():
+    """
+    Comprehensive diagnostics endpoint for debugging scraper issues.
+    Returns full system state including all tracking data.
+    """
+    try:
+        import psutil
+        HAS_PSUTIL = True
+    except ImportError:
+        HAS_PSUTIL = False
+    
+    now = datetime.now()
+    
+    # Calculate per-sport status
+    sports_status = {}
+    for sport, config in SPORTS_CONFIG.items():
+        s_stat = SCRAPER_STATS.get('sports', {}).get(sport, {})
+        last_sync = s_stat.get('last_sync')
+        
+        status = 'unknown'
+        seconds_since_sync = None
+        
+        if last_sync:
+            try:
+                ls_dt = datetime.strptime(last_sync, "%Y-%m-%d %H:%M:%S.%f")
+            except:
+                try: ls_dt = datetime.strptime(last_sync, "%Y-%m-%d %H:%M:%S")
+                except: ls_dt = None
+            
+            if ls_dt:
+                seconds_since_sync = int((now - ls_dt).total_seconds())
+                if seconds_since_sync < 120:
+                    status = 'active'
+                elif seconds_since_sync < 600:
+                    status = 'idle'
+                else:
+                    status = 'stale'
+        
+        sports_status[sport] = {
+            'status': status,
+            'matches': s_stat.get('matches', 0),
+            'last_sync': last_sync,
+            'seconds_since_sync': seconds_since_sync,
+            'table': config['table']
+        }
+    
+    # System resources
+    if HAS_PSUTIL:
+        try:
+            memory = psutil.Process().memory_info()
+            memory_info = {
+                'rss_mb': round(memory.rss / 1024 / 1024, 2),
+                'vms_mb': round(memory.vms / 1024 / 1024, 2)
+            }
+        except Exception as e:
+            memory_info = {'error': f'psutil error: {str(e)}'}
+    else:
+        memory_info = {'error': 'psutil not installed'}
+    
+    return jsonify({
+        'timestamp': str(now),
+        'uptime_since': SCRAPER_STATS.get('started_at'),
+        'workers': SCRAPER_STATS.get('workers', {}),
+        'sports': sports_status,
+        'blocking_tracker': BLOCKING_TRACKER,
+        'blocked_sources': get_blocked_sources(),
+        'last_error': SCRAPER_STATS.get('last_error'),
+        'memory': memory_info,
+        'logs_recent': list(LOG_BUFFER)[-20:],
+        'config': {
+            'use_proxy': USE_PROXY,
+            'proxy_server': PROXY_CONFIG['server'] if USE_PROXY else None
+        }
+    })
 
 # --- Architect Agent API ---
 import queue
@@ -1755,24 +1890,33 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                     if sport not in SPORTS_CONFIG: continue
                     config = SPORTS_CONFIG[sport]
                     
+                    # Track which source this sport uses for blocking tracker
+                    source_name = None
+                    browser_crashed = False
+                    
                     try:
                         matches = []
                         # Routing 
                         if sport == 'football':
+                            source_name = 'soccer24'
                             log_msg(f"[{worker_name}] Fetching football...")
                             matches = fetch_soccer24(page_desktop)
                         elif sport == 'basketball':
+                            source_name = 'aiscore'
                             log_msg(f"[{worker_name}] Fetching basketball...")
                             matches = fetch_aiscore_live(page_desktop, config['slug'], config['state_key'])
                         elif sport == 'table-tennis':
+                            source_name = 'sofascore'
                             log_msg(f"[{worker_name}] Fetching table-tennis...")
                             matches = fetch_sofascore_table_tennis(page_mobile)
                         elif sport == 'esports':
+                            source_name = 'sofascore'
                             log_msg(f"[{worker_name}] Fetching esports...")
                             matches = fetch_sofascore_esports(page_mobile)
                             # OddsPortal backup
                             op_matches = fetch_oddsportal_esports(page_desktop)
                             if op_matches:
+                                record_source_success('oddsportal')
                                 for m in matches:
                                     if not m.get('odds', {}).get('home'):
                                         for op in op_matches:
@@ -1781,10 +1925,12 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                                                 m['odds'] = op['odds']
                                                 break
                         elif sport == 'ice-hockey':
+                            source_name = 'aiscore'
                             log_msg(f"[{worker_name}] Fetching ice-hockey...")
                             matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
                             op_hockey = fetch_oddsportal_hockey(page_desktop)
                             if op_hockey:
+                                record_source_success('oddsportal')
                                 for m in matches:
                                     if not m.get('odds', {}).get('home'):
                                         for op in op_hockey:
@@ -1795,12 +1941,15 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                         
                         # Minor Sports (OddsPortal)
                         elif sport == 'volleyball':
+                             source_name = 'sofascore'
                              log_msg(f"[{worker_name}] Fetching volleyball (SofaScore)...")
                              matches = fetch_sofascore_volleyball(page_mobile)
                         elif sport == 'motorsport':
+                             source_name = 'sofascore'
                              log_msg(f"[{worker_name}] Fetching motorsport (SofaScore)...")
                              matches = fetch_sofascore_motorsport(page_mobile)
                         elif sport in ['handball', 'baseball', 'snooker', 'rugby', 'water-polo']:
+                             source_name = 'oddsportal'
                              log_msg(f"[{worker_name}] Fetching {sport} (OddsPortal)...")
                              # Map sport to ID/Slug manually or use generic
                              slugs = {
@@ -1815,12 +1964,20 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                              
                         else:
                             # Generic AiScore (Cricket, Badminton, AmFootball)
+                            source_name = 'aiscore'
                             log_msg(f"[{worker_name}] Fetching {sport} (AiScore)...")
                             matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
 
                         if matches is None:
+                            # Fetch returned None = failure
                             log_msg(f"[{worker_name}] Skipping sync for {sport} due to fetch failure.")
+                            if source_name:
+                                record_source_failure(source_name, f"Returned None for {sport}")
                             continue
+
+                        # Fetch succeeded - record success
+                        if source_name:
+                            record_source_success(source_name)
 
                         if matches:
                             log_msg(f"[{worker_name}] Upserting {len(matches)} for {sport}")
@@ -1840,16 +1997,24 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                             
                     except Exception as e:
                         log_msg(f"[{worker_name}] [ERROR] {sport}: {e}")
-                        # CRITICAL: Detect browser closed error and force restart
+                        
+                        # Record failure in blocking tracker
+                        if source_name:
+                            record_source_failure(source_name, str(e))
+                        
+                        # CRITICAL: Detect browser closed error and force IMMEDIATE restart
                         err_str = str(e).lower()
                         if "target page, context or browser has been closed" in err_str or "browser has been closed" in err_str or "page.goto" in err_str:
                             log_msg(f"[{worker_name}] [CRITICAL] Browser died. Forcing immediate restart...")
-                            cycle_count = max_cycles + 5  # Force exit inner loop
-                            break
+                            browser_crashed = True
                              
-                        if "cloudflare blocked" in err_str:
+                        if "cloudflare blocked" in err_str or "just a moment" in err_str:
                             log_msg(f"[{worker_name}] [CRITICAL] Cloudflare Block Detected. Forcing immediate restart...")
-                            cycle_count = max_cycles + 5
+                            browser_crashed = True
+                        
+                        # IMPORTANT: Break out of sports loop immediately on crash
+                        if browser_crashed:
+                            cycle_count = max_cycles + 5  # Force exit inner cycle loop too
                             break
                         # Don't break loop for minor errors, continue to next sport
                 

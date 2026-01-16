@@ -5,9 +5,10 @@ dockerfilePath = "Dockerfile"
 [deploy]
 numReplicas = 1
 restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+restartPolicyMaxRetries = 0
 healthcheckPath = "/health"
-healthcheckTimeout = 30
+healthcheckTimeout = 60
+startCommand = "python -u scraper_service.py"
 
 [deploy.resources]
 # Playwright needs good resources for browser automation

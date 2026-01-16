@@ -6,3 +6,4 @@ beautifulsoup4==4.12.3
 duckduckgo-search==8.1.1
 fake-useragent==2.2.0
 playwright-stealth==1.0.6
+psutil==5.9.8
