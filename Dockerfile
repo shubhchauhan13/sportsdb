@@ -9,6 +9,8 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 # Increase shared memory for Chromium (Railway fix)
 ENV SHM_SIZE=256m
+ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
+
 
 # Install Python deps
 COPY requirements.txt .
