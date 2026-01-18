@@ -1794,7 +1794,7 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                 from playwright.sync_api import sync_playwright
                 p = sync_playwright().start()
                 
-                # Browser launch args
+                # Browser launch args - Enhanced for Railway/Docker environments
                 launch_args = [
                     '--no-sandbox', 
                     '--disable-dev-shm-usage',
@@ -1804,7 +1804,18 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                     '--exclude-switches=enable-automation',
                     '--use-fake-ui-for-media-stream',
                     '--disable-notifications',
-                    '--disable-extensions'
+                    '--disable-extensions',
+                    # Railway/Docker specific fixes
+                    '--single-process',
+                    '--disable-setuid-sandbox',
+                    '--disable-software-rasterizer',
+                    '--disable-background-networking',
+                    '--disable-default-apps',
+                    '--disable-sync',
+                    '--disable-translate',
+                    '--metrics-recording-only',
+                    '--no-first-run',
+                    '--safebrowsing-disable-auto-update',
                 ]
                 
                 # Configure proxy if enabled
