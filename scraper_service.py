@@ -306,37 +306,45 @@ def start_web_server():
 
 # Telegram Configuration
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "8419641709:AAGKxzGcquExTgYmV4K16T2e3YpvnYPKXCE")
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "783170637") 
-
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "783170637,1009619021") 
 
 def send_telegram_alert(message):
-    """Sends a message to the configured Telegram chat."""
+    """Sends a message to all configured Telegram chat IDs."""
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         log_msg("[ALERT] Telegram not configured. Skipping alert.")
         return
     
-    try:
-        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-        payload = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": message,
-            "parse_mode": "Markdown"
-        }
-        # Use requests (imported locally to avoid global dependency issues if not installed, though it's in requirements)
-        import requests
-        resp = requests.post(url, json=payload, timeout=10)
-        if resp.status_code != 200:
-            log_msg(f"[ALERT] Failed to send Telegram: {resp.text}")
-        else:
-            log_msg(f"[ALERT] Telegram sent: {message}")
-    except Exception as e:
-        log_msg(f"[ALERT] Error sending Telegram: {e}")
+    ids = [x.strip() for x in TELEGRAM_CHAT_ID.split(',')]
+    
+    import requests
+    
+    for chat_id in ids:
+        if not chat_id: continue
+        try:
+            url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+            payload = {
+                "chat_id": chat_id,
+                "text": message,
+                "parse_mode": "Markdown"
+            }
+            resp = requests.post(url, json=payload, timeout=10)
+            if resp.status_code != 200:
+                log_msg(f"[ALERT] Failed to send Telegram to {chat_id}: {resp.text}")
+            else:
+                log_msg(f"[ALERT] Telegram sent to {chat_id}: {message}")
+        except Exception as e:
+            log_msg(f"[ALERT] Error sending Telegram to {chat_id}: {message} | {e}")
 
 def monitor_db_freshness():
     """
     Background thread to check if DB is stale (>10 mins) and alert.
     """
     log_msg("[MONITOR] Starting Database Freshness Monitor...")
+    
+    # Send Test Alert on Startup
+    time.sleep(10) # Wait for network
+    send_telegram_alert("🚀 **Scraper Service Started**\n\n- Monitoring: Active\n- Server: Railway\n- Alerts: Enabled (>10m staleness)")
+    
     time.sleep(60) # Initial grace period
     
     last_alert_map = {} # sport -> last_alert_timestamp
