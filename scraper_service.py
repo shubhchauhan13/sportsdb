@@ -301,10 +301,100 @@ def start_web_server():
     app.run(host='0.0.0.0', port=port)
 
 # --- Configuration ---
-DB_CONNECTION_STRING = os.environ.get(
-    "DB_CONNECTION_STRING", 
     "postgresql://neondb_owner:npg_B3YTEO0DxrMV@ep-old-voice-ahlg0kao-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 ).strip("'").strip('"')
+
+# Telegram Configuration
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "8419641709:AAGKxzGcquExTgYmV4K16T2e3YpvnYPKXCE")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "") # To be set by User
+
+def send_telegram_alert(message):
+    """Sends a message to the configured Telegram chat."""
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        log_msg("[ALERT] Telegram not configured. Skipping alert.")
+        return
+    
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        payload = {
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": message,
+            "parse_mode": "Markdown"
+        }
+        # Use requests (imported locally to avoid global dependency issues if not installed, though it's in requirements)
+        import requests
+        resp = requests.post(url, json=payload, timeout=10)
+        if resp.status_code != 200:
+            log_msg(f"[ALERT] Failed to send Telegram: {resp.text}")
+        else:
+            log_msg(f"[ALERT] Telegram sent: {message}")
+    except Exception as e:
+        log_msg(f"[ALERT] Error sending Telegram: {e}")
+
+def monitor_db_freshness():
+    """
+    Background thread to check if DB is stale (>10 mins) and alert.
+    """
+    log_msg("[MONITOR] Starting Database Freshness Monitor...")
+    time.sleep(60) # Initial grace period
+    
+    last_alert_map = {} # sport -> last_alert_timestamp
+    ALERT_COOLDOWN = 1800 # 30 minutes between alerts for same sport
+    STALE_THRESHOLD_SECONDS = 600 # 10 minutes
+    
+    while not SHUTDOWN_FLAG:
+        try:
+            conn = initialize_db()
+            if not conn:
+                time.sleep(60)
+                continue
+                
+            cur = conn.cursor()
+            
+            # Check all configured sports
+            for sport, config in SPORTS_CONFIG.items():
+                table = config['table']
+                try:
+                    # Check max last_updated
+                    cur.execute(f"SELECT MAX(last_updated) FROM {table}")
+                    res = cur.fetchone()
+                    last_update = res[0] if res else None
+                    
+                    is_stale = False
+                    time_diff_str = "N/A"
+                    
+                    if not last_update:
+                        # No data at all? Maybe stale if service running long
+                        pass 
+                    else:
+                        # Handles timezone aware/naive
+                        now_db = datetime.now(last_update.tzinfo) if last_update.tzinfo else datetime.now()
+                        delta = (now_db - last_update).total_seconds()
+                        
+                        if delta > STALE_THRESHOLD_SECONDS:
+                            is_stale = True
+                            time_diff_str = f"{int(delta/60)} mins"
+                    
+                    if is_stale:
+                        # Check cooldown
+                        last_sent = last_alert_map.get(sport, 0)
+                        if time.time() - last_sent > ALERT_COOLDOWN:
+                            msg = f"⚠️ **STALE DATA ALERT** ⚠️\n\nSport: *{sport.upper()}*\nLast Update: {time_diff_str} ago\nServer: Railway"
+                            send_telegram_alert(msg)
+                            last_alert_map[sport] = time.time()
+                            log_msg(f"[MONITOR] Alert sent for {sport}")
+                            
+                except Exception as e:
+                    # Table might not exist yet
+                    pass
+            
+            conn.close()
+            
+        except Exception as e:
+            log_msg(f"[MONITOR] Error: {e}")
+            
+        time.sleep(60) # Check every minute
+
 
 # Proxy Configuration (DataImpulse Rotating Residential)
 PROXY_CONFIG = {
@@ -2094,6 +2184,10 @@ def run_scraper():
     # Start Watchdog
     t_watch = threading.Thread(target=watchdog_loop, daemon=True)
     t_watch.start()
+    
+    # Start Telegram Alert Monitor
+    t_monitor = threading.Thread(target=monitor_db_freshness, daemon=True)
+    t_monitor.start()
     
     # Group 0: Critical (Cricket)
     g0 = ['cricket']
