@@ -842,8 +842,11 @@ def upsert_matches(conn, sport_key, matches):
                     away_odds = CASE WHEN EXCLUDED.away_odds IS NOT NULL THEN EXCLUDED.away_odds ELSE {table_name}.away_odds END,
                     draw_odds = CASE WHEN EXCLUDED.draw_odds IS NOT NULL THEN EXCLUDED.draw_odds ELSE {table_name}.draw_odds END,
                     other_odds = CASE 
-                        WHEN (EXCLUDED.other_odds->>'home' IS NOT NULL AND EXCLUDED.other_odds->>'home' != 'None') 
-                        THEN EXCLUDED.other_odds 
+                        WHEN EXCLUDED.other_odds IS NOT NULL AND EXCLUDED.other_odds::text != '{{}}'::text
+                        THEN 
+                            CASE WHEN {table_name}.other_odds IS NULL THEN EXCLUDED.other_odds
+                            ELSE {table_name}.other_odds || EXCLUDED.other_odds 
+                            END
                         ELSE {table_name}.other_odds 
                     END;
             """, (
@@ -1486,8 +1489,18 @@ def fetch_sofascore_cricket(page):
     log_msg(f"[DEBUG] fetch_sofascore_cricket: Returning {len(matches)} matches")
     return matches
 
+def fetch_cricket_session_odds(page, match_name):
+    """
+    Placeholder for fetching Session/Lambi odds.
+    Requires a valid source (e.g. Betting Site or Premium API).
+    Returns dict: {'6_over': ..., 'lambi': ...}
+    """
+    # TODO: Implement scraping for CREX or Exchange
+    return {}
 
-# --- Sofascore Scraper (Motorsport - F1, MotoGP, NASCAR, etc.) ---
+# -------------------------------------------------------------------
+# Sofascore Scraper (Motorsport - F1, MotoGP, NASCAR, etc.)
+# -------------------------------------------------------------------
 def fetch_sofascore_motorsport(page):
     """
     Fetches motorsport events from SofaScore including:
