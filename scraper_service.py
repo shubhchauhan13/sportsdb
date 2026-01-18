@@ -1384,6 +1384,109 @@ def fetch_sofascore_volleyball(page):
     log_msg(f"[DEBUG] Sofascore Volleyball: Parsed {len(matches)} matches.")
     return matches
 
+# -------------------------------------------------------------------
+# Cricket - Sofascore (Fallback/Redundancy)
+# -------------------------------------------------------------------
+def fetch_sofascore_cricket(page):
+    log_msg("[DEBUG] fetch_sofascore_cricket: Entry")
+    matches = []
+    
+    # URL for Live Cricket Events
+    list_url = "https://www.sofascore.com/api/v1/sport/cricket/events/live"
+    
+    try:
+        # Navigate to API endpoint directly
+        log_msg(f"[DEBUG] fetch_sofascore_cricket: Navigating to {list_url}")
+        try:
+            # We use a known working page to get valid context, then fetch API
+            resp = page.goto(list_url, wait_until='networkidle', timeout=30000)
+            if not resp.ok:
+                 log_msg(f"[WARN] fetch_sofascore_cricket: API returned {resp.status}")
+                 return []
+        except Exception as e:
+            log_msg(f"[WARN] fetch_sofascore_cricket: Navigation failed: {e}")
+            return []
+
+        # Extract JSON from body
+        try:
+            content = page.inner_text("body")
+            data = json.loads(content)
+            events = data.get('events', [])
+            log_msg(f"[DEBUG] fetch_sofascore_cricket: Found {len(events)} events in JSON")
+        except Exception as e:
+            log_msg(f"[WARN] fetch_sofascore_cricket: Failed to parse JSON: {e}")
+            return []
+
+        for evt in events:
+            try:
+                mid = str(evt.get('id'))
+                status_type = evt.get('status', {}).get('type')
+                
+                # Only process live/inprogress
+                if status_type != 'inprogress':
+                    continue
+
+                home = evt.get('homeTeam', {})
+                away = evt.get('awayTeam', {})
+                
+                # Scores
+                home_score_obj = evt.get('homeScore', {})
+                away_score_obj = evt.get('awayScore', {})
+                
+                def fmt_score(sc_obj):
+                    if not sc_obj: return "0"
+                    curr = sc_obj.get('current', 0)
+                    inngs = sc_obj.get('innings', {})
+                    # Try to find latest inning
+                    last_inn = list(inngs.values())[-1] if inngs else {}
+                    
+                    wickets = last_inn.get('wickets', 0)
+                    overs = last_inn.get('overs', 0)
+                    runs = last_inn.get('score', 0)
+                    
+                    return f"{runs}/{wickets} ({overs})"
+
+                home_sc = fmt_score(home_score_obj)
+                away_sc = fmt_score(away_score_obj)
+                
+                # Times
+                match_time = "Live"
+                
+                # Construct Match Object
+                m = {
+                    'id': f"sofa_{mid}",
+                    'sportId': 2, # Cricket ID in sportsdb
+                    'competition': evt.get('tournament', {}).get('name', 'Unknown'),
+                    'homeTeam': home.get('name', 'Unknown'),
+                    'awayTeam': away.get('name', 'Unknown'),
+                    'times': match_time,
+                    'matchTime': match_time,
+                    'statusId': 2, 
+                    'matchStatus': 'Live',
+                    'venue': '',
+                    'referee': '',
+                    'home_name_resolved': home.get('name'),
+                    'away_name_resolved': away.get('name'),
+                    'ext': {
+                        'home_score': home_sc,
+                        'away_score': away_sc,
+                        'source': 'sofascore',
+                        'raw_id': mid
+                    }
+                }
+                matches.append(m)
+
+            except Exception as e:
+                log_msg(f"[WARN] fetch_sofascore_cricket: Error parsing event: {e}")
+                continue
+
+    except Exception as e:
+        log_msg(f"[ERROR] fetch_sofascore_cricket: Top level error: {e}")
+    
+    log_msg(f"[DEBUG] fetch_sofascore_cricket: Returning {len(matches)} matches")
+    return matches
+
+
 # --- Sofascore Scraper (Motorsport - F1, MotoGP, NASCAR, etc.) ---
 def fetch_sofascore_motorsport(page):
     """
@@ -2060,6 +2163,20 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                              source_name = 'sofascore'
                              log_msg(f"[{worker_name}] Fetching motorsport (SofaScore)...")
                              matches = fetch_sofascore_motorsport(page_mobile)
+                             log_msg(f"[{worker_name}] Fetching motorsport (SofaScore)...")
+                             matches = fetch_sofascore_motorsport(page_mobile)
+                        elif sport == 'cricket':
+                             source_name = 'aiscore'
+                             log_msg(f"[{worker_name}] Fetching cricket (AiScore)...")
+                             matches = fetch_aiscore_live(page_mobile, config['slug'], config['state_key'])
+                             
+                             if not matches:
+                                 log_msg(f"[{worker_name}] AiScore returned 0/None for Cricket. Trying Sofascore Fallback...")
+                                 sofa_matches = fetch_sofascore_cricket(page_mobile)
+                                 if sofa_matches:
+                                     matches = sofa_matches
+                                     source_name = 'sofascore'
+                                     log_msg(f"[{worker_name}] Switched to Sofascore (Fallback Success).")
                         elif sport in ['handball', 'baseball', 'snooker', 'rugby', 'water-polo']:
                              source_name = 'oddsportal'
                              log_msg(f"[{worker_name}] Fetching {sport} (OddsPortal)...")
