@@ -1806,7 +1806,7 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                     '--disable-notifications',
                     '--disable-extensions',
                     # Railway/Docker specific fixes
-                    '--single-process',
+                    # '--single-process', # CAUSES CRASHES ON NEWER CHROMIUM
                     '--disable-setuid-sandbox',
                     '--disable-software-rasterizer',
                     '--disable-background-networking',
