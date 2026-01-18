@@ -306,7 +306,8 @@ def start_web_server():
 
 # Telegram Configuration
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "8419641709:AAGKxzGcquExTgYmV4K16T2e3YpvnYPKXCE")
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "") # To be set by User
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "783170637") 
+
 
 def send_telegram_alert(message):
     """Sends a message to the configured Telegram chat."""
