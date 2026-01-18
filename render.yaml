@@ -1,0 +1,28 @@
+# Render Blueprint Specification
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: sportsdb-scraper
+    runtime: python
+    plan: free
+    region: oregon  # or singapore for Asia
+    
+    # Build Configuration
+    buildCommand: ./render-build.sh
+    startCommand: python -u scraper_service.py
+    
+    # Health Check (Used by Render to monitor service)
+    healthCheckPath: /health
+    
+    # Environment Variables
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.4"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: DB_CONNECTION_STRING
+        sync: false  # Must be set manually in dashboard for security
+      # Optional: Enable proxy if needed
+      # - key: USE_PROXY
+      #   value: "false"

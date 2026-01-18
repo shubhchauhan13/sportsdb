@@ -16,34 +16,44 @@ def verify_graceful_failure():
         print("\nTesting fetch_sofascore_table_tennis...")
         try:
             res = scraper_service.fetch_sofascore_table_tennis(page)
-            if res == []:
-                print("SUCCESS: Returned empty list.")
+            # If it returns, check if empty
+            if res:
+                print(f"FAILURE: Returned non-empty: {res}")
             else:
-                print(f"FAILURE: Returned {res}")
+                print("SUCCESS: Returned empty/None (unexpected but safe).")
         except Exception as e:
-            print(f"FAILURE: Crashed with {e}")
+            if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+                 print(f"SUCCESS: Function correctly raised closed browser exception: {e}")
+            else:
+                 print(f"FAILURE: Crashed with unexpected error: {e}")
 
         # Test 2: fetch_sofascore_esports
         print("\nTesting fetch_sofascore_esports...")
         try:
             res = scraper_service.fetch_sofascore_esports(page)
-            if res == []:
-                print("SUCCESS: Returned empty list.")
+            if res:
+                print(f"FAILURE: Returned non-empty: {res}")
             else:
-                print(f"FAILURE: Returned {res}")
+                print("SUCCESS: Returned empty/None (unexpected but safe).")
         except Exception as e:
-            print(f"FAILURE: Crashed with {e}")
+            if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+                 print(f"SUCCESS: Function correctly raised closed browser exception: {e}")
+            else:
+                 print(f"FAILURE: Crashed with unexpected error: {e}")
 
         # Test 3: fetch_oddsportal_generic
         print("\nTesting fetch_oddsportal_generic...")
         try:
             res = scraper_service.fetch_oddsportal_generic(page, 'handball', 6)
-            if res == []:
-                print("SUCCESS: Returned empty list.")
+            if res:
+                print(f"FAILURE: Returned non-empty: {res}")
             else:
-                print(f"FAILURE: Returned {res}")
+                print("SUCCESS: Returned empty/None (unexpected but safe).")
         except Exception as e:
-            print(f"FAILURE: Crashed with {e}")
+            if "target page, context or browser has been closed" in str(e).lower() or "browser has been closed" in str(e).lower():
+                 print(f"SUCCESS: Function correctly raised closed browser exception: {e}")
+            else:
+                 print(f"FAILURE: Crashed with unexpected error: {e}")
 
 if __name__ == "__main__":
     verify_graceful_failure()

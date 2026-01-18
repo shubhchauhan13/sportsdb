@@ -13,7 +13,7 @@ import hashlib
 import collections
 from datetime import datetime
 from fake_useragent import UserAgent
-from playwright_stealth.stealth import Stealth
+from playwright_stealth import stealth_sync
 
 # Graceful shutdown flag
 SHUTDOWN_FLAG = False
@@ -1844,7 +1844,7 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
             context_desktop = browser.new_context(**context_options_desktop)
             # Use Playwright Stealth instead of manual scripts
             page_desktop = context_desktop.new_page()
-            Stealth().apply_stealth_sync(page_desktop)
+            stealth_sync(page_desktop)
             
             # Mobile context with proxy
             iphone = p.devices['iPhone 12']
@@ -1860,7 +1860,7 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
             context_mobile = browser.new_context(**context_options_mobile)
             # Use Playwright Stealth
             page_mobile = context_mobile.new_page()
-            Stealth().apply_stealth_sync(page_mobile)
+            stealth_sync(page_mobile)
 
             log_msg(f"[{worker_name}] Browser Ready (Proxy: {USE_PROXY}). Processing: {assigned_sports}")
             
