@@ -1290,7 +1290,152 @@ def fetch_sofascore_esports(page):
         
     return matches
 
-# --- Sofascore Scraper (Volleyball) ---
+# --- Sofascore Scraper (Football) ---
+def fetch_sofascore_football(page):
+    log_msg("[DEBUG] fetch_sofascore_football: Entry")
+    if page.is_closed(): raise Exception("Browser closed")
+    
+    url = "https://www.sofascore.com/api/v1/sport/football/events/live"
+    matches = []
+    
+    try:
+        response = page.goto(url, timeout=45000, wait_until='domcontentloaded')
+        if not response.ok:
+            log_msg(f"[WARN] Sofascore Football fetch failed: {response.status}")
+            return None
+            
+        try:
+            data = response.json()
+        except:
+            text = page.locator("body").inner_text()
+            data = json.loads(text)
+            
+        events = data.get('events', [])
+        log_msg(f"[DEBUG] Sofascore Football: Found {len(events)} events")
+        
+        for ev in events:
+            try:
+                mid = str(ev.get('id'))
+                home = ev.get('homeTeam', {}).get('name', 'Unknown')
+                away = ev.get('awayTeam', {}).get('name', 'Unknown')
+                
+                h_score = str(ev.get('homeScore', {}).get('current', 0))
+                a_score = str(ev.get('awayScore', {}).get('current', 0))
+                status_desc = ev.get('status', {}).get('description', 'Live')
+                
+                # Odds
+                odds_data = {'home': None, 'away': None, 'draw': None}
+                # Try simple vote approximation first
+                vote = ev.get('vote', {})
+                v1 = vote.get('vote1', 0)
+                vx = vote.get('voteX', 0)
+                v2 = vote.get('vote2', 0)
+                
+                if v1+vx+v2 > 50: # Only if enough votes
+                    total = v1+vx+v2
+                    try:
+                        odds_data['home'] = round(total/v1, 2) if v1 else None
+                        odds_data['draw'] = round(total/vx, 2) if vx else None
+                        odds_data['away'] = round(total/v2, 2) if v2 else None
+                    except: pass
+
+                matches.append({
+                    'id': f"sf_{mid}",
+                    'matchStatus': 2,
+                    'statusId': 2,
+                    'is_live_override': True,
+                    'status_text_override': status_desc,
+                    'homeTeam': {'name': home},
+                    'awayTeam': {'name': away},
+                    'home_name_resolved': home,
+                    'away_name_resolved': away,
+                    'homeScore': h_score,
+                    'awayScore': a_score,
+                    'sportId': 1, # Football
+                    'odds': odds_data,
+                    'match_data_extra': ev
+                })
+            except Exception as e:
+                continue
+                
+    except Exception as e:
+        log_msg(f"[ERROR] Sofascore Football Fetch: {e}")
+        if "browser" in str(e).lower(): raise e
+        return None
+        
+    return matches
+
+# --- Sofascore Scraper (Basketball) ---
+def fetch_sofascore_basketball(page):
+    log_msg("[DEBUG] fetch_sofascore_basketball: Entry")
+    if page.is_closed(): raise Exception("Browser closed")
+    
+    url = "https://www.sofascore.com/api/v1/sport/basketball/events/live"
+    matches = []
+    
+    try:
+        response = page.goto(url, timeout=45000, wait_until='domcontentloaded')
+        if not response.ok:
+            log_msg(f"[WARN] Sofascore Basketball fetch failed: {response.status}")
+            return None
+            
+        try:
+            data = response.json()
+        except:
+            text = page.locator("body").inner_text()
+            data = json.loads(text)
+            
+        events = data.get('events', [])
+        log_msg(f"[DEBUG] Sofascore Basketball: Found {len(events)} events")
+        
+        for ev in events:
+            try:
+                mid = str(ev.get('id'))
+                home = ev.get('homeTeam', {}).get('name', 'Unknown')
+                away = ev.get('awayTeam', {}).get('name', 'Unknown')
+                
+                h_score = str(ev.get('homeScore', {}).get('current', 0))
+                a_score = str(ev.get('awayScore', {}).get('current', 0))
+                status_desc = ev.get('status', {}).get('description', 'Live')
+                
+                # Odds
+                odds_data = {'home': None, 'away': None, 'draw': None}
+                # Try simple vote approximation
+                vote = ev.get('vote', {})
+                v1 = vote.get('vote1', 0)
+                v2 = vote.get('vote2', 0)
+                if v1+v2 > 20:
+                    total = v1+v2
+                    try:
+                        odds_data['home'] = round(total/v1, 2) if v1 else None
+                        odds_data['away'] = round(total/v2, 2) if v2 else None
+                    except: pass
+                    
+                matches.append({
+                    'id': f"sfb_{mid}",
+                    'matchStatus': 2,
+                    'statusId': 2,
+                    'is_live_override': True,
+                    'status_text_override': status_desc,
+                    'homeTeam': {'name': home},
+                    'awayTeam': {'name': away},
+                    'home_name_resolved': home,
+                    'away_name_resolved': away,
+                    'homeScore': h_score,
+                    'awayScore': a_score,
+                    'sportId': 3, # Basketball
+                    'odds': odds_data,
+                    'match_data_extra': ev
+                })
+            except: continue
+                
+    except Exception as e:
+        log_msg(f"[ERROR] Sofascore Basketball Fetch: {e}")
+        if "browser" in str(e).lower(): raise e
+        return None
+        
+    return matches
+
 def fetch_sofascore_volleyball(page):
     log_msg("[DEBUG] fetch_sofascore_volleyball: Entry")
     if page.is_closed(): raise Exception("Target page, context or browser has been closed")
@@ -2126,13 +2271,13 @@ def worker_loop(worker_name, assigned_sports, cycle_sleep=10):
                         matches = []
                         # Routing 
                         if sport == 'football':
-                            source_name = 'soccer24'
-                            log_msg(f"[{worker_name}] Fetching football...")
-                            matches = fetch_soccer24(page_desktop)
+                            source_name = 'sofascore'
+                            log_msg(f"[{worker_name}] Fetching football (Sofascore)...")
+                            matches = fetch_sofascore_football(page_mobile)
                         elif sport == 'basketball':
-                            source_name = 'aiscore'
-                            log_msg(f"[{worker_name}] Fetching basketball...")
-                            matches = fetch_aiscore_live(page_desktop, config['slug'], config['state_key'])
+                            source_name = 'sofascore'
+                            log_msg(f"[{worker_name}] Fetching basketball (Sofascore)...")
+                            matches = fetch_sofascore_basketball(page_mobile)
                         elif sport == 'table-tennis':
                             source_name = 'sofascore'
                             log_msg(f"[{worker_name}] Fetching table-tennis...")
