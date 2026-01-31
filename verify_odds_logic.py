@@ -6,7 +6,7 @@ from psycopg2.extras import Json
 from datetime import datetime
 
 # DB Connection String
-DB_CONNECTION_STRING = "postgresql://neondb_owner:npg_B3YTEO0DxrMV@ep-old-voice-ahlg0kao-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DB_CONNECTION_STRING = "postgresql://neondb_owner:npg_CI3RX5EphOlT@ep-rapid-moon-ahwmx6r0-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 # Import the upsert logic? 
 # It's better to verify by running the actual function if possible, but importing might be complex due to dependencies.

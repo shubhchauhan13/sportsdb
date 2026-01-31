@@ -3,7 +3,7 @@ import psycopg2
 import json
 
 def debug_missing_odds():
-    conn = psycopg2.connect('postgresql://neondb_owner:npg_B3YTEO0DxrMV@ep-old-voice-ahlg0kao-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_CI3RX5EphOlT@ep-rapid-moon-ahwmx6r0-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require')
     cur = conn.cursor()
     
     print("Fetching Sofascore TT matches with missing odds...")

@@ -18,7 +18,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
 COPY scraper_service.py .
+COPY agent_core.py .
+COPY run_agents.py .
+COPY agents/ ./agents/
+COPY workers/ ./workers/
 
-# Run the scraper (Railway handles health checks via /health endpoint)
-CMD ["python", "-u", "scraper_service.py"]
+# Run the agent orchestrator (starts scraper_service.py internally)
+CMD ["python", "-u", "run_agents.py"]
 
