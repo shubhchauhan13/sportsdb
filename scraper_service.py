@@ -562,6 +562,104 @@ def get_batting_team(match, home_team, away_team):
         pass
     return None
 
+
+def calculate_session_odds(match):
+    """
+    Calculate session odds/projections from cricket match data.
+    
+    Returns dict with:
+    - run_rate: Current run rate
+    - 6_over_projection: Projected runs at 6 overs
+    - 10_over_projection: Projected runs at 10 overs
+    - 20_over_projection: Projected runs at 20 overs
+    - powerplay_runs: Runs scored in first 6 overs (if available)
+    - current_runs: Current runs
+    - current_overs: Current overs
+    - current_wickets: Current wickets
+    - session_market: AI-generated session line (e.g., "35.5 runs @ 6 overs")
+    """
+    session = {
+        "run_rate": None,
+        "6_over_projection": None,
+        "10_over_projection": None,
+        "20_over_projection": None,
+        "powerplay_runs": None,
+        "current_runs": None,
+        "current_overs": None,
+        "current_wickets": None,
+        "session_market": None
+    }
+    
+    try:
+        scores = match.get('ckScores', {})
+        innings = scores.get('innings', [])
+        
+        if not innings:
+            return session
+        
+        # Get current innings (last one)
+        current_inn = innings[-1]
+        runs = current_inn.get('runs', 0)
+        wickets = current_inn.get('wickets', 0)
+        overs = current_inn.get('overs', 0)
+        
+        session["current_runs"] = runs
+        session["current_wickets"] = wickets
+        session["current_overs"] = round(overs, 1)
+        
+        if overs > 0:
+            run_rate = round(runs / overs, 2)
+            session["run_rate"] = run_rate
+            
+            # Projections
+            session["6_over_projection"] = round(run_rate * 6, 1)
+            session["10_over_projection"] = round(run_rate * 10, 1)
+            session["20_over_projection"] = round(run_rate * 20, 1)
+            
+            # If we're past 6 overs, powerplay is complete
+            if overs >= 6:
+                # Estimate powerplay runs (usually higher RR in powerplay)
+                # This is an approximation since we don't have ball-by-ball
+                session["powerplay_runs"] = round(run_rate * 6 * 1.1, 1)  # 10% boost for PP
+            else:
+                # Current projection for remaining powerplay
+                overs_left = 6 - overs
+                projected_pp = runs + round(run_rate * overs_left, 1)
+                session["powerplay_runs"] = projected_pp
+            
+            # Generate session market line
+            # Standard format: "X runs @ 6 overs" with a line like 35.5
+            if overs < 6:
+                projected_6 = session["6_over_projection"]
+                # Adding typical spread (+/- 0.5)
+                session["session_market"] = {
+                    "name": "6 Over Runs",
+                    "line": projected_6,
+                    "over": round(projected_6 + 2, 1),
+                    "under": round(projected_6 - 2, 1)
+                }
+            elif overs < 10:
+                projected_10 = session["10_over_projection"]
+                session["session_market"] = {
+                    "name": "10 Over Runs",
+                    "line": projected_10,
+                    "over": round(projected_10 + 5, 1),
+                    "under": round(projected_10 - 5, 1)
+                }
+            else:
+                projected_20 = session["20_over_projection"]
+                session["session_market"] = {
+                    "name": "Total Runs",
+                    "line": projected_20,
+                    "over": round(projected_20 + 10, 1),
+                    "under": round(projected_20 - 10, 1)
+                }
+    
+    except Exception as e:
+        log_msg(f"[WARN] Session calc error: {e}")
+    
+    return session
+
 def get_team_name(match, side='home', team_map=None):
 
     team_obj = match.get(f"{side}Team", {})
@@ -810,10 +908,17 @@ def upsert_matches(conn, sport_key, matches):
             other_odds_val = None
             
             # Football: Use standard columns
-            # Others: Use other_odds column, set standard columns to None
-            # Football: Use standard columns
             # Others: Use standard columns AND other_odds column
             other_odds_val = odds 
+            
+            # Cricket: Add session odds/projections
+            if sport_key == 'cricket':
+                session_odds = calculate_session_odds(m)
+                if session_odds.get('run_rate'):
+                    # Merge session data into other_odds
+                    other_odds_val = other_odds_val or {}
+                    other_odds_val['session'] = session_odds
+                    log_msg(f"[SESSION] {home_team} vs {away_team}: RR={session_odds.get('run_rate')}, 6ov={session_odds.get('6_over_projection')}")
             
             if i == 0:
                 pass
